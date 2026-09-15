@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprendre le champ magnétique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papier:#F6F4EF; --carte:#FFFFFF;
+  --encre:#1C2621; --encre-doux:#3E4A43;
+  --nere:#0E5138; --nere-clair:#E4EDE7;
+  --terre:#B34A2F; --terre-clair:#F5E4DE;
+  --mil:#B87A15; --mil-clair:#F7EAD2;
+  --ciel:#245A8D; --ciel-clair:#E1EAF2;
+  --sauge:#5F6F66; --filet:#D9D3C6;
+  --ombre:0 1px 2px rgba(28,38,33,.06),0 12px 34px rgba(28,38,33,.08);
+  --mesure:43rem;
+  --fs:1;
+  --bar:5.6rem;
+}
+:root[data-theme="dark"]{
+  --papier:#141A17; --carte:#1D2521;
+  --encre:#ECEAE3; --encre-doux:#C2C7C1;
+  --nere:#5FC79A; --nere-clair:#1B2C24;
+  --terre:#E7967C; --terre-clair:#2E1F1A;
+  --mil:#E0A93E; --mil-clair:#2C2415;
+  --ciel:#7FB2E0; --ciel-clair:#16283A;
+  --sauge:#9AA79F; --filet:#33403A;
+  --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papier:#141A17; --carte:#1D2521; --encre:#ECEAE3; --encre-doux:#C2C7C1;
+    --nere:#5FC79A; --nere-clair:#1B2C24; --terre:#E7967C; --terre-clair:#2E1F1A;
+    --mil:#E0A93E; --mil-clair:#2C2415; --ciel:#7FB2E0; --ciel-clair:#16283A;
+    --sauge:#9AA79F; --filet:#33403A;
+    --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:calc(112.5% * var(--fs));scroll-behavior:smooth;scroll-padding-top:var(--bar)}
+@media (max-width:600px){ html{font-size:calc(104% * var(--fs))} }
+body{margin:0;background:var(--papier);color:var(--encre);
+  font-family:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  line-height:1.75;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;padding-top:var(--bar)}
+h1,h2,h3{font-family:"Fraunces","Georgia",serif;line-height:1.16;color:var(--encre);overflow-wrap:break-word}
+h1{font-size:2.1rem;margin:.2rem 0 .6rem}
+h2{font-size:1.5rem;margin:2.6rem 0 .8rem}
+h3{font-size:1.12rem;margin:1.6rem 0 .5rem}
+p{margin:0 0 1.15rem}
+a{color:var(--nere);text-underline-offset:2px}
+strong{font-weight:600}
+img{max-width:100%}
+.wrap{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem 5rem}
+.label{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--sauge)}
+.kicker{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mil);margin:0 0 .3rem}
+.lead{font-size:1.12rem;color:var(--encre-doux)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+
+.bar-wrap{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--papier);
+  border-bottom:1px solid var(--filet);transition:transform .3s}
+.bar-wrap.hide{transform:translateY(-100%)}
+.bar{max-width:var(--mesure);margin:0 auto;padding:.55rem 1.25rem;
+  display:flex;align-items:center;gap:.7rem;font-family:"IBM Plex Sans",sans-serif}
+.bar button{font-family:inherit;background:var(--carte);color:var(--encre);border:1px solid var(--filet);
+  border-radius:9px;padding:.32rem .5rem;font-size:.74rem;cursor:pointer;line-height:1}
+.bar button:hover{border-color:var(--nere);color:var(--nere)}
+.bar .sp{flex:1}
+.progress{display:flex;align-items:center;gap:.5rem;width:100%;margin-top:.4rem;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;color:var(--sauge)}
+.progress .track{flex:1;height:5px;border-radius:999px;background:var(--filet);overflow:hidden}
+.progress .fill{display:block;height:100%;background:var(--nere);border-radius:999px;
+  transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.bar-inner{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem .5rem}
+
+.toc-overlay{position:fixed;inset:0;z-index:60;background:rgba(20,26,23,.5);
+  display:flex;align-items:flex-start;justify-content:center;padding:4rem 1rem;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.toc-overlay.open{opacity:1;pointer-events:auto}
+.toc-panel{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1.6rem 1.7rem;max-width:26rem;width:100%;position:relative;
+  max-height:80vh;overflow:auto}
+.toc-close{position:absolute;top:1rem;right:1rem;background:transparent;border:0;font-size:1.1rem;
+  cursor:pointer;color:var(--sauge)}
+.toc-panel ol{margin:.7rem 0 0;padding-left:1.3rem;font-family:"IBM Plex Sans",sans-serif;font-size:.92rem}
+.toc-panel li{margin:.45rem 0}
+.toc-panel a{text-decoration:none;color:var(--encre)}
+.toc-panel a:hover{color:var(--nere)}
+.toc-panel a.done::after{content:" \2713";color:var(--nere);font-weight:700}
+
+.resume-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;
+  padding:.7rem 1rem;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.resume-bar.show{display:flex}
+.resume-bar button{background:#fff;color:var(--nere);border:0;border-radius:999px;
+  padding:.35rem .9rem;font-weight:600;cursor:pointer;font-family:inherit}
+.resume-bar .x{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+
+.card{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.card.note{background:var(--mil-clair);border-color:transparent}
+.card.serieC{background:var(--ciel-clair);border-color:transparent}
+.card .label{margin-bottom:.4rem}
+.formule{font-family:"IBM Plex Mono",monospace;font-size:.96rem;line-height:1.9;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.8rem 1rem;margin:1rem 0;overflow-x:auto;white-space:nowrap}
+.formule .num{color:var(--terre)}
+.formule .res{color:var(--nere);font-weight:600}
+
+.done-row{display:flex;align-items:center;gap:.55rem;margin:1.4rem 0 0;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;color:var(--sauge)}
+.done-row input{width:1.05rem;height:1.05rem;accent-color:var(--nere)}
+
+.sim{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1rem;margin:1.8rem 0;font-family:"IBM Plex Sans",sans-serif}
+.sim h3{font-family:"Fraunces",serif;margin:.2rem 0 .8rem}
+.sim canvas{width:100%;height:auto;display:block;background:var(--papier);
+  border:1px solid var(--filet);border-radius:10px;touch-action:none}
+.sim .controls{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1rem;margin:.9rem 0 .4rem}
+@media (max-width:520px){ .sim .controls{grid-template-columns:1fr} }
+.ctrl{font-size:.78rem;color:var(--encre-doux)}
+.ctrl label{display:flex;justify-content:space-between;margin-bottom:.15rem}
+.ctrl b{color:var(--nere);font-family:"IBM Plex Mono",monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--nere)}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.9rem 0 0}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)} }
+.rd{background:var(--papier);border:1px solid var(--filet);border-radius:9px;padding:.5rem .6rem}
+.rd .k{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sauge)}
+.rd .v{font-family:"IBM Plex Mono",monospace;font-size:.98rem;color:var(--encre);font-weight:500}
+.rd.em{background:var(--nere-clair);border-color:transparent}
+.rd.em .v{color:var(--nere)}
+.rd.warn{background:var(--terre-clair);border-color:transparent}
+.rd.warn .v{color:var(--terre)}
+.simform{font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.85;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.7rem .8rem;margin:.9rem 0 0;overflow-x:auto}
+.simform .sym{color:var(--encre-doux)}
+.simform .num{color:var(--terre)}
+.simform .res{color:var(--nere);font-weight:600}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--encre-doux);margin:.7rem 0 0}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.3rem}
+.foot{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--filet);
+  font-family:"IBM Plex Sans",sans-serif;font-size:.8rem;color:var(--sauge)}
+
+.exo{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.exo .exoNum{font-family:"IBM Plex Sans",sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--mil);margin:0 0 .5rem}
+.revealBtn{font-family:"IBM Plex Sans",sans-serif;background:var(--nere);color:#fff;border:0;
+  border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:600;cursor:pointer;margin:.9rem 0 0}
+.revealBtn:hover{opacity:.9}
+.correction{margin-top:1.1rem;padding-top:1.1rem;border-top:1px dashed var(--filet)}
+.correction .q{font-weight:600;margin:1rem 0 .4rem}
+.correction .q:first-child{margin-top:0}
+
+.quizScore{position:sticky;top:calc(var(--bar) + .6rem);z-index:5;display:inline-block;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-weight:600;
+  font-size:.85rem;border-radius:999px;padding:.4rem 1rem;margin:0 0 1.2rem}
+.qz{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.1rem 1.2rem;margin:1.1rem 0}
+.qz .qzQ{font-weight:600;margin:0 0 .8rem;font-family:"Fraunces",serif;font-size:1.02rem}
+.qzOpt{display:block;width:100%;text-align:left;font-family:"IBM Plex Sans",sans-serif;font-size:.9rem;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;padding:.55rem .8rem;
+  margin:.4rem 0;cursor:pointer;color:var(--encre)}
+.qzOpt:hover:not(:disabled){border-color:var(--nere)}
+.qzOpt:disabled{cursor:default}
+.qzOpt.correct{background:var(--nere-clair);border-color:var(--nere);color:var(--nere);font-weight:600}
+.qzOpt.wrong{background:var(--terre-clair);border-color:var(--terre);color:var(--terre)}
+.qzExp{display:none;margin:.7rem 0 0;padding-top:.7rem;border-top:1px dashed var(--filet);
+  font-size:.86rem;color:var(--encre-doux)}
+.qzExp.show{display:block}
+.quizRestart{font-family:"IBM Plex Sans",sans-serif;background:transparent;color:var(--encre-doux);
+  border:1px solid var(--filet);border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;
+  cursor:pointer;margin:1.2rem 0 0}
+
+.schema{background:var(--papier);border:1px solid var(--filet);border-radius:12px;
+  padding:.7rem .5rem .4rem;margin:.9rem 0 1.3rem}
+.schema svg{display:block;width:100%;height:auto;font-family:"IBM Plex Sans",sans-serif}
+.schema .cap{text-align:center;font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;
+  color:var(--sauge);margin:.35rem 0 0}
+</style>
+</head>
+<body>
+
+<div class="bar-wrap" id="barWrap">
+  <div class="bar">
+    <button id="themeBtn" aria-label="Thème">&#9789;</button>
+    <button data-fs="-" aria-label="Réduire le texte">A&minus;</button>
+    <button data-fs="+" aria-label="Agrandir le texte">A+</button>
+    <span class="sp"></span>
+    <button id="tocBtn">Sommaire</button>
+  </div>
+  <div class="bar-inner">
+    <div class="progress"><span id="pct">0 %</span>
+      <span class="track"><span class="fill" id="fill"></span></span></div>
+  </div>
+</div>
+
+<div class="toc-overlay" id="tocOverlay">
+  <div class="toc-panel">
+    <button class="toc-close" id="tocClose" aria-label="Fermer">&#10005;</button>
+    <p class="label">Sommaire</p>
+    <ol id="tocList"></ol>
+  </div>
+</div>
+
+<div class="resume-bar" id="resumeBar">
+  <span>Reprendre où tu t'es arrêté ?</span>
+  <span><button id="resumeGo">Continuer</button> <button class="x" id="resumeX">Non</button></span>
+</div>
+
+<main class="wrap">
+
+  <p class="kicker">Comprendre la notion</p>
+  <h1>Le champ magnétique</h1>
+  <p class="lead">Après la gravitation et l'électricité, une troisième force à distance &mdash; mais avec un
+  piège inédit&nbsp;: cette fois, la force ne pointe <strong>jamais</strong> dans la direction du champ. Elle
+  lui est toujours <strong>perpendiculaire</strong>. C'est ce qui transforme une charge en mouvement en un
+  point qui tourne en rond, sans jamais accélérer ni ralentir.</p>
+  <p class="label">Programme Terminale C &amp; D — Afrique de l'Ouest</p>
+
+  <section id="s-champB">
+    <h2>1. Le champ magnétique&nbsp;: une carte invisible autour d'un aimant ou d'un courant</h2>
+    <p>Un aimant, ou un fil parcouru par un courant électrique, modifie l'espace autour de lui de la même
+    façon qu'une masse ou une charge&nbsp;: il crée un <strong>champ</strong>. Ce champ magnétique, noté
+    <code>B</code>, se mesure en <strong>teslas</strong> (T).</p>
+    <div class="schema">
+      <svg viewBox="0 0 600 220">
+        <rect x="250" y="60" width="30" height="100" rx="6" fill="var(--terre)"/>
+        <text x="265" y="55" text-anchor="middle" fill="var(--terre)" font-size="13" font-weight="700">N</text>
+        <rect x="250" y="160" width="30" height="0" fill="none"/>
+        <rect x="250" y="60" width="30" height="50" fill="var(--terre)"/>
+        <rect x="250" y="110" width="30" height="50" fill="var(--nere)"/>
+        <text x="265" y="178" text-anchor="middle" fill="var(--nere)" font-size="13" font-weight="700">S</text>
+        <g stroke="var(--ciel)" stroke-width="1.8" fill="none">
+          <path d="M280,80 C380,70 420,110 380,150 C350,180 300,175 280,145"/>
+          <path d="M280,70 C420,50 480,110 420,170 C370,210 300,195 280,155"/>
+          <path d="M250,80 C150,70 110,110 150,150 C180,180 230,175 250,145"/>
+          <path d="M250,70 C110,50 50,110 110,170 C160,210 230,195 250,155"/>
+        </g>
+        <text x="300" y="205" text-anchor="middle" fill="var(--sauge)" font-size="12">lignes de champ&nbsp;: sortent du pôle Nord, rentrent par le pôle Sud</text>
+      </svg>
+      <p class="cap">Comme les lignes de champ électrique sortaient d'une charge +, les lignes de champ magnétique sortent du pôle Nord d'un aimant et referment leur boucle par le pôle Sud &mdash; elles ne s'arrêtent jamais en un point isolé.</p>
+    </div>
+    <p style="margin:0">Autour d'un fil rectiligne parcouru par un courant <code>I</code>, le champ s'enroule
+    en cercles concentriques autour du fil&nbsp;: c'est la <strong>règle de la main droite</strong> (pouce
+    dans le sens du courant, les doigts indiquent le sens de <code>B</code>).</p>
+    <div class="done-row"><input type="checkbox" data-done="s-champB"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-solenoide">
+    <h2>2. Le solénoïde&nbsp;: enrouler le fil pour concentrer le champ</h2>
+    <p>Un fil rectiligne crée un champ faible et dispersé tout autour de lui. Mais si on <strong>enroule</strong>
+    ce même fil en une longue bobine de spires serrées &mdash; un <strong>solénoïde</strong> &mdash; les
+    champs créés par chaque spire s'additionnent à l'intérieur&nbsp;: on obtient un champ intense et,
+    surtout, <strong>uniforme</strong> le long de l'axe, exactement comme le champ entre deux plaques d'un
+    condensateur était uniforme entre les plaques (pack champ électrique).</p>
+    <div class="formule">B = &mu;&#8320;&middot;N&middot;I / &#8467; &nbsp;&nbsp; avec &mu;&#8320; = 4&pi;&times;10<sup>&minus;7</sup> S.I. (perméabilité du vide), N le nombre de spires, &#8467; la longueur du solénoïde (m)</div>
+    <div class="schema">
+      <svg viewBox="0 0 600 200">
+        <g stroke="var(--terre)" stroke-width="2.4" fill="none">
+          <ellipse cx="120" cy="100" rx="14" ry="55"/>
+          <ellipse cx="180" cy="100" rx="14" ry="55"/>
+          <ellipse cx="240" cy="100" rx="14" ry="55"/>
+          <ellipse cx="300" cy="100" rx="14" ry="55"/>
+          <ellipse cx="360" cy="100" rx="14" ry="55"/>
+          <ellipse cx="420" cy="100" rx="14" ry="55"/>
+          <ellipse cx="480" cy="100" rx="14" ry="55"/>
+        </g>
+        <line x1="90" y1="100" x2="510" y2="100" stroke="var(--ciel)" stroke-width="2.5"/>
+        <polygon points="510,100 498,94 498,106" fill="var(--ciel)"/>
+        <text x="500" y="85" fill="var(--ciel)" font-size="13" font-weight="600">B uniforme</text>
+        <text x="300" y="180" text-anchor="middle" fill="var(--sauge)" font-size="12">N spires réparties sur la longueur &#8467; &mdash; le champ à l'intérieur ne dépend ni de la position sur l'axe, ni du rayon des spires</text>
+      </svg>
+      <p class="cap">Le solénoïde est au champ magnétique ce que les deux plaques planes étaient au champ électrique : la configuration standard qui produit un champ uniforme et contrôlable, la brique de base de tous les électroaimants.</p>
+    </div>
+    <div class="card note">
+      <p class="label">Une boussole pour mesurer le champ terrestre&nbsp;: la méthode des tangentes</p>
+      <p style="margin:0">Place une aiguille aimantée au centre d'un solénoïde dont l'axe est perpendiculaire
+      au champ magnétique terrestre <code>B<sub>h</sub></code> (sa composante horizontale). Sans courant,
+      l'aiguille indique le nord magnétique. Avec un courant <code>I</code>, le solénoïde crée son propre
+      champ <code>B<sub>s</sub>&nbsp;=&nbsp;&mu;&#8320;NI/&#8467;</code>, perpendiculaire à
+      <code>B<sub>h</sub></code>&nbsp;: l'aiguille s'oriente alors selon le champ résultant, avec un angle
+      &alpha; tel que <code>tan&alpha;&nbsp;=&nbsp;B<sub>s</sub>/B<sub>h</sub></code>. En mesurant &alpha;
+      pour différentes valeurs de <code>I</code>, on remonte à <code>B<sub>h</sub></code> &mdash; c'est ainsi
+      qu'on a mesuré le champ magnétique terrestre bien avant les satellites.</p>
+    </div>
+    <div class="card serieC">
+      <p class="label">Pour la série C&nbsp;: exploiter un relevé expérimental</p>
+      <p style="margin:0 0 .6rem">Un relevé typique de laboratoire (solénoïde de <code>n&nbsp;=&nbsp;100</code>
+      spires par mètre)&nbsp;:</p>
+      <div class="formule" style="white-space:normal">I (A) : 0 &ndash; 0,10 &ndash; 0,20 &ndash; 0,30 &ndash; 0,40 &ndash; 0,50<br>
+      &alpha; (&deg;) : 0 &ndash; 32 &ndash; 51 &ndash; 62 &ndash; 68 &ndash; 72</div>
+      <p style="margin:0">En traçant <code>tan&alpha;</code> en fonction de <code>I</code>, les points
+      s'alignent sur une droite de pente <code>&mu;&#8320;n/B<sub>h</sub></code>&nbsp;: c'est cette pente,
+      lue sur le graphe, qui permet de calculer <code>B<sub>h</sub></code> sans jamais avoir besoin de
+      connaître &alpha; et I séparément pour chaque point &mdash; une seule régression suffit.</p>
+    </div>
+    <div class="card note">
+      <p class="label">Échelle des champs magnétiques&nbsp;: du terrestre à l'IRM</p>
+      <p style="margin:0">Un ordre de grandeur donne le sens du nombre <code>B</code>&nbsp;: champ
+      magnétique terrestre &asymp; <strong>5&times;10<sup>&minus;5</sup></strong>&nbsp;T (0,5&nbsp;gauss) —
+      aimant de réfrigérateur &asymp; <strong>5&times;10<sup>&minus;3</sup></strong>&nbsp;T (100 fois plus) —
+      un solénoïde de laboratoire comme celui de cette page &asymp; <strong>2&times;10<sup>&minus;2</sup></strong>&nbsp;T
+      — un appareil d'IRM médical &asymp; <strong>1,5 à 3</strong>&nbsp;T (des dizaines de milliers de fois
+      le champ terrestre) — les électroaimants du <strong>LHC</strong> (accélérateur de particules du
+      CERN) &asymp; <strong>8</strong>&nbsp;T. C'est exactement le même principe du solénoïde qui est à
+      l'œuvre à chaque échelle&nbsp;: plus on enroule de spires et plus on fait circuler de courant, plus le
+      champ grimpe.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-solenoide"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-lorentz">
+    <h2>3. La force de Lorentz&nbsp;: le grand piège du champ magnétique</h2>
+    <p>Avec la gravitation et l'électricité, la force était toujours <strong>alignée</strong> avec le champ
+    (dans le même sens ou dans le sens opposé). Avec le champ magnétique, c'est terminé&nbsp;: la force
+    qu'il exerce sur une charge <code>q</code> en mouvement à la vitesse <code>v</code> est</p>
+    <div class="formule">F = q&middot;v&times;B &nbsp;&nbsp; (produit vectoriel)&nbsp;: F est perpendiculaire à v ET à B</div>
+    <div class="schema">
+      <svg viewBox="0 0 600 220">
+        <circle cx="150" cy="150" r="10" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2.5"/>
+        <text x="150" y="155" text-anchor="middle" fill="var(--terre)" font-size="13" font-weight="700">+</text>
+        <line x1="164" y1="150" x2="260" y2="150" stroke="var(--ciel)" stroke-width="2.5"/>
+        <polygon points="260,150 250,145 250,155" fill="var(--ciel)"/>
+        <text x="230" y="135" fill="var(--ciel)" font-size="13" font-weight="600">v</text>
+        <g stroke="var(--sauge)" stroke-width="1.6">
+          <line x1="330" y1="60" x2="330" y2="240"/><line x1="380" y1="60" x2="380" y2="240"/>
+          <line x1="430" y1="60" x2="430" y2="240"/><line x1="480" y1="60" x2="480" y2="240"/>
+        </g>
+        <text x="405" y="45" text-anchor="middle" fill="var(--sauge)" font-size="13" font-weight="600">B (entrant dans la page ⊗)</text>
+        <line x1="150" y1="140" x2="150" y2="60" stroke="var(--terre)" stroke-width="2.5"/>
+        <polygon points="150,60 145,70 155,70" fill="var(--terre)"/>
+        <text x="120" y="90" fill="var(--terre)" font-size="13" font-weight="600">F</text>
+        <text x="300" y="205" text-anchor="middle" fill="var(--encre-doux)" font-size="12">F ⟂ v et F ⟂ B &mdash; jamais dans le sens de v ni de B</text>
+      </svg>
+      <p class="cap">La règle de la main droite (ou des trois doigts) donne le sens de F : index = v, majeur = B, pouce = F (pour une charge positive ; on inverse le sens pour une charge négative).</p>
+    </div>
+    <div class="card note">
+      <p class="label">Conséquence directe&nbsp;: aucun travail</p>
+      <p style="margin:0">Une force toujours perpendiculaire à la vitesse ne travaille <strong>jamais</strong>
+      (<code>W = F&middot;d&middot;cos90&deg; = 0</code>). Le champ magnétique peut dévier une charge, jamais
+      l'accélérer ou la ralentir&nbsp;: sa vitesse (donc son énergie cinétique) reste constante en valeur,
+      seule sa direction change.</p>
+    </div>
+    <div class="formule">F = |q|&middot;v&middot;B&middot;sin&theta; &nbsp;&nbsp; avec &theta; l'angle entre v et B — F max quand v &perp; B, F = 0 quand v est parallèle à B</div>
+    <div class="done-row"><input type="checkbox" data-done="s-lorentz"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-circulaire">
+    <h2>4. Mouvement circulaire&nbsp;: une charge qui tourne en rond dans un champ uniforme</h2>
+    <p>Place une charge <code>q</code> avec une vitesse <code>v</code> perpendiculaire à un champ <code>B</code>
+    uniforme. La force est toujours perpendiculaire à la vitesse&nbsp;: elle ne fait jamais que courber la
+    trajectoire, sans jamais la ralentir. Résultat&nbsp;: un <strong>cercle parfait</strong>, parcouru à
+    vitesse constante.</p>
+    <div class="card serieC">
+      <p class="label">Pour la série C&nbsp;: démonstration du rayon</p>
+      <p style="margin:0 0 .6rem">La force magnétique joue le rôle de force centripète&nbsp;:</p>
+      <div class="formule" style="margin:.4rem 0">|q|&middot;v&middot;B = m&middot;v&sup2;/r &nbsp;&nbsp;&rArr;&nbsp;&nbsp; <span class="res">r = m&middot;v / (|q|&middot;B)</span></div>
+      <p style="margin:0">Plus la particule est rapide ou lourde, plus le cercle est grand&nbsp;; plus le
+      champ ou la charge sont grands, plus le cercle est petit. La période de rotation
+      <code>T&nbsp;=&nbsp;2&pi;m/(|q|&middot;B)</code> ne dépend même pas de la vitesse&nbsp;: c'est ce
+      principe qui rend le cyclotron possible (section 6).</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-circulaire"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-sim">
+    <h2>5. Simulation&nbsp;: la trajectoire circulaire d'une charge dans un champ B uniforme</h2>
+    <p>Règle la vitesse d'entrée, l'intensité du champ, et choisis la particule. Le champ B est
+    perpendiculaire à l'écran (représenté par des points ⊙ ou des croix ⊗). Observe comment le rayon change,
+    et comment un électron et un proton tournent en sens opposés.</p>
+
+    <div class="sim" id="simCirc">
+      <h3>Particule chargée dans un champ magnétique uniforme</h3>
+      <canvas id="cvCirc" width="900" height="420"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--ciel)"></i>trajectoire</span>
+        <span><i style="background:var(--terre)"></i>vitesse initiale</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl"><label>Champ B <b><span id="bbv">0.50</span> T</b></label>
+          <input type="range" id="bb" min="0.05" max="2" step="0.05" value="0.50"></div>
+        <div class="ctrl"><label>Vitesse v <b><span id="bvv">3.0</span> &times;10<sup>6</sup> m/s</b></label>
+          <input type="range" id="bv" min="0.5" max="8" step="0.1" value="3.0"></div>
+        <div class="ctrl"><label>Particule</label>
+          <select id="bpart" style="width:100%;font-family:inherit;padding:.25rem;border-radius:8px;border:1px solid var(--filet);background:var(--papier);color:var(--encre)">
+            <option value="e" selected>Électron (&minus;e)</option>
+            <option value="p">Proton (+e)</option>
+          </select></div>
+        <div class="ctrl"><label>Sens de B</label>
+          <select id="bsens" style="width:100%;font-family:inherit;padding:.25rem;border-radius:8px;border:1px solid var(--filet);background:var(--papier);color:var(--encre)">
+            <option value="in" selected>Entrant dans l'écran (⊗)</option>
+            <option value="out">Sortant de l'écran (⊙)</option>
+          </select></div>
+      </div>
+      <div class="readout">
+        <div class="rd em"><div class="k">Rayon r = mv/(qB)</div><div class="v"><span id="brad">0</span></div></div>
+        <div class="rd"><div class="k">Période T = 2πm/(qB)</div><div class="v"><span id="bT">0</span> ns</div></div>
+        <div class="rd" id="bsensBox"><div class="k">Sens de rotation</div><div class="v" id="bsensR">—</div></div>
+      </div>
+      <div class="simform" id="bform"></div>
+    </div>
+    <p>Ce que la simulation montre&nbsp;: à champ égal, un électron et un proton tournent en sens
+    <strong>opposés</strong> (leurs charges sont de signe contraire) mais un proton, beaucoup plus lourd,
+    décrit un cercle bien plus grand à vitesse égale. C'est exactement ce principe qui sert à identifier des
+    particules dans un spectromètre de masse (section 7).</p>
+    <div class="done-row"><input type="checkbox" data-done="s-sim"><span>J'ai fait tourner la simulation</span></div>
+  </section>
+
+  <section id="s-laplace">
+    <h2>6. La force de Laplace&nbsp;: quand c'est tout un fil qui est plongé dans B</h2>
+    <p>Un fil de longueur <code>L</code>, parcouru par un courant <code>I</code>, plongé dans un champ
+    <code>B</code>, subit une force&nbsp;:</p>
+    <div class="formule">F = I&middot;L&times;B &nbsp;&nbsp;&rArr;&nbsp;&nbsp; F = I&middot;L&middot;B&middot;sin&theta; &nbsp;(N)</div>
+    <p style="margin:0">C'est la même règle de perpendicularité que pour la force de Lorentz&nbsp;: normal,
+    puisqu'un courant est constitué de charges en mouvement &mdash; la force de Laplace est la somme des
+    forces de Lorentz sur toutes les charges mobiles du fil. C'est cette force qui fait tourner un moteur
+    électrique et qui dévie l'aiguille d'un ampèremètre à cadre mobile.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-laplace"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-selecteur">
+    <h2>7. Le sélecteur de vitesse&nbsp;: quand E et B se neutralisent</h2>
+    <p>Place une charge dans une région où règnent <strong>à la fois</strong> un champ électrique
+    <code>E</code> et un champ magnétique <code>B</code>, perpendiculaires entre eux et à la vitesse. Les
+    deux forces s'opposent&nbsp;:</p>
+    <div class="formule">q&middot;E = q&middot;v&middot;B &nbsp;&nbsp;&rArr;&nbsp;&nbsp; <span class="res">v = E/B</span></div>
+    <p style="margin:0">Seules les particules ayant exactement cette vitesse traversent en ligne droite
+    (les autres sont déviées d'un côté ou de l'autre). C'est un <strong>filtre à vitesse</strong>&nbsp;: la
+    première étape de tout spectromètre de masse, avant que le champ B seul ne trie ensuite les particules
+    par leur rapport masse/charge (section suivante).</p>
+    <div class="done-row"><input type="checkbox" data-done="s-selecteur"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-applications">
+    <h2>8. Applications&nbsp;: cyclotron et spectromètre de masse</h2>
+    <div class="card">
+      <p class="label">Le cyclotron</p>
+      <p style="margin:0">Un accélérateur de particules qui exploite le fait que la période
+      <code>T&nbsp;=&nbsp;2&pi;m/(|q|B)</code> ne dépend pas de la vitesse&nbsp;: une tension alternative,
+      toujours synchronisée à la même fréquence, accélère la particule à chaque demi-tour, pendant que le
+      champ B la fait tourner en spirale de rayon croissant. Utilisé pour produire des faisceaux de haute
+      énergie (recherche, traitements médicaux par protonthérapie).</p>
+    </div>
+    <div class="card serieC">
+      <p class="label">Pour la série C&nbsp;: le spectromètre de masse</p>
+      <p style="margin:0">Après le sélecteur de vitesse (section 6), les ions pénètrent dans une seule zone
+      de champ B&nbsp;: leur rayon de courbure <code>r&nbsp;=&nbsp;mv/(|q|B)</code> dépend alors uniquement
+      de leur rapport <code>m/q</code>. En mesurant où l'ion retombe sur un détecteur, on remonte
+      exactement à sa masse&nbsp;: c'est ainsi qu'on identifie des isotopes ou des molécules inconnues.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-applications"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-exos">
+    <h2>9. Exercices corrigés type bac</h2>
+    <p>Quatre exercices dans l'esprit des sujets de bac (séries C et D), avec correction complète.
+    Cherche d'abord seul, puis vérifie&nbsp;: <code>e&nbsp;=&nbsp;1,6&times;10<sup>&minus;19</sup></code>&nbsp;C,
+    <code>m<sub>e</sub>&nbsp;=&nbsp;9,11&times;10<sup>&minus;31</sup></code>&nbsp;kg,
+    <code>m<sub>p</sub>&nbsp;=&nbsp;1,67&times;10<sup>&minus;27</sup></code>&nbsp;kg,
+    <code>&mu;&#8320;&nbsp;=&nbsp;4&pi;&times;10<sup>&minus;7</sup></code> S.I.</p>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 1 — séries C &amp; D</p>
+      <p><strong>Énoncé.</strong> Un proton pénètre à <code>v&nbsp;=&nbsp;2&times;10<sup>6</sup></code>&nbsp;m/s,
+      perpendiculairement à un champ magnétique uniforme <code>B&nbsp;=&nbsp;0,4</code>&nbsp;T. Calculer le
+      rayon de sa trajectoire circulaire.</p>
+      <button class="revealBtn" data-target="e1">Voir la correction</button>
+      <div class="correction" id="e1" hidden>
+        <p class="q">Mise en équation</p>
+        <p>La force magnétique joue le rôle de force centripète&nbsp;: <code>r = m<sub>p</sub>v/(eB)</code>.</p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">r = (1,67&times;10<sup>&minus;27</sup>)(2&times;10<sup>6</sup>) / [(1,6&times;10<sup>&minus;19</sup>)(0,4)]
+          = <span class="res">5,22&times;10<sup>&minus;2</sup> m &asymp; 5,2 cm</span></div>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 2 — série C</p>
+      <p><strong>Énoncé.</strong> Un fil rectiligne de longueur <code>L&nbsp;=&nbsp;20</code>&nbsp;cm,
+      parcouru par un courant <code>I&nbsp;=&nbsp;3</code>&nbsp;A, est placé perpendiculairement à un champ
+      <code>B&nbsp;=&nbsp;0,25</code>&nbsp;T. Calculer l'intensité de la force de Laplace qu'il subit.</p>
+      <button class="revealBtn" data-target="e2">Voir la correction</button>
+      <div class="correction" id="e2" hidden>
+        <p class="q">Mise en équation</p>
+        <p>Le fil est perpendiculaire à B (&theta; = 90&deg;, sin&theta; = 1)&nbsp;:
+        <code>F = I&middot;L&middot;B</code>.</p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">F = (3)(0,20)(0,25) = <span class="res">0,15 N</span></div>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 3 — série D (plus simple)</p>
+      <p><strong>Énoncé.</strong> Dans un sélecteur de vitesse, un champ électrique <code>E&nbsp;=&nbsp;4&times;10<sup>4</sup></code>&nbsp;V/m
+      et un champ magnétique <code>B&nbsp;=&nbsp;0,2</code>&nbsp;T sont perpendiculaires entre eux et à la
+      vitesse des ions. Quelle est la vitesse des ions qui traversent le sélecteur sans être déviés ?</p>
+      <button class="revealBtn" data-target="e3">Voir la correction</button>
+      <div class="correction" id="e3" hidden>
+        <p class="q">Mise en équation</p>
+        <p>Équilibre des forces électrique et magnétique&nbsp;: <code>qE = qvB</code>, donc
+        <code>v = E/B</code>.</p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">v = (4&times;10<sup>4</sup>) / (0,2) = <span class="res">2&times;10<sup>5</sup> m&middot;s<sup>&minus;1</sup></span></div>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 4 — séries C &amp; D</p>
+      <p><strong>Énoncé.</strong> Un solénoïde de longueur <code>&#8467;&nbsp;=&nbsp;50</code>&nbsp;cm,
+      comportant <code>N&nbsp;=&nbsp;2800</code> spires, est parcouru par un courant d'intensité
+      <code>I&nbsp;=&nbsp;3</code>&nbsp;A. Calculer l'intensité du champ magnétique créé au centre du
+      solénoïde.</p>
+      <button class="revealBtn" data-target="e4">Voir la correction</button>
+      <div class="correction" id="e4" hidden>
+        <p class="q">Mise en équation</p>
+        <p><code>B = &mu;&#8320;&middot;N&middot;I/&#8467;</code></p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">B = (4&pi;&times;10<sup>&minus;7</sup>)(2800)(3) / (0,50)
+          = <span class="res">2,11&times;10<sup>&minus;2</sup> T &asymp; 21,1 mT</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-quiz">
+    <h2>10. Quiz d'auto-évaluation</h2>
+    <p>Quatorze questions couvrant tout le document. Réponds sans revenir en arrière&nbsp;: le but n'est pas
+    d'avoir 14/14 du premier coup, mais de voir précisément ce qu'il faut relire.</p>
+    <div class="quizScore" id="qzScore">Score&nbsp;: 0 / 14</div>
+    <div id="qzList"></div>
+    <button class="quizRestart" id="qzRestart">Recommencer le quiz</button>
+  </section>
+
+  <section id="s-suite">
+    <h2>11. Ce pack, et la suite</h2>
+    <p>Ce document couvre l'essentiel du programme «&nbsp;champ magnétique, force de Lorentz, force de
+    Laplace, mouvement circulaire&nbsp;» des séries C et D. Il fait le pendant des packs sur le champ
+    gravitationnel et le champ électrique — même méthode, même exigence, une nouvelle force, perpendiculaire
+    cette fois.</p>
+    <div class="card">
+      <p class="label">La suite de la collection «&nbsp;Comprendre la notion&nbsp;»</p>
+      <p style="margin:0">Ensuite viendront les ondes (longueur d'onde, diffraction) — Deeper Science a déjà
+      une vidéo sur les photons qui pose une bonne partie des bases pour ce chapitre-là — puis l'optique
+      (lentilles, formation des images).</p>
+    </div>
+    <div class="card note">
+      <p class="label">Cette version</p>
+      <p style="margin:0">v1 — champ magnétique, force de Lorentz, mouvement circulaire, force de Laplace,
+      sélecteur de vitesse, cyclotron, spectromètre de masse. Les valeurs et notations seront calées sur le
+      manuel béninois avant la version finale.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    Deeper Science &mdash; Comprendre la notion. Fichier autonome&nbsp;: ta progression et tes réglages
+    restent sur cet appareil. Ce document est un support de compréhension, pas un substitut au cours ni
+    au professeur.
+  </div>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var LS=null; try{ LS=window.localStorage; }catch(e){}
+  var KEY="pcm_";
+  function get(k,d){ try{ var v=LS.getItem(KEY+k); return v===null?d:v; }catch(e){ return d; } }
+  function set(k,v){ try{ LS.setItem(KEY+k,v); }catch(e){} }
+
+  var root=document.documentElement;
+
+  var tb=document.getElementById('themeBtn');
+  var savedTheme=get('theme',null);
+  if(savedTheme) root.setAttribute('data-theme',savedTheme);
+  function tlbl(){ tb.innerHTML = root.getAttribute('data-theme')==='dark' ? '&#9788;' : '&#9789;'; }
+  tlbl();
+  tb.addEventListener('click',function(){
+    var d=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',d); set('theme',d); tlbl();
+    if(typeof drawCirc==='function') drawCirc();
+  });
+
+  var fs=parseFloat(get('fs','1'))||1;
+  function applyFs(){ fs=Math.max(0.85,Math.min(1.35,fs)); root.style.setProperty('--fs',fs); set('fs',fs); }
+  applyFs();
+  document.querySelectorAll('.bar button[data-fs]').forEach(function(b){
+    b.addEventListener('click',function(){ fs+=(b.getAttribute('data-fs')==='+'?0.08:-0.08); applyFs(); });
+  });
+
+  var barWrap=document.getElementById('barWrap');
+  function sizeBar(){ root.style.setProperty('--bar',(barWrap.offsetHeight+8)+'px'); }
+  sizeBar(); window.addEventListener('resize',sizeBar); window.addEventListener('load',sizeBar);
+  var lastY=0;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    barWrap.classList.toggle('hide', y>lastY && y>120);
+    lastY=y;
+    progress();
+    var cur=currentSection();
+    if(cur) set('pos',cur);
+  },{passive:true});
+
+  var sections=[].slice.call(document.querySelectorAll('main section'));
+  var tocList=document.getElementById('tocList');
+  sections.forEach(function(s){
+    var h=s.querySelector('h2'); if(!h) return;
+    var li=document.createElement('li');
+    var a=document.createElement('a');
+    a.href='#'+s.id; a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+    a.dataset.for=s.id;
+    li.appendChild(a); tocList.appendChild(li);
+  });
+  var ov=document.getElementById('tocOverlay');
+  function tocOpen(o){ ov.classList.toggle('open',o); }
+  document.getElementById('tocBtn').addEventListener('click',function(){ syncToc(); tocOpen(true); });
+  document.getElementById('tocClose').addEventListener('click',function(){ tocOpen(false); });
+  ov.addEventListener('click',function(e){ if(e.target===ov) tocOpen(false); });
+  ov.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ tocOpen(false); }); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') tocOpen(false); });
+
+  document.querySelectorAll('.revealBtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=document.getElementById(b.getAttribute('data-target'));
+      var open=t.hasAttribute('hidden');
+      if(open){ t.removeAttribute('hidden'); b.textContent='Masquer la correction'; }
+      else{ t.setAttribute('hidden',''); b.textContent='Voir la correction'; }
+    });
+  });
+
+  var doneSet;
+  try{ doneSet=JSON.parse(get('done','[]')); }catch(e){ doneSet=[]; }
+  if(!Array.isArray(doneSet)) doneSet=[];
+  document.querySelectorAll('input[data-done]').forEach(function(c){
+    var id=c.getAttribute('data-done');
+    c.checked=doneSet.indexOf(id)>=0;
+    c.addEventListener('change',function(){
+      var i=doneSet.indexOf(id);
+      if(c.checked && i<0) doneSet.push(id);
+      if(!c.checked && i>=0) doneSet.splice(i,1);
+      set('done',JSON.stringify(doneSet));
+      syncToc(); progress();
+    });
+  });
+  function syncToc(){
+    tocList.querySelectorAll('a').forEach(function(a){
+      a.classList.toggle('done', doneSet.indexOf(a.dataset.for)>=0);
+    });
+  }
+  syncToc();
+
+  var fill=document.getElementById('fill'), pct=document.getElementById('pct');
+  function progress(){
+    var total=document.querySelectorAll('input[data-done]').length;
+    var r=total? doneSet.length/total : 0;
+    var docH=document.body.scrollHeight-window.innerHeight;
+    var scr=docH>0? Math.min(1,window.scrollY/docH) : 0;
+    var p=Math.max(r,scr*0.6+r*0.4);
+    fill.style.transform='scaleX('+p+')';
+    pct.textContent=Math.round(p*100)+' %';
+  }
+  progress();
+
+  function currentSection(){
+    var best=null,bd=1e9;
+    sections.forEach(function(s){
+      var d=Math.abs(s.getBoundingClientRect().top-80);
+      if(d<bd){ bd=d; best=s.id; }
+    });
+    return best;
+  }
+
+  var rb=document.getElementById('resumeBar');
+  var pos=get('pos',null);
+  if(pos && document.getElementById(pos) && window.scrollY<40){
+    rb.classList.add('show');
+    document.getElementById('resumeGo').addEventListener('click',function(){
+      document.getElementById(pos).scrollIntoView(); rb.classList.remove('show');
+    });
+    document.getElementById('resumeX').addEventListener('click',function(){ rb.classList.remove('show'); });
+    setTimeout(function(){ rb.classList.remove('show'); },9000);
+  }
+
+  /* ================= SIMULATION : mouvement circulaire dans B ================= */
+  var cv=document.getElementById('cvCirc'), ctx=cv.getContext('2d');
+  cv.width=900; cv.height=420;
+  var e_=1.6e-19, me_=9.11e-31, mp_=1.67e-27;
+  var els={
+    B:document.getElementById('bb'), v:document.getElementById('bv'),
+    part:document.getElementById('bpart'), sens:document.getElementById('bsens')
+  };
+  function css(v){ return getComputedStyle(root).getPropertyValue(v).trim(); }
+
+  function circCalc(){
+    var B=+els.B.value, v=+els.v.value*1e6;
+    var part=els.part.value, sensIn=els.sens.value==='in';
+    var q = part==='e' ? -e_ : e_;
+    var m = part==='e' ? me_ : mp_;
+    var r=m*v/(Math.abs(q)*B);
+    var T=2*Math.PI*m/(Math.abs(q)*B);
+    /* sens de rotation : F=qv×B, B selon -z si "in" (entrant), +z si "out" */
+    var Bz = sensIn ? -1 : 1;
+    /* v initiale selon +x ; F = q(v×B) ; v×B avec v=(v,0,0), B=(0,0,Bz) -> v×B = (0*Bz-0*0, 0*0-v*Bz, 0)=(0,-v*Bz,0) */
+    var Fy0 = q*(-v*Bz);
+    var rotSens = Fy0>0 ? 'antihoraire' : 'horaire'; /* force initiale vers +y (bas en écran si y croissant vers le bas) -> incurve vers le bas d'abord */
+    return {B:B,v:v,q:q,m:m,r:r,T:T,rotSens:rotSens,Bz:Bz,part:part};
+  }
+
+  window.drawCirc = function drawCirc(){
+    var R=circCalc();
+    document.getElementById('bbv').textContent=R.B.toFixed(2);
+    document.getElementById('bvv').textContent=(+els.v.value).toFixed(1);
+    var radTxt = R.r>=0.01 ? (R.r*100).toFixed(2)+' cm' : (R.r*1000).toFixed(3)+' mm';
+    document.getElementById('brad').textContent=radTxt;
+    document.getElementById('bT').textContent=(R.T*1e9).toFixed(2);
+    document.getElementById('bsensR').textContent=R.rotSens==='horaire'?'Horaire':'Antihoraire';
+
+    var W=cv.width,H=cv.height;
+    var cx=W/2, cy=H/2;
+    var maxPxR=Math.min(W,H)/2-40;
+    var rPx=Math.min(maxPxR, Math.max(30, R.r*100*6));
+    var scale=rPx/R.r;
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=css('--papier'); ctx.fillRect(0,0,W,H);
+
+    /* symboles B en fond */
+    ctx.strokeStyle=css('--sauge'); ctx.fillStyle=css('--sauge'); ctx.globalAlpha=.55;
+    for(var gx=50; gx<W; gx+=90){
+      for(var gy=40; gy<H; gy+=90){
+        if(R.Bz<0){
+          ctx.beginPath(); ctx.arc(gx,gy,7,0,7); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(gx-4,gy-4); ctx.lineTo(gx+4,gy+4);
+          ctx.moveTo(gx-4,gy+4); ctx.lineTo(gx+4,gy-4); ctx.stroke();
+        } else {
+          ctx.beginPath(); ctx.arc(gx,gy,7,0,7); ctx.stroke();
+          ctx.beginPath(); ctx.arc(gx,gy,2,0,7); ctx.fill();
+        }
+      }
+    }
+    ctx.globalAlpha=1;
+
+    /* centre du cercle : perpendiculaire a v initiale (v selon +x), decale vers le sens de courbure */
+    var sign = R.rotSens==='horaire' ? 1 : -1;
+    var ccx=cx, ccy=cy+sign*rPx;
+    ctx.strokeStyle=css('--ciel'); ctx.lineWidth=3;
+    ctx.beginPath(); ctx.arc(ccx,ccy,rPx,0,2*Math.PI); ctx.stroke();
+
+    /* particule + vecteur v au point de depart (haut du cercle si sign=-1 -> bas) */
+    var px=cx, py=cy;
+    ctx.fillStyle = R.part==='e' ? css('--ciel') : css('--terre');
+    ctx.beginPath(); ctx.arc(px,py,7,0,7); ctx.fill();
+    ctx.strokeStyle=css('--terre'); ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+60,py); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px+60,py); ctx.lineTo(px+50,py-6); ctx.lineTo(px+50,py+6); ctx.closePath();
+    ctx.fillStyle=css('--terre'); ctx.fill();
+    ctx.fillStyle=css('--terre'); ctx.font='13px "IBM Plex Sans",sans-serif'; ctx.textAlign='left';
+    ctx.fillText('v', px+66, py+4);
+
+    var F='<div><span class="sym">r = m·v/(|q|·B)</span> = <span class="res">'+radTxt+'</span></div>'+
+      '<div><span class="sym">T = 2π·m/(|q|·B)</span> = <span class="res">'+(R.T*1e9).toFixed(2)+' ns</span></div>'+
+      '<div style="margin-top:.4rem;color:var(--encre-doux)">Rotation '+R.rotSens+' &mdash; '+(R.part==='e'?'électron':'proton')+', B '+(R.Bz<0?'entrant (⊗)':'sortant (⊙)')+'</div>';
+    document.getElementById('bform').innerHTML=F;
+  };
+  [els.B,els.v,els.part,els.sens].forEach(function(el){ el.addEventListener('input',drawCirc); el.addEventListener('change',drawCirc); });
+  drawCirc();
+  window.addEventListener('resize',drawCirc);
+
+  /* ================= QUIZ D'AUTO-ÉVALUATION ================= */
+  var list=document.getElementById('qzList');
+  var Q=[
+    {q:"Le champ créé au centre d'un solénoïde de N spires, longueur ℓ, parcouru par un courant I, est donné par...",
+     o:["B = μ₀·N·I/ℓ","B = μ₀·N/(I·ℓ)","B = N·I·ℓ/μ₀"],
+     c:0, e:"B = μ₀NI/ℓ : le champ augmente avec le nombre de spires et le courant, et diminue si on étire le solénoïde (ℓ plus grand)."},
+    {q:"Dans la méthode de la boussole des tangentes (mesure du champ magnétique terrestre), la relation clé est...",
+     o:["tanα = Bₛ/Bₕ, avec Bₛ le champ créé par le solénoïde et Bₕ la composante horizontale du champ terrestre","α = Bₛ + Bₕ","L'angle α ne dépend pas du courant I"],
+     c:0, e:"L'aiguille aimantée s'oriente selon le champ résultant de Bₕ (fixe) et Bₛ = μ₀NI/ℓ (créé par le courant) : leur rapport donne tanα, d'où l'on retrouve Bₕ en mesurant α pour plusieurs valeurs de I."},
+    {q:"La force magnétique F = qv×B exercée sur une charge en mouvement est...",
+     o:["Toujours dans le sens du champ B","Toujours perpendiculaire à v ET à B","Toujours opposée à v"],
+     c:1, e:"C'est la grande différence avec la gravitation et l'électricité : F est perpendiculaire à la fois à la vitesse et au champ."},
+    {q:"Pourquoi le champ magnétique ne peut-il jamais accélérer ni ralentir une particule chargée ?",
+     o:["Parce que B est toujours trop faible","Parce que F est toujours perpendiculaire à v, donc son travail W = F·d·cos90° est nul","Parce que les particules chargées sont insensibles à B"],
+     c:1, e:"Une force perpendiculaire à la vitesse ne travaille jamais : elle change la direction, jamais la norme de v."},
+    {q:"Une charge entrant perpendiculairement dans un champ B uniforme décrit...",
+     o:["Une trajectoire rectiligne","Une trajectoire parabolique, comme dans le champ électrique uniforme","Un cercle parfait, parcouru à vitesse constante"],
+     c:2, e:"Contrairement au champ électrique uniforme (parabole), le champ magnétique uniforme donne un cercle : la force ne fait que courber, jamais accélérer."},
+    {q:"Le rayon du cercle r = mv/(|q|B) augmente si...",
+     o:["La vitesse ou la masse de la particule augmentent","Le champ B augmente","La charge q augmente"],
+     c:0, e:"r est proportionnel à m·v et inversement proportionnel à |q|·B : une particule plus rapide ou plus lourde décrit un cercle plus grand."},
+    {q:"Un électron et un proton, lancés à la même vitesse dans le même champ B, tournent...",
+     o:["Dans le même sens, avec le même rayon","Dans des sens opposés (charges de signe contraire), avec des rayons différents (masses différentes)","Ne bougent pas du tout"],
+     c:1, e:"Le signe de q inverse le sens de rotation ; la masse, très différente entre électron et proton, change le rayon."},
+    {q:"La période T = 2πm/(|q|B) d'une charge dans un champ B uniforme...",
+     o:["Dépend de la vitesse de la particule","Ne dépend PAS de la vitesse : seulement de m, q et B","Est toujours la même pour toutes les particules"],
+     c:1, e:"C'est cette indépendance à la vitesse qui permet au cyclotron de fonctionner avec une fréquence d'accélération constante."},
+    {q:"La force de Laplace F = I·L×B s'exerce sur...",
+     o:["Une charge isolée immobile","Un fil parcouru par un courant, plongé dans un champ B","Un aimant au repos"],
+     c:1, e:"La force de Laplace est la somme des forces de Lorentz sur toutes les charges mobiles à l'intérieur du fil conducteur."},
+    {q:"Dans un sélecteur de vitesse, un ion traverse en ligne droite sans être dévié quand...",
+     o:["v = E/B (les forces électrique et magnétique se compensent exactement)","B = 0","E et B sont parallèles"],
+     c:0, e:"qE = qvB donne v = E/B : seule cette vitesse précise permet à la force électrique et à la force magnétique de s'annuler."},
+    {q:"Dans un spectromètre de masse, après le sélecteur de vitesse, le rayon de courbure d'un ion dans le champ B dépend de...",
+     o:["Sa couleur","Son rapport masse/charge (m/q)","Sa température"],
+     c:1, e:"r = mv/(|q|B) : à v et B fixés (vitesse déjà sélectionnée), seul m/q détermine où l'ion retombe sur le détecteur."},
+    {q:"Autour d'un fil rectiligne parcouru par un courant, les lignes de champ magnétique...",
+     o:["Sont des droites parallèles au fil","S'enroulent en cercles concentriques autour du fil (règle de la main droite)","N'existent pas si le courant est continu"],
+     c:1, e:"Le pouce dans le sens du courant, les doigts qui s'enroulent donnent le sens de B — c'est la règle de la main droite."},
+    {q:"Les lignes de champ magnétique d'un aimant...",
+     o:["Partent du pôle Nord et se referment en boucle jusqu'au pôle Sud","S'arrêtent net au pôle Sud, comme une charge électrique négative absorbe les lignes de champ E","N'existent qu'à l'intérieur de l'aimant"],
+     c:0, e:"Contrairement au champ électrique (qui peut s'arrêter sur une charge isolée), les lignes de champ magnétique forment toujours des boucles fermées."},
+    {q:"Le cyclotron accélère une particule...",
+     o:["En une seule fois, avec une tension continue très élevée","Par petits coups répétés à chaque demi-tour, synchronisés grâce à une période T indépendante de la vitesse","En utilisant uniquement un champ électrique, sans aucun champ magnétique"],
+     c:1, e:"C'est justement parce que T ne dépend pas de v (question 6) que la même fréquence d'accélération reste valable même quand la particule accélère et que son rayon grandit."}
+  ];
+
+  var score=0;
+  function updateScore(){ document.getElementById('qzScore').textContent='Score : '+score+' / '+Q.length; }
+
+  function render(){
+    list.innerHTML='';
+    Q.forEach(function(item,qi){
+      var box=document.createElement('div'); box.className='qz';
+      var qEl=document.createElement('p'); qEl.className='qzQ';
+      qEl.textContent=(qi+1)+'. '+item.q; box.appendChild(qEl);
+      var expEl=document.createElement('div'); expEl.className='qzExp'; expEl.textContent=item.e;
+      item.o.forEach(function(opt,oi){
+        var btn=document.createElement('button'); btn.className='qzOpt'; btn.type='button';
+        btn.textContent=opt;
+        btn.addEventListener('click',function(){
+          var opts=box.querySelectorAll('.qzOpt');
+          opts.forEach(function(b){ b.disabled=true; });
+          if(oi===item.c){ btn.classList.add('correct'); score++; }
+          else{ btn.classList.add('wrong'); opts[item.c].classList.add('correct'); }
+          expEl.classList.add('show');
+          updateScore();
+        });
+        box.appendChild(btn);
+      });
+      box.appendChild(expEl);
+      list.appendChild(box);
+    });
+  }
+  render(); updateScore();
+  document.getElementById('qzRestart').addEventListener('click',function(){
+    score=0; render(); updateScore();
+  });
+})();
+</script>
+</body>
+</html>

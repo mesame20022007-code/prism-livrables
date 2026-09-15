@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprendre le champ électrique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papier:#F6F4EF; --carte:#FFFFFF;
+  --encre:#1C2621; --encre-doux:#3E4A43;
+  --nere:#0E5138; --nere-clair:#E4EDE7;
+  --terre:#B34A2F; --terre-clair:#F5E4DE;
+  --mil:#B87A15; --mil-clair:#F7EAD2;
+  --ciel:#245A8D; --ciel-clair:#E1EAF2;
+  --sauge:#5F6F66; --filet:#D9D3C6;
+  --ombre:0 1px 2px rgba(28,38,33,.06),0 12px 34px rgba(28,38,33,.08);
+  --mesure:43rem;
+  --fs:1;
+  --bar:5.6rem;
+}
+:root[data-theme="dark"]{
+  --papier:#141A17; --carte:#1D2521;
+  --encre:#ECEAE3; --encre-doux:#C2C7C1;
+  --nere:#5FC79A; --nere-clair:#1B2C24;
+  --terre:#E7967C; --terre-clair:#2E1F1A;
+  --mil:#E0A93E; --mil-clair:#2C2415;
+  --ciel:#7FB2E0; --ciel-clair:#16283A;
+  --sauge:#9AA79F; --filet:#33403A;
+  --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papier:#141A17; --carte:#1D2521; --encre:#ECEAE3; --encre-doux:#C2C7C1;
+    --nere:#5FC79A; --nere-clair:#1B2C24; --terre:#E7967C; --terre-clair:#2E1F1A;
+    --mil:#E0A93E; --mil-clair:#2C2415; --ciel:#7FB2E0; --ciel-clair:#16283A;
+    --sauge:#9AA79F; --filet:#33403A;
+    --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:calc(112.5% * var(--fs));scroll-behavior:smooth;scroll-padding-top:var(--bar)}
+@media (max-width:600px){ html{font-size:calc(104% * var(--fs))} }
+body{margin:0;background:var(--papier);color:var(--encre);
+  font-family:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  line-height:1.75;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;padding-top:var(--bar)}
+h1,h2,h3{font-family:"Fraunces","Georgia",serif;line-height:1.16;color:var(--encre);overflow-wrap:break-word}
+h1{font-size:2.1rem;margin:.2rem 0 .6rem}
+h2{font-size:1.5rem;margin:2.6rem 0 .8rem}
+h3{font-size:1.12rem;margin:1.6rem 0 .5rem}
+p{margin:0 0 1.15rem}
+a{color:var(--nere);text-underline-offset:2px}
+strong{font-weight:600}
+img{max-width:100%}
+.wrap{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem 5rem}
+.label{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--sauge)}
+.kicker{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mil);margin:0 0 .3rem}
+.lead{font-size:1.12rem;color:var(--encre-doux)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+
+/* topbar */
+.bar-wrap{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--papier);
+  border-bottom:1px solid var(--filet);transition:transform .3s}
+.bar-wrap.hide{transform:translateY(-100%)}
+.bar{max-width:var(--mesure);margin:0 auto;padding:.55rem 1.25rem;
+  display:flex;align-items:center;gap:.7rem;font-family:"IBM Plex Sans",sans-serif}
+.bar button{font-family:inherit;background:var(--carte);color:var(--encre);border:1px solid var(--filet);
+  border-radius:9px;padding:.32rem .5rem;font-size:.74rem;cursor:pointer;line-height:1}
+.bar button:hover{border-color:var(--nere);color:var(--nere)}
+.bar .sp{flex:1}
+.progress{display:flex;align-items:center;gap:.5rem;width:100%;margin-top:.4rem;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;color:var(--sauge)}
+.progress .track{flex:1;height:5px;border-radius:999px;background:var(--filet);overflow:hidden}
+.progress .fill{display:block;height:100%;background:var(--nere);border-radius:999px;
+  transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.bar-inner{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem .5rem}
+
+/* sommaire */
+.toc-overlay{position:fixed;inset:0;z-index:60;background:rgba(20,26,23,.5);
+  display:flex;align-items:flex-start;justify-content:center;padding:4rem 1rem;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.toc-overlay.open{opacity:1;pointer-events:auto}
+.toc-panel{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1.6rem 1.7rem;max-width:26rem;width:100%;position:relative;
+  max-height:80vh;overflow:auto}
+.toc-close{position:absolute;top:1rem;right:1rem;background:transparent;border:0;font-size:1.1rem;
+  cursor:pointer;color:var(--sauge)}
+.toc-panel ol{margin:.7rem 0 0;padding-left:1.3rem;font-family:"IBM Plex Sans",sans-serif;font-size:.92rem}
+.toc-panel li{margin:.45rem 0}
+.toc-panel a{text-decoration:none;color:var(--encre)}
+.toc-panel a:hover{color:var(--nere)}
+.toc-panel a.done::after{content:" \2713";color:var(--nere);font-weight:700}
+
+/* resume */
+.resume-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;
+  padding:.7rem 1rem;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.resume-bar.show{display:flex}
+.resume-bar button{background:#fff;color:var(--nere);border:0;border-radius:999px;
+  padding:.35rem .9rem;font-weight:600;cursor:pointer;font-family:inherit}
+.resume-bar .x{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+
+/* encarts pédagogiques */
+.card{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.card.note{background:var(--mil-clair);border-color:transparent}
+.card.serieC{background:var(--ciel-clair);border-color:transparent}
+.card .label{margin-bottom:.4rem}
+.formule{font-family:"IBM Plex Mono",monospace;font-size:.96rem;line-height:1.9;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.8rem 1rem;margin:1rem 0;overflow-x:auto;white-space:nowrap}
+.formule .num{color:var(--terre)}
+.formule .res{color:var(--nere);font-weight:600}
+
+/* checkbox de section */
+.done-row{display:flex;align-items:center;gap:.55rem;margin:1.4rem 0 0;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;color:var(--sauge)}
+.done-row input{width:1.05rem;height:1.05rem;accent-color:var(--nere)}
+
+/* ===== SIMULATION ===== */
+.sim{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1rem;margin:1.8rem 0;font-family:"IBM Plex Sans",sans-serif}
+.sim h3{font-family:"Fraunces",serif;margin:.2rem 0 .8rem}
+.sim canvas{width:100%;height:auto;display:block;background:var(--papier);
+  border:1px solid var(--filet);border-radius:10px;touch-action:none}
+.sim .controls{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1rem;margin:.9rem 0 .4rem}
+@media (max-width:520px){ .sim .controls{grid-template-columns:1fr} }
+.ctrl{font-size:.78rem;color:var(--encre-doux)}
+.ctrl label{display:flex;justify-content:space-between;margin-bottom:.15rem}
+.ctrl b{color:var(--nere);font-family:"IBM Plex Mono",monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--nere)}
+.scrub{margin:.8rem 0 .2rem}
+.scrub label{display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;margin-bottom:.2rem}
+.scrub input[type=range]{width:100%;height:26px;accent-color:var(--terre)}
+.playbtn{background:var(--nere);color:#fff;border:0;border-radius:9px;padding:.4rem .8rem;
+  font-family:inherit;font-size:.8rem;cursor:pointer;margin-right:.5rem}
+.reset{background:transparent;border:1px solid var(--filet);color:var(--encre-doux);
+  border-radius:9px;padding:.4rem .7rem;font-family:inherit;font-size:.8rem;cursor:pointer}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.9rem 0 0}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)} }
+.rd{background:var(--papier);border:1px solid var(--filet);border-radius:9px;padding:.5rem .6rem}
+.rd .k{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sauge)}
+.rd .v{font-family:"IBM Plex Mono",monospace;font-size:.98rem;color:var(--encre);font-weight:500}
+.rd.em{background:var(--nere-clair);border-color:transparent}
+.rd.em .v{color:var(--nere)}
+.rd.warn{background:var(--terre-clair);border-color:transparent}
+.rd.warn .v{color:var(--terre)}
+.simform{font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.85;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.7rem .8rem;margin:.9rem 0 0;overflow-x:auto}
+.simform .sym{color:var(--encre-doux)}
+.simform .num{color:var(--terre)}
+.simform .res{color:var(--nere);font-weight:600}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--encre-doux);margin:.7rem 0 0}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.3rem}
+.viewmode{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin:.7rem 0 0}
+.viewmode button{background:var(--papier);border:1px solid var(--filet);color:var(--encre-doux);
+  border-radius:999px;padding:.32rem .8rem;font-family:inherit;font-size:.76rem;cursor:pointer}
+.viewmode button.active{background:var(--nere);color:#fff;border-color:transparent}
+.viewmode .hint{font-size:.7rem;color:var(--sauge);flex-basis:100%}
+.foot{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--filet);
+  font-family:"IBM Plex Sans",sans-serif;font-size:.8rem;color:var(--sauge)}
+
+/* ===== exercices ===== */
+.exo{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.exo .exoNum{font-family:"IBM Plex Sans",sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--mil);margin:0 0 .5rem}
+.revealBtn{font-family:"IBM Plex Sans",sans-serif;background:var(--nere);color:#fff;border:0;
+  border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:600;cursor:pointer;margin:.9rem 0 0}
+.revealBtn:hover{opacity:.9}
+.correction{margin-top:1.1rem;padding-top:1.1rem;border-top:1px dashed var(--filet)}
+.correction .q{font-weight:600;margin:1rem 0 .4rem}
+.correction .q:first-child{margin-top:0}
+
+/* ===== quiz ===== */
+.quizScore{position:sticky;top:calc(var(--bar) + .6rem);z-index:5;display:inline-block;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-weight:600;
+  font-size:.85rem;border-radius:999px;padding:.4rem 1rem;margin:0 0 1.2rem}
+.qz{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.1rem 1.2rem;margin:1.1rem 0}
+.qz .qzQ{font-weight:600;margin:0 0 .8rem;font-family:"Fraunces",serif;font-size:1.02rem}
+.qzOpt{display:block;width:100%;text-align:left;font-family:"IBM Plex Sans",sans-serif;font-size:.9rem;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;padding:.55rem .8rem;
+  margin:.4rem 0;cursor:pointer;color:var(--encre)}
+.qzOpt:hover:not(:disabled){border-color:var(--nere)}
+.qzOpt:disabled{cursor:default}
+.qzOpt.correct{background:var(--nere-clair);border-color:var(--nere);color:var(--nere);font-weight:600}
+.qzOpt.wrong{background:var(--terre-clair);border-color:var(--terre);color:var(--terre)}
+.qzExp{display:none;margin:.7rem 0 0;padding-top:.7rem;border-top:1px dashed var(--filet);
+  font-size:.86rem;color:var(--encre-doux)}
+.qzExp.show{display:block}
+.quizRestart{font-family:"IBM Plex Sans",sans-serif;background:transparent;color:var(--encre-doux);
+  border:1px solid var(--filet);border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;
+  cursor:pointer;margin:1.2rem 0 0}
+
+/* ===== schémas SVG ===== */
+.schema{background:var(--papier);border:1px solid var(--filet);border-radius:12px;
+  padding:.7rem .5rem .4rem;margin:.9rem 0 1.3rem}
+.schema svg{display:block;width:100%;height:auto;font-family:"IBM Plex Sans",sans-serif}
+.schema .cap{text-align:center;font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;
+  color:var(--sauge);margin:.35rem 0 0}
+</style>
+</head>
+<body>
+
+<div class="bar-wrap" id="barWrap">
+  <div class="bar">
+    <button id="themeBtn" aria-label="Thème">&#9789;</button>
+    <button data-fs="-" aria-label="Réduire le texte">A&minus;</button>
+    <button data-fs="+" aria-label="Agrandir le texte">A+</button>
+    <span class="sp"></span>
+    <button id="tocBtn">Sommaire</button>
+  </div>
+  <div class="bar-inner">
+    <div class="progress"><span id="pct">0 %</span>
+      <span class="track"><span class="fill" id="fill"></span></span></div>
+  </div>
+</div>
+
+<div class="toc-overlay" id="tocOverlay">
+  <div class="toc-panel">
+    <button class="toc-close" id="tocClose" aria-label="Fermer">&#10005;</button>
+    <p class="label">Sommaire</p>
+    <ol id="tocList"></ol>
+  </div>
+</div>
+
+<div class="resume-bar" id="resumeBar">
+  <span>Reprendre où tu t'es arrêté ?</span>
+  <span><button id="resumeGo">Continuer</button> <button class="x" id="resumeX">Non</button></span>
+</div>
+
+<main class="wrap">
+
+  <p class="kicker">Comprendre la notion</p>
+  <h1>Le champ électrique</h1>
+  <p class="lead">On te donne <code>F&nbsp;=&nbsp;k&middot;q&#8321;q&#8322;/r&sup2;</code> et
+  <code>E&nbsp;=&nbsp;F/q</code>. Même exercice que pour le champ gravitationnel — mais avec des charges
+  au lieu des masses, et une différence de taille&nbsp;: ici, ça peut aussi repousser. On reprend tout
+  depuis zéro, avec des simulations que tu manipules toi-même.</p>
+  <p class="label">Programme Terminale C &amp; D — Afrique de l'Ouest</p>
+
+  <section id="s-coulomb">
+    <h2>1. La loi de Coulomb&nbsp;: la même idée que Newton, avec un piège en plus</h2>
+    <p>Charles-Augustin de Coulomb, 1785&nbsp;: deux charges <code>q&#8321;</code> et <code>q&#8322;</code>
+    séparées d'une distance <code>r</code> exercent l'une sur l'autre une force</p>
+    <div class="formule">F = k &middot; <span class="sym">|q&#8321;&middot;q&#8322;|</span> / r&sup2;
+      &nbsp;&nbsp; avec &nbsp; k = 8,99&times;10<sup>9</sup> N&middot;m&sup2;&middot;C<sup>&minus;2</sup> (souvent arrondi 9&times;10<sup>9</sup>)</div>
+    <div class="schema">
+      <svg viewBox="0 0 600 260">
+        <g>
+          <circle cx="110" cy="70" r="24" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2.5"/>
+          <text x="110" y="77" text-anchor="middle" fill="var(--terre)" font-size="20" font-weight="700">+</text>
+          <circle cx="330" cy="70" r="24" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2.5"/>
+          <text x="330" y="77" text-anchor="middle" fill="var(--terre)" font-size="20" font-weight="700">+</text>
+          <line x1="140" y1="55" x2="180" y2="55" stroke="var(--ciel)" stroke-width="3"/>
+          <polygon points="180,55 169,50 169,60" fill="var(--ciel)"/>
+          <line x1="300" y1="55" x2="260" y2="55" stroke="var(--ciel)" stroke-width="3"/>
+          <polygon points="260,55 271,50 271,60" fill="var(--ciel)"/>
+          <text x="220" y="40" text-anchor="middle" fill="var(--ciel)" font-size="13" font-weight="600">charges de même signe&nbsp;: ça repousse</text>
+        </g>
+        <g>
+          <circle cx="110" cy="190" r="24" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2.5"/>
+          <text x="110" y="197" text-anchor="middle" fill="var(--terre)" font-size="20" font-weight="700">+</text>
+          <circle cx="330" cy="190" r="24" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2.5"/>
+          <text x="330" y="197" text-anchor="middle" fill="var(--nere)" font-size="20" font-weight="700">&minus;</text>
+          <line x1="140" y1="175" x2="180" y2="175" stroke="var(--mil)" stroke-width="3"/>
+          <polygon points="180,175 169,170 169,180" fill="var(--mil)"/>
+          <line x1="300" y1="175" x2="340" y2="175" stroke="var(--mil)" stroke-width="3" transform="rotate(180 320 175)"/>
+          <line x1="300" y1="175" x2="260" y2="175" stroke="var(--mil)" stroke-width="3" transform="scale(-1,1) translate(-600,0)"/>
+          <polygon points="270,175 281,170 281,180" fill="var(--mil)"/>
+          <line x1="150" y1="130" x2="290" y2="130" stroke="var(--sauge)" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <text x="220" y="122" text-anchor="middle" fill="var(--sauge)" font-size="12">r</text>
+          <text x="220" y="230" text-anchor="middle" fill="var(--mil)" font-size="13" font-weight="600">charges opposées&nbsp;: ça attire</text>
+        </g>
+      </svg>
+      <p class="cap">Même formule que la gravitation (1/r&sup2;), mais le signe de la force dépend des charges&nbsp;: identiques &rarr; répulsion, opposées &rarr; attraction. La gravitation, elle, n'attire jamais que dans un seul sens.</p>
+    </div>
+    <p>C'est exactement la même forme mathématique que <code>F&nbsp;=&nbsp;G&middot;m&middot;M/r&sup2;</code>
+    vue dans le pack sur le champ gravitationnel — ce n'est pas un hasard, c'est la signature d'un espace à
+    trois dimensions (revois la section «&nbsp;pourquoi 1/r&sup2;&nbsp;» plus loin). La vraie nouveauté,
+    c'est que la matière porte deux types de charge, <code>+</code> et <code>&minus;</code>, alors qu'il
+    n'existe qu'un seul type de masse.</p>
+    <div class="card note">
+      <p class="label">Ordre de grandeur</p>
+      <p style="margin:0">La charge élémentaire (celle d'un proton, ou l'opposé de celle d'un électron) vaut
+      <code>e&nbsp;=&nbsp;1,6&times;10<sup>&minus;19</sup></code>&nbsp;C — minuscule. Un objet «&nbsp;chargé
+      d'1&nbsp;µC&nbsp;» porte déjà environ 6 milliards de milliards de charges élémentaires en trop ou en
+      moins.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-coulomb"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-champ">
+    <h2>2. Le champ électrique&nbsp;: une carte de force autour d'une charge</h2>
+    <p>Même raisonnement que pour la gravitation&nbsp;: au lieu de dire qu'une charge «&nbsp;tire&nbsp;» ou
+    «&nbsp;pousse&nbsp;» une autre charge à distance, on dit que <strong>la charge modifie l'espace autour
+    d'elle</strong>. Une deuxième charge posée quelque part ne réagit qu'à cet espace local — jamais
+    directement à la première charge, si loin.</p>
+    <p>Cette propriété que la charge donne au vide, c'est le <strong>champ électrique</strong>.</p>
+    <div class="schema">
+      <svg viewBox="0 0 600 200">
+        <circle cx="150" cy="100" r="14" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2.5"/>
+        <text x="150" y="106" text-anchor="middle" fill="var(--terre)" font-size="16" font-weight="700">+</text>
+        <g stroke="var(--terre)" stroke-width="1.8" fill="none" opacity=".75">
+          <line x1="150" y1="86" x2="150" y2="20"/><polygon points="150,20 145,30 155,30" fill="var(--terre)"/>
+          <line x1="150" y1="114" x2="150" y2="180"/><polygon points="150,180 145,170 155,170" fill="var(--terre)"/>
+          <line x1="164" y1="100" x2="230" y2="100"/><polygon points="230,100 220,95 220,105" fill="var(--terre)"/>
+          <line x1="136" y1="100" x2="70" y2="100"/><polygon points="70,100 80,95 80,105" fill="var(--terre)"/>
+          <line x1="160" y1="90" x2="205" y2="45"/><polygon points="205,45 194,47 203,56" fill="var(--terre)"/>
+          <line x1="140" y1="90" x2="95" y2="45"/><polygon points="95,45 106,47 97,56" fill="var(--terre)"/>
+          <line x1="160" y1="110" x2="205" y2="155"/><polygon points="205,155 203,144 194,153" fill="var(--terre)"/>
+          <line x1="140" y1="110" x2="95" y2="155"/><polygon points="95,155 97,144 106,153" fill="var(--terre)"/>
+        </g>
+        <circle cx="440" cy="100" r="14" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2.5"/>
+        <text x="440" y="106" text-anchor="middle" fill="var(--nere)" font-size="16" font-weight="700">&minus;</text>
+        <g stroke="var(--nere)" stroke-width="1.8" fill="none" opacity=".75">
+          <line x1="440" y1="20" x2="440" y2="82"/><polygon points="440,82 435,72 445,72" fill="var(--nere)"/>
+          <line x1="440" y1="180" x2="440" y2="118"/><polygon points="440,118 435,128 445,128" fill="var(--nere)"/>
+          <line x1="510" y1="100" x2="456" y2="100"/><polygon points="456,100 466,95 466,105" fill="var(--nere)"/>
+          <line x1="370" y1="100" x2="424" y2="100"/><polygon points="424,100 414,95 414,105" fill="var(--nere)"/>
+        </g>
+        <text x="150" y="196" text-anchor="middle" fill="var(--terre)" font-size="12">lignes de champ&nbsp;: sortent d'une charge +</text>
+        <text x="440" y="196" text-anchor="middle" fill="var(--nere)" font-size="12">…et entrent dans une charge &minus;</text>
+      </svg>
+      <p class="cap">Comme la bougie qui éclaire toute la pièce (déjà vue pour la gravitation), une charge « éclaire » tout l'espace autour d'elle avec son champ — que quelque chose vienne le sentir ou non.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-champ"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-vecteur">
+    <h2>3. Le vecteur champ <span class="mono">E</span> = F/q</h2>
+    <p>Prends un point dans l'espace. Pose une petite charge test <code>q</code>. Elle subit une force.
+    Divise cette force par la charge&nbsp;:</p>
+    <div class="formule">E = F / q &nbsp;&nbsp;&rarr;&nbsp;&nbsp; ne dépend plus de la charge test</div>
+    <p>Ce qui reste est une flèche qui ne dépend que de la charge <em>source</em> — sa direction dépend de
+    son signe&nbsp;: elle pointe <strong>vers l'extérieur</strong> pour une charge <code>+</code>,
+    <strong>vers l'intérieur</strong> pour une charge <code>&minus;</code>.</p>
+    <div class="formule">E(M) = k &middot; |q| / r&sup2; &nbsp;&nbsp; en V&middot;m<sup>&minus;1</sup> (ou N&middot;C<sup>&minus;1</sup>, équivalent)</div>
+    <p>Une charge <code>q&#8242;</code> posée en <code>M</code> subit alors la force
+    <code>F&nbsp;=&nbsp;q&#8242;&middot;E</code> — dans le sens de <code>E</code> si <code>q&#8242;</code> est
+    positive, dans le sens opposé si elle est négative. C'est la première différence pratique avec la
+    gravitation&nbsp;: la force n'est pas toujours alignée dans le même sens que le champ.</p>
+    <div class="card note">
+      <p class="label">Vocabulaire à connaître&nbsp;: centrifuge ou centripète</p>
+      <p style="margin:0">Vu depuis un point <code>M</code>, le champ créé par une charge ponctuelle est dit
+      <strong>centrifuge</strong> quand il pointe en s'éloignant de la charge (cas d'une charge
+      <code>+</code> — les flèches «&nbsp;fuient le centre&nbsp;») et <strong>centripète</strong> quand il
+      pointe vers la charge (cas d'une charge <code>&minus;</code> — les flèches «&nbsp;cherchent le
+      centre&nbsp;»). Ces deux mots reviennent souvent dans les consignes d'examen&nbsp;: les connaître
+      évite de perdre du temps à les redéduire à chaque fois.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-vecteur"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-superposition">
+    <h2>4. Superposition vectorielle&nbsp;: additionner plusieurs champs</h2>
+    <p>Quand plusieurs charges créent chacune un champ au même point <code>M</code>, le champ total ne
+    s'obtient <strong>jamais</strong> en additionnant les normes&nbsp;: chaque champ est un vecteur (une
+    flèche, avec une direction et un sens), donc on additionne des <strong>vecteurs</strong>, pas des
+    nombres.</p>
+    <div class="formule">E&#8407;<sub>total</sub>(M) = E&#8407;&#8321;(M) + E&#8407;&#8322;(M) + ... + E&#8407;<sub>n</sub>(M)</div>
+    <p>Trois configurations reviennent sans cesse dans les sujets d'examen&nbsp;: deux charges alignées sur
+    un segment (avec <code>M</code> entre les deux ou à l'extérieur), quatre charges aux sommets d'un carré
+    (avec <code>M</code> au centre), et deux charges aux sommets d'un triangle.</p>
+    <div class="schema">
+      <svg viewBox="0 0 620 230">
+        <g>
+          <circle cx="60" cy="60" r="11" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2"/>
+          <text x="60" y="65" text-anchor="middle" fill="var(--terre)" font-size="12" font-weight="700">+</text>
+          <circle cx="180" cy="60" r="11" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2"/>
+          <text x="180" y="65" text-anchor="middle" fill="var(--nere)" font-size="12" font-weight="700">&minus;</text>
+          <circle cx="120" cy="60" r="3" fill="var(--encre)"/>
+          <text x="120" y="45" text-anchor="middle" fill="var(--encre-doux)" font-size="11">M</text>
+          <text x="120" y="95" text-anchor="middle" fill="var(--sauge)" font-size="11">segment</text>
+        </g>
+        <g>
+          <rect x="290" y="20" width="90" height="90" fill="none" stroke="var(--filet)" stroke-width="1.4"/>
+          <circle cx="290" cy="20" r="8" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="1.8"/>
+          <circle cx="380" cy="20" r="8" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="1.8"/>
+          <circle cx="290" cy="110" r="8" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="1.8"/>
+          <circle cx="380" cy="110" r="8" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="1.8"/>
+          <circle cx="335" cy="65" r="3" fill="var(--encre)"/>
+          <text x="335" y="52" text-anchor="middle" fill="var(--encre-doux)" font-size="11">M</text>
+          <text x="335" y="140" text-anchor="middle" fill="var(--sauge)" font-size="11">carré</text>
+        </g>
+        <g>
+          <polygon points="500,20 460,110 540,110" fill="none" stroke="var(--filet)" stroke-width="1.4"/>
+          <circle cx="500" cy="20" r="3" fill="var(--sauge)"/>
+          <circle cx="460" cy="110" r="9" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="1.8"/>
+          <circle cx="540" cy="110" r="9" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="1.8"/>
+          <text x="500" y="14" text-anchor="middle" fill="var(--encre-doux)" font-size="11">M</text>
+          <text x="500" y="140" text-anchor="middle" fill="var(--sauge)" font-size="11">triangle</text>
+        </g>
+      </svg>
+      <p class="cap">Trois figures standards des sujets de bac — segment, carré, triangle — dans lesquelles il faut sommer vectoriellement (jamais en norme) les champs créés par chaque charge.</p>
+    </div>
+    <div class="card serieC">
+      <p class="label">Pour la série C&nbsp;: la méthode pas à pas</p>
+      <p style="margin:0">1) Calculer la norme <code>E&nbsp;=&nbsp;k|q|/r&sup2;</code> de chaque champ
+      séparément, avec sa propre distance à <code>M</code>. 2) Tracer chaque vecteur (sens
+      centrifuge/centripète selon le signe de la charge, section précédente). 3) Sommer les vecteurs par
+      leurs coordonnées <code>(E_x, E_y)</code> — jamais en additionnant directement les normes, sauf dans
+      le cas particulier où deux vecteurs sont parfaitement alignés dans le même sens. 4) Repasser en norme
+      à la toute fin&nbsp;: <code>E&nbsp;=&nbsp;&radic;(E_x&sup2;+E_y&sup2;)</code>.</p>
+    </div>
+    <div class="card note">
+      <p class="label">Cas particulier utile&nbsp;: deux charges opposées alignées</p>
+      <p style="margin:0">Pour deux charges <code>+q</code> et <code>&minus;q</code> de même valeur, situées
+      de part et d'autre d'un point <code>M</code> aligné avec elles, les deux champs pointent dans le
+      <strong>même sens</strong> (le champ centrifuge de la charge <code>+</code> et le champ centripète de
+      la charge <code>&minus;</code> vont tous les deux «&nbsp;de + vers &minus;&nbsp;»)&nbsp;: dans ce cas
+      seulement, les normes s'additionnent directement.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-superposition"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-r2">
+    <h2>5. Pourquoi <span class="mono">1/r&sup2;</span>, encore et toujours</h2>
+    <p>Le même argument géométrique que pour la gravitation&nbsp;: l'influence d'une charge se répartit sur
+    une sphère dont la surface vaut <code>4&pi;r&sup2;</code>. Deux fois plus loin&nbsp;: quatre fois plus
+    de surface, donc quatre fois moins de champ à chaque endroit.</p>
+    <div class="schema">
+      <svg viewBox="0 0 600 190">
+        <circle cx="90" cy="140" r="14" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2"/>
+        <circle cx="90" cy="140" r="60" fill="none" stroke="var(--ciel)" stroke-width="2" stroke-dasharray="5,4"/>
+        <circle cx="90" cy="140" r="120" fill="none" stroke="var(--terre)" stroke-width="2" stroke-dasharray="5,4"/>
+        <text x="90" y="144" text-anchor="middle" fill="var(--terre)" font-size="15" font-weight="700">+</text>
+        <text x="90" y="72" text-anchor="middle" fill="var(--ciel)" font-size="12">r</text>
+        <text x="90" y="12" text-anchor="middle" fill="var(--terre)" font-size="12">2r</text>
+        <text x="280" y="60" fill="var(--ciel)" font-size="13" font-weight="600">à r&nbsp;: surface 4&pi;r&sup2;</text>
+        <text x="280" y="150" fill="var(--terre)" font-size="13" font-weight="600">à 2r&nbsp;: 4&times; plus de surface &rarr; champ 4&times; plus faible</text>
+      </svg>
+      <p class="cap">Même schéma que dans le pack sur le champ gravitationnel — la géométrie d'un espace à trois dimensions ne change pas selon qu'on parle de masses ou de charges.</p>
+    </div>
+    <p>La gravitation est <strong>toujours</strong> attractive parce qu'il n'existe qu'un signe de masse.
+    L'électricité peut attirer ou repousser parce qu'il existe deux signes de charge&nbsp;: c'est la seule
+    vraie différence physique entre les deux lois, le reste (la forme en 1/r&sup2;) est identique.</p>
+    <div class="card note">
+      <p class="label">Le chiffre qui frappe&nbsp;: laquelle des deux forces domine dans un atome ?</p>
+      <p style="margin:0">Prends l'atome d'hydrogène&nbsp;: un proton et un électron séparés de
+      <code>r&nbsp;=&nbsp;53</code>&nbsp;pm (1&nbsp;pm&nbsp;=&nbsp;10<sup>&minus;12</sup>&nbsp;m). Calcule les
+      deux forces avec les mêmes données&nbsp;: <code>F<sub>grav</sub>&nbsp;=&nbsp;G&middot;m<sub>e</sub>m<sub>p</sub>/r&sup2;&nbsp;&asymp;&nbsp;4&times;10<sup>&minus;47</sup></code>&nbsp;N
+      contre <code>F<sub>élec</sub>&nbsp;=&nbsp;k&middot;e&sup2;/r&sup2;&nbsp;&asymp;&nbsp;8,2&times;10<sup>&minus;8</sup></code>&nbsp;N.
+      Le rapport <code>F<sub>élec</sub>/F<sub>grav</sub></code> vaut environ
+      <strong>2&times;10<sup>39</sup></strong> — un 2 suivi de 39 zéros. À l'échelle de l'atome, la
+      gravitation est si faible qu'elle est totalement invisible&nbsp;: c'est uniquement la force
+      électrostatique qui tient l'électron en orbite, jamais la gravité.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-r2"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-uniforme">
+    <h2>6. Le champ uniforme&nbsp;: entre deux plaques</h2>
+    <p>Le champ d'une charge ponctuelle change de valeur partout (1/r&sup2;). Mais il existe une
+    configuration très utilisée au bac où le champ est <strong>le même partout</strong>&nbsp;: entre deux
+    plaques planes parallèles, chargées <code>+</code> et <code>&minus;</code>, soumises à une tension
+    <code>U</code>.</p>
+    <div class="formule">E = U / d &nbsp;&nbsp; (V&middot;m<sup>&minus;1</sup>), avec <code>d</code> la distance entre les plaques</div>
+    <div class="schema">
+      <svg viewBox="0 0 600 200">
+        <rect x="80" y="30" width="440" height="10" fill="var(--terre)"/>
+        <text x="60" y="38" text-anchor="end" fill="var(--terre)" font-size="14" font-weight="700">+</text>
+        <rect x="80" y="160" width="440" height="10" fill="var(--nere)"/>
+        <text x="60" y="168" text-anchor="end" fill="var(--nere)" font-size="14" font-weight="700">&minus;</text>
+        <g stroke="var(--ciel)" stroke-width="2.2">
+          <line x1="140" y1="45" x2="140" y2="150"/><polygon points="140,150 134,138 146,138" fill="var(--ciel)"/>
+          <line x1="240" y1="45" x2="240" y2="150"/><polygon points="240,150 234,138 246,138" fill="var(--ciel)"/>
+          <line x1="340" y1="45" x2="340" y2="150"/><polygon points="340,150 334,138 346,138" fill="var(--ciel)"/>
+          <line x1="440" y1="45" x2="440" y2="150"/><polygon points="440,150 434,138 446,138" fill="var(--ciel)"/>
+        </g>
+        <text x="490" y="100" fill="var(--ciel)" font-size="13" font-weight="600">E</text>
+        <line x1="550" y1="40" x2="550" y2="160" stroke="var(--sauge)" stroke-width="1.5"/>
+        <text x="565" y="105" fill="var(--sauge)" font-size="13">d</text>
+        <text x="300" y="190" text-anchor="middle" fill="var(--sauge)" font-size="12">flèches identiques partout&nbsp;: même direction, même sens, même longueur</text>
+      </svg>
+      <p class="cap">Entre les plaques, E ne dépend ni de la position, ni de la distance au bord — c'est un champ uniforme, radicalement différent du champ 1/r² d'une charge isolée.</p>
+    </div>
+    <p style="margin:0">Cette configuration est partout&nbsp;: dans un condensateur, dans un tube à rayons
+    cathodiques, dans un accélérateur de particules. C'est le cas le plus simple à calculer, et c'est celui
+    de la simulation qui suit.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-uniforme"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-sim">
+    <h2>7. Simulation&nbsp;: dévier une charge entre deux plaques</h2>
+    <p>Règle la tension, l'écartement des plaques, la longueur des plaques et la vitesse d'entrée. Regarde
+    si la particule ressort... ou si elle percute une plaque avant la sortie.</p>
+
+    <div class="card note">
+      <p class="label">Pourquoi x et y, encore une fois</p>
+      <p style="margin:0">Exactement le même découpage que pour le tir oblique (déjà vu dans le pack sur le
+      champ gravitationnel)&nbsp;: horizontalement (<code>x</code>), aucune force n'agit — la vitesse
+      <code>v<sub>x</sub></code> reste constante. Verticalement (<code>y</code>), seule la force électrique
+      <code>F&nbsp;=&nbsp;qE</code> agit&nbsp;: c'est une accélération constante, exactement comme la chute
+      libre, mais avec <code>a&nbsp;=&nbsp;qE/m</code> à la place de <code>g</code>.</p>
+    </div>
+
+    <div class="sim" id="simDev">
+      <h3>Déviation électrostatique</h3>
+      <canvas id="cvDev" width="900" height="420"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--ciel)"></i>trajectoire</span>
+        <span><i style="background:var(--terre)"></i>plaque +</span>
+        <span><i style="background:var(--nere)"></i>plaque &minus;</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl"><label>Tension U <b><span id="duv">200</span> V</b></label>
+          <input type="range" id="du" min="0" max="500" step="5" value="200"></div>
+        <div class="ctrl"><label>Écartement d <b><span id="ddv">2.0</span> cm</b></label>
+          <input type="range" id="dd" min="0.5" max="5" step="0.1" value="2.0"></div>
+        <div class="ctrl"><label>Longueur des plaques L <b><span id="dlv">4.0</span> cm</b></label>
+          <input type="range" id="dl" min="1" max="10" step="0.5" value="4.0"></div>
+        <div class="ctrl"><label>Vitesse d'entrée v<sub>0</sub> <b><span id="dvv">2.0</span> &times;10<sup>7</sup> m/s</b></label>
+          <input type="range" id="dv" min="0.5" max="6" step="0.1" value="2.0"></div>
+        <div class="ctrl"><label>Particule</label>
+          <select id="dpart" style="width:100%;font-family:inherit;padding:.25rem;border-radius:8px;border:1px solid var(--filet);background:var(--papier);color:var(--encre)">
+            <option value="e" selected>Électron (&minus;e)</option>
+            <option value="p">Proton (+e)</option>
+          </select></div>
+      </div>
+      <div class="readout">
+        <div class="rd"><div class="k">Déviation y à la sortie</div><div class="v"><span id="dy">0</span> mm</div></div>
+        <div class="rd"><div class="k">Angle de sortie</div><div class="v"><span id="dang">0</span>&deg;</div></div>
+        <div class="rd" id="dstatusBox"><div class="k">Résultat</div><div class="v" id="dstatus">—</div></div>
+      </div>
+      <div class="simform" id="dform"></div>
+    </div>
+    <p>Ce que la simulation montre&nbsp;: un électron (charge <strong>négative</strong>) est dévié vers la
+    plaque <strong>positive</strong> — la force <code>F&nbsp;=&nbsp;qE</code> est opposée à <code>E</code>
+    quand <code>q</code> est négative. Un proton part dans l'autre sens. C'est ce mécanisme, exactement, qui
+    dirigeait le faisceau d'électrons dans les anciens écrans à tube cathodique.</p>
+
+    <div class="card serieC">
+      <p class="label">Pour la série C</p>
+      <p style="margin:0 0 .6rem">La déviation à la sortie des plaques se calcule comme la flèche du tir
+      oblique&nbsp;:</p>
+      <div class="formule" style="margin:.4rem 0;white-space:normal">y = q&middot;E&middot;L&sup2; / (2&middot;m&middot;v&#8320;&sup2;&middot;d) = q&middot;U&middot;L&sup2; / (2&middot;m&middot;v&#8320;&sup2;&middot;d&sup2;)</div>
+      <p style="margin:0">Et l'angle de sortie&nbsp;: <code>tan&theta;&nbsp;=&nbsp;v<sub>y</sub>/v<sub>x</sub>&nbsp;=&nbsp;q&middot;U&middot;L/(m&middot;v&#8320;&sup2;&middot;d)</code>.
+      Deux grandeurs, deux formules — à démontrer avec le théorème de l'énergie cinétique projeté sur chaque
+      axe, exactement comme pour <code>x<sub>P</sub></code> et <code>y<sub>max</sub></code> dans l'autre pack.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-sim"><span>J'ai fait tourner la simulation</span></div>
+  </section>
+
+  <section id="s-travail">
+    <h2>8. Le travail de la force électrique</h2>
+    <p>Dans un champ uniforme, le travail de la force électrique pour aller d'un point <code>A</code> à un
+    point <code>B</code> ne dépend que du déplacement le long du champ — pas du chemin suivi&nbsp;:</p>
+    <div class="formule">W<sub>A&rarr;B</sub> = F&middot;d = q&middot;E&middot;d = q&middot;U<sub>AB</sub></div>
+    <p style="margin:0">Exactement comme le travail du poids ne dépend que de la différence de hauteur, pas
+    du trajet parcouru. C'est ce qui permet de définir une <strong>énergie potentielle électrique</strong>
+    <code>E<sub>pe</sub>&nbsp;=&nbsp;q&middot;V</code>, avec <code>V</code> le potentiel au point considéré
+    — et une énergie mécanique <code>E<sub>c</sub>&nbsp;+&nbsp;E<sub>pe</sub></code> qui se conserve, comme
+    dans le tir oblique.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-travail"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-potentiel">
+    <h2>9. Le potentiel électrique et la tension U</h2>
+    <p>Le champ <code>E</code> décrit une force par unité de charge. Le <strong>potentiel</strong>
+    <code>V</code> décrit une énergie par unité de charge&nbsp;: c'est une grandeur scalaire (un simple
+    nombre, sans direction), plus facile à manipuler que le vecteur champ.</p>
+    <p>Entre deux plaques, le potentiel varie régulièrement d'une plaque à l'autre&nbsp;: la <strong>tension</strong>
+    (ou différence de potentiel) entre deux points <code>A</code> et <code>B</code> est&nbsp;:</p>
+    <div class="formule">U<sub>AB</sub> = V<sub>A</sub> &minus; V<sub>B</sub> = E&middot;d</div>
+    <div class="schema">
+      <svg viewBox="0 0 600 170">
+        <rect x="80" y="30" width="440" height="8" fill="var(--terre)"/>
+        <rect x="80" y="132" width="440" height="8" fill="var(--nere)"/>
+        <line x1="80" y1="65" x2="520" y2="65" stroke="var(--sauge)" stroke-width="1.4" stroke-dasharray="3,3"/>
+        <line x1="80" y1="97" x2="520" y2="97" stroke="var(--sauge)" stroke-width="1.4" stroke-dasharray="3,3"/>
+        <text x="530" y="42" fill="var(--terre)" font-size="12">V le + haut (+ plaque)</text>
+        <text x="530" y="70" fill="var(--sauge)" font-size="12">V intermédiaire</text>
+        <text x="530" y="102" fill="var(--sauge)" font-size="12">V intermédiaire</text>
+        <text x="530" y="130" fill="var(--nere)" font-size="12">V le + bas (&minus; plaque)</text>
+        <text x="300" y="155" text-anchor="middle" fill="var(--encre-doux)" font-size="12">lignes pointillées = équipotentielles, parallèles aux plaques</text>
+      </svg>
+      <p class="cap">Le potentiel décroît régulièrement de la plaque + vers la plaque &minus; — les équipotentielles sont perpendiculaires aux lignes de champ.</p>
+    </div>
+    <p style="margin:0">C'est cette tension <code>U</code> qu'affiche une pile ou un générateur&nbsp;: 1,5 V,
+    9 V, 220 V au secteur — toujours une différence de potentiel entre deux bornes, jamais un potentiel
+    « absolu ».</p>
+    <div class="done-row"><input type="checkbox" data-done="s-potentiel"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-condensateur">
+    <h2>10. Le condensateur&nbsp;: stocker des charges</h2>
+    <p>Deux plaques conductrices face à face, séparées par un isolant&nbsp;: c'est un
+    <strong>condensateur</strong>. Sous une tension <code>U</code>, il accumule une charge <code>Q</code>
+    proportionnelle&nbsp;:</p>
+    <div class="formule">Q = C&middot;U &nbsp;&nbsp; avec C la capacité, en farads (F)</div>
+    <p>Le farad est énorme&nbsp;: en pratique, on utilise des µF, nF ou pF. Il stocke une énergie
+    électrique&nbsp;:</p>
+    <div class="formule">E<sub>e</sub> = &frac12;&middot;C&middot;U&sup2; = &frac12;&middot;Q&middot;U</div>
+
+    <div class="sim" id="simCond">
+      <h3>Calculatrice&nbsp;: charge et énergie stockées</h3>
+      <div class="controls">
+        <div class="ctrl"><label>Capacité C <b><span id="ccv">100</span> µF</b></label>
+          <input type="range" id="cc" min="1" max="1000" step="1" value="100"></div>
+        <div class="ctrl"><label>Tension U <b><span id="cuv">12</span> V</b></label>
+          <input type="range" id="cu" min="0" max="230" step="1" value="12"></div>
+      </div>
+      <div class="readout">
+        <div class="rd"><div class="k">Charge Q = C&middot;U</div><div class="v"><span id="cQ">0</span> mC</div></div>
+        <div class="rd em"><div class="k">Énergie E<sub>e</sub> = &frac12;CU&sup2;</div><div class="v"><span id="cE">0</span> J</div></div>
+      </div>
+      <div class="simform" id="cform"></div>
+    </div>
+
+    <div class="card serieC">
+      <p class="label">Pour la série C&nbsp;: d'où vient la capacité</p>
+      <p style="margin:0">Pour un condensateur plan de surface <code>S</code> et d'écartement <code>d</code>&nbsp;:</p>
+      <div class="formule" style="margin:.5rem 0">C = &epsilon;&#8320;&middot;S / d
+        &nbsp;&nbsp; avec &epsilon;&#8320; = 8,85&times;10<sup>&minus;12</sup> F&middot;m<sup>&minus;1</sup></div>
+      <p style="margin:0">Plus les plaques sont grandes, plus la capacité est grande. Plus elles sont
+      proches, plus la capacité est grande aussi — c'est pour ça qu'un condensateur réel est souvent un
+      film très fin enroulé, pas deux plaques planes visibles.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-condensateur"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-acceleration">
+    <h2>11. Accélérer une charge&nbsp;: retrouver sa vitesse avec l'énergie</h2>
+    <p>Une particule chargée, initialement au repos ou lancée à <code>v&#8320;</code>, traverse une tension
+    <code>U</code>. Le théorème de l'énergie cinétique donne directement sa vitesse finale, sans jamais
+    calculer sa trajectoire&nbsp;:</p>
+    <div class="formule" style="white-space:normal">
+      &Delta;E<sub>c</sub> = W = q&middot;U
+      &nbsp;&rArr;&nbsp; &frac12;m&middot;v&sup2; &minus; &frac12;m&middot;v&#8320;&sup2; = q&middot;U
+      &nbsp;&rArr;&nbsp; <span class="res">v = &radic;(v&#8320;&sup2; + 2&middot;q&middot;U/m)</span>
+    </div>
+
+    <div class="sim" id="simAccel">
+      <h3>Calculatrice&nbsp;: vitesse acquise par une charge accélérée</h3>
+      <div class="controls">
+        <div class="ctrl"><label>Tension accélératrice U <b><span id="auv">1000</span> V</b></label>
+          <input type="range" id="au" min="1" max="20000" step="1" value="1000"></div>
+        <div class="ctrl"><label>Particule</label>
+          <select id="apart" style="width:100%;font-family:inherit;padding:.25rem;border-radius:8px;border:1px solid var(--filet);background:var(--papier);color:var(--encre)">
+            <option value="e" selected>Électron (m = 9,11&times;10&#8315;&sup3;&sup1; kg)</option>
+            <option value="p">Proton (m = 1,67&times;10&#8315;&sup2;&sup7; kg)</option>
+          </select></div>
+      </div>
+      <div class="readout">
+        <div class="rd em" style="grid-column:1/-1"><div class="k">Vitesse acquise (depuis le repos)</div>
+          <div class="v"><span id="av">0</span> &times;10<sup>6</sup> m/s</div></div>
+        <div class="rd" style="grid-column:1/-1"><div class="k">Par rapport à la vitesse de la lumière (c = 3&times;10&sup8; m/s)</div>
+          <div class="v"><span id="apct">0</span> %</div></div>
+      </div>
+      <div class="simform" id="aform"></div>
+      <p style="margin:1rem 0 0;font-size:.86rem;color:var(--encre-doux)">Monte la tension très haut&nbsp;:
+      le pourcentage de <code>c</code> continue de grimper sans jamais l'atteindre dans ce calcul classique
+      — en réalité, proche de <code>c</code>, il faut la relativité restreinte pour corriger la formule.
+      C'est une des raisons pour lesquelles les vrais accélérateurs de particules (comme le LHC) utilisent
+      des millions de volts, pas juste quelques centaines.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-acceleration"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-exos">
+    <h2>12. Exercices corrigés type bac</h2>
+    <p>Trois exercices dans l'esprit des sujets de bac (séries C et D), avec correction complète.
+    Cherche d'abord seul, puis vérifie&nbsp;: <code>k&nbsp;=&nbsp;8,99&times;10<sup>9</sup></code>&nbsp;S.I.,
+    <code>e&nbsp;=&nbsp;1,6&times;10<sup>&minus;19</sup></code>&nbsp;C,
+    <code>m<sub>e</sub>&nbsp;=&nbsp;9,11&times;10<sup>&minus;31</sup></code>&nbsp;kg,
+    <code>m<sub>p</sub>&nbsp;=&nbsp;1,67&times;10<sup>&minus;27</sup></code>&nbsp;kg.</p>
+    <div class="card note">
+      <p class="label">Toutes les charges ne sont pas ±e&nbsp;: le cas des ions</p>
+      <p style="margin:0">Les exercices de bac ne se limitent pas à l'électron et au proton&nbsp;: un
+      <strong>ion</strong> peut porter plusieurs charges élémentaires à la fois. La règle est directe&nbsp;:
+      <code>q&nbsp;=&nbsp;n&middot;e</code>, avec <code>n</code> le nombre de charges élémentaires gagnées
+      (ion négatif) ou perdues (ion positif) par l'atome neutre. Exemples courants&nbsp;:
+      <code>O&sup2;&#8315;</code> (<code>q&nbsp;=&nbsp;&minus;2e</code>),
+      <code>Cl&#8315;</code> (<code>q&nbsp;=&nbsp;&minus;e</code>),
+      <code>Zn&sup2;&#8314;</code> (<code>q&nbsp;=&nbsp;+2e</code>),
+      <code>Al&sup3;&#8314;</code> (<code>q&nbsp;=&nbsp;+3e</code>),
+      <code>He&sup2;&#8314;</code> — le noyau d'hélium, aussi appelé <strong>particule &alpha;</strong>
+      (<code>q&nbsp;=&nbsp;+2e</code>). Toutes les formules du pack (force de Coulomb, déviation,
+      accélération) s'appliquent à l'identique&nbsp;: il suffit de remplacer <code>q</code> par la bonne
+      valeur, sans jamais oublier son signe.</p>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 1 — séries C &amp; D</p>
+      <p><strong>Énoncé.</strong> Deux charges ponctuelles <code>q&#8321;&nbsp;=&nbsp;+2</code>&nbsp;µC et
+      <code>q&#8322;&nbsp;=&nbsp;&minus;3</code>&nbsp;µC sont séparées de <code>r&nbsp;=&nbsp;10</code>&nbsp;cm.
+      Calculer la force électrique entre elles, et préciser si elle est attractive ou répulsive.</p>
+      <button class="revealBtn" data-target="e1">Voir la correction</button>
+      <div class="correction" id="e1" hidden>
+        <p class="q">Nature de la force</p>
+        <p>Les charges sont de signes opposés (+ et &minus;)&nbsp;: la force est <strong>attractive</strong>.</p>
+        <p class="q">Calcul de la valeur</p>
+        <div class="formule" style="white-space:normal">F = k&middot;|q&#8321;q&#8322;|/r&sup2;
+          = 8,99&times;10<sup>9</sup> &times; (2&times;10<sup>&minus;6</sup>)(3&times;10<sup>&minus;6</sup>) / (0,1)&sup2;
+          = <span class="res">5,39 N</span></div>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 2 — série C</p>
+      <p><strong>Énoncé.</strong> Un électron pénètre à <code>v&#8320;&nbsp;=&nbsp;2&times;10<sup>7</sup></code>&nbsp;m/s
+      entre deux plaques de longueur <code>L&nbsp;=&nbsp;4</code>&nbsp;cm, séparées de
+      <code>d&nbsp;=&nbsp;2</code>&nbsp;cm, soumises à <code>U&nbsp;=&nbsp;200</code>&nbsp;V. Calculer sa
+      déviation verticale à la sortie des plaques, et vérifier qu'il ne percute pas une plaque avant.</p>
+      <button class="revealBtn" data-target="e2">Voir la correction</button>
+      <div class="correction" id="e2" hidden>
+        <p class="q">Accélération subie</p>
+        <div class="formule" style="white-space:normal">a = eU/(m<sub>e</sub>&middot;d)
+          = (1,6&times;10<sup>&minus;19</sup>)(200) / [(9,11&times;10<sup>&minus;31</sup>)(0,02)]
+          = <span class="res">1,76&times;10<sup>15</sup> m&middot;s<sup>&minus;2</sup></span></div>
+        <p class="q">Temps passé entre les plaques</p>
+        <div class="formule" style="white-space:normal">t = L/v&#8320; = 0,04 / (2&times;10<sup>7</sup>) = <span class="res">2&times;10<sup>&minus;9</sup> s</span></div>
+        <p class="q">Déviation verticale</p>
+        <div class="formule" style="white-space:normal">y = &frac12;at&sup2; = 0,5 &times; 1,76&times;10<sup>15</sup> &times; (2&times;10<sup>&minus;9</sup>)&sup2;
+          = <span class="res">3,5 mm</span></div>
+        <p style="margin:0">La demi-distance entre plaques vaut <code>d/2&nbsp;=&nbsp;1</code>&nbsp;cm
+        = 10 mm. Comme <code>3,5&nbsp;mm&nbsp;&lt;&nbsp;10&nbsp;mm</code>, l'électron ressort bien sans avoir
+        touché de plaque.</p>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 3 — série D (plus simple)</p>
+      <p><strong>Énoncé.</strong> Un proton, initialement au repos, est accéléré par une tension
+      <code>U&nbsp;=&nbsp;500</code>&nbsp;V. Calculer la vitesse qu'il acquiert.</p>
+      <button class="revealBtn" data-target="e3">Voir la correction</button>
+      <div class="correction" id="e3" hidden>
+        <p class="q">Mise en équation</p>
+        <p>Théorème de l'énergie cinétique&nbsp;: <code>&frac12;m<sub>p</sub>v&sup2; &minus; 0 = eU</code>,
+        donc <code>v&nbsp;=&nbsp;&radic;(2eU/m<sub>p</sub>)</code>.</p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">v = &radic;[2(1,6&times;10<sup>&minus;19</sup>)(500) / (1,67&times;10<sup>&minus;27</sup>)]
+          = <span class="res">3,1&times;10<sup>5</sup> m&middot;s<sup>&minus;1</sup></span></div>
+        <p style="margin:0">Une vitesse énorme à notre échelle, mais seulement 0,1&nbsp;% de la vitesse de
+        la lumière&nbsp;: pas besoin de relativité ici.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-quiz">
+    <h2>13. Quiz d'auto-évaluation</h2>
+    <p>Quinze questions couvrant tout le document. Réponds sans revenir en arrière&nbsp;: le but n'est pas
+    d'avoir 15/15 du premier coup, mais de voir précisément ce qu'il faut relire.</p>
+    <div class="quizScore" id="qzScore">Score&nbsp;: 0 / 15</div>
+    <div id="qzList"></div>
+    <button class="quizRestart" id="qzRestart">Recommencer le quiz</button>
+  </section>
+
+  <section id="s-suite">
+    <h2>14. Ce pack, et la suite</h2>
+    <p>Ce document couvre l'essentiel du programme «&nbsp;charge et champ électrique, champ uniforme,
+    condensateurs&nbsp;» des séries C et D. Il fait le pendant du pack sur le champ gravitationnel — même
+    méthode, même exigence, une charge à la place d'une masse.</p>
+    <div class="card">
+      <p class="label">La suite de la collection «&nbsp;Comprendre la notion&nbsp;»</p>
+      <p>Le champ magnétique est en préparation en parallèle de ce pack — même façon de faire, cette fois
+      avec les forces de Laplace et de Lorentz. Ensuite viendront l'optique (lentilles, formation des
+      images) et les ondes (longueur d'onde, diffraction) — Deeper Science a déjà une vidéo sur les photons
+      qui pose une bonne partie des bases pour ce chapitre-là.</p>
+      <p style="margin:0">Si une idée d'ajout te vient — une notion mal expliquée ailleurs, un exercice qui
+      manque — elle sera intégrée dans les futures éditions de la collection.</p>
+    </div>
+    <div class="card note">
+      <p class="label">Cette version</p>
+      <p style="margin:0">v1 — loi de Coulomb, champ électrique, champ uniforme entre plaques, déviation
+      électrostatique, potentiel, condensateurs, accélération de particules. Les valeurs et notations seront
+      calées sur le manuel béninois avant la version finale.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    Deeper Science &mdash; Comprendre la notion. Fichier autonome&nbsp;: ta progression et tes réglages
+    restent sur cet appareil. Ce document est un support de compréhension, pas un substitut au cours ni
+    au professeur.
+  </div>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var LS=null; try{ LS=window.localStorage; }catch(e){}
+  var KEY="pce_";
+  function get(k,d){ try{ var v=LS.getItem(KEY+k); return v===null?d:v; }catch(e){ return d; } }
+  function set(k,v){ try{ LS.setItem(KEY+k,v); }catch(e){} }
+
+  var root=document.documentElement;
+
+  /* thème */
+  var tb=document.getElementById('themeBtn');
+  var savedTheme=get('theme',null);
+  if(savedTheme) root.setAttribute('data-theme',savedTheme);
+  function tlbl(){ tb.innerHTML = root.getAttribute('data-theme')==='dark' ? '&#9788;' : '&#9789;'; }
+  tlbl();
+  tb.addEventListener('click',function(){
+    var d=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',d); set('theme',d); tlbl();
+    if(typeof drawDev==='function') drawDev();
+  });
+
+  /* taille texte */
+  var fs=parseFloat(get('fs','1'))||1;
+  function applyFs(){ fs=Math.max(0.85,Math.min(1.35,fs)); root.style.setProperty('--fs',fs); set('fs',fs); }
+  applyFs();
+  document.querySelectorAll('.bar button[data-fs]').forEach(function(b){
+    b.addEventListener('click',function(){ fs+=(b.getAttribute('data-fs')==='+'?0.08:-0.08); applyFs(); });
+  });
+
+  /* barre qui s'efface au scroll + hauteur */
+  var barWrap=document.getElementById('barWrap');
+  function sizeBar(){ root.style.setProperty('--bar',(barWrap.offsetHeight+8)+'px'); }
+  sizeBar(); window.addEventListener('resize',sizeBar); window.addEventListener('load',sizeBar);
+  var lastY=0;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    barWrap.classList.toggle('hide', y>lastY && y>120);
+    lastY=y;
+    progress();
+    var cur=currentSection();
+    if(cur) set('pos',cur);
+  },{passive:true});
+
+  /* sommaire + progression + cases */
+  var sections=[].slice.call(document.querySelectorAll('main section'));
+  var tocList=document.getElementById('tocList');
+  sections.forEach(function(s){
+    var h=s.querySelector('h2'); if(!h) return;
+    var li=document.createElement('li');
+    var a=document.createElement('a');
+    a.href='#'+s.id; a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+    a.dataset.for=s.id;
+    li.appendChild(a); tocList.appendChild(li);
+  });
+  var ov=document.getElementById('tocOverlay');
+  function tocOpen(o){ ov.classList.toggle('open',o); }
+  document.getElementById('tocBtn').addEventListener('click',function(){ syncToc(); tocOpen(true); });
+  document.getElementById('tocClose').addEventListener('click',function(){ tocOpen(false); });
+  ov.addEventListener('click',function(e){ if(e.target===ov) tocOpen(false); });
+  ov.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ tocOpen(false); }); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') tocOpen(false); });
+
+  document.querySelectorAll('.revealBtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=document.getElementById(b.getAttribute('data-target'));
+      var open=t.hasAttribute('hidden');
+      if(open){ t.removeAttribute('hidden'); b.textContent='Masquer la correction'; }
+      else{ t.setAttribute('hidden',''); b.textContent='Voir la correction'; }
+    });
+  });
+
+  var doneSet;
+  try{ doneSet=JSON.parse(get('done','[]')); }catch(e){ doneSet=[]; }
+  if(!Array.isArray(doneSet)) doneSet=[];
+  document.querySelectorAll('input[data-done]').forEach(function(c){
+    var id=c.getAttribute('data-done');
+    c.checked=doneSet.indexOf(id)>=0;
+    c.addEventListener('change',function(){
+      var i=doneSet.indexOf(id);
+      if(c.checked && i<0) doneSet.push(id);
+      if(!c.checked && i>=0) doneSet.splice(i,1);
+      set('done',JSON.stringify(doneSet));
+      syncToc(); progress();
+    });
+  });
+  function syncToc(){
+    tocList.querySelectorAll('a').forEach(function(a){
+      a.classList.toggle('done', doneSet.indexOf(a.dataset.for)>=0);
+    });
+  }
+  syncToc();
+
+  var fill=document.getElementById('fill'), pct=document.getElementById('pct');
+  function progress(){
+    var total=document.querySelectorAll('input[data-done]').length;
+    var r=total? doneSet.length/total : 0;
+    var docH=document.body.scrollHeight-window.innerHeight;
+    var scr=docH>0? Math.min(1,window.scrollY/docH) : 0;
+    var p=Math.max(r,scr*0.6+r*0.4);
+    fill.style.transform='scaleX('+p+')';
+    pct.textContent=Math.round(p*100)+' %';
+  }
+  progress();
+
+  function currentSection(){
+    var best=null,bd=1e9;
+    sections.forEach(function(s){
+      var d=Math.abs(s.getBoundingClientRect().top-80);
+      if(d<bd){ bd=d; best=s.id; }
+    });
+    return best;
+  }
+
+  /* reprise lecture */
+  var rb=document.getElementById('resumeBar');
+  var pos=get('pos',null);
+  if(pos && document.getElementById(pos) && window.scrollY<40){
+    rb.classList.add('show');
+    document.getElementById('resumeGo').addEventListener('click',function(){
+      document.getElementById(pos).scrollIntoView(); rb.classList.remove('show');
+    });
+    document.getElementById('resumeX').addEventListener('click',function(){ rb.classList.remove('show'); });
+    setTimeout(function(){ rb.classList.remove('show'); },9000);
+  }
+
+  /* ================= SIMULATION : déviation électrostatique ================= */
+  var cv=document.getElementById('cvDev'), ctx=cv.getContext('2d');
+  cv.width=900; cv.height=420;
+  var e_=1.6e-19, me_=9.11e-31, mp_=1.67e-27;
+  var els={
+    U:document.getElementById('du'), d:document.getElementById('dd'),
+    L:document.getElementById('dl'), v0:document.getElementById('dv'),
+    part:document.getElementById('dpart')
+  };
+  function css(v){ return getComputedStyle(root).getPropertyValue(v).trim(); }
+
+  function devCalc(){
+    var U=+els.U.value, d_cm=+els.d.value, L_cm=+els.L.value, v0=+els.v0.value*1e7;
+    var d=d_cm/100, L=L_cm/100;
+    var part=els.part.value;
+    var q = part==='e' ? -e_ : e_;
+    var m = part==='e' ? me_ : mp_;
+    var E=U/d;
+    var a=q*E/m;                 /* signé : accélération dans le sens de +y si positif */
+    var t=L/v0;
+    var y=0.5*a*t*t;
+    var vy=a*t;
+    var ang=Math.atan2(vy,v0)*180/Math.PI;
+    var hitsPlate=Math.abs(y) >= d/2;
+    var tHit=null;
+    if(hitsPlate){
+      tHit=Math.sqrt(Math.abs(d/2/(0.5*a)));
+      if(tHit>t) tHit=t;
+    }
+    return {U:U,d:d,L:L,v0:v0,q:q,m:m,E:E,a:a,t:t,y:y,vy:vy,ang:ang,hits:hitsPlate,tHit:tHit,part:part};
+  }
+
+  window.drawDev = function drawDev(){
+    var R=devCalc();
+    document.getElementById('duv').textContent=R.U;
+    document.getElementById('ddv').textContent=(R.d*100).toFixed(1);
+    document.getElementById('dlv').textContent=(R.L*100).toFixed(1);
+    document.getElementById('dvv').textContent=(+els.v0.value).toFixed(1);
+    document.getElementById('dy').textContent=(R.y*1000).toFixed(2);
+    document.getElementById('dang').textContent=R.ang.toFixed(1);
+
+    var statusEl=document.getElementById('dstatus'), box=document.getElementById('dstatusBox');
+    box.className='rd';
+    if(R.hits){ statusEl.textContent='Percute une plaque'; box.classList.add('warn'); }
+    else{ statusEl.textContent='Ressort sans toucher'; box.classList.add('em'); }
+
+    var W=cv.width,H=cv.height;
+    var plateTopY=70, plateBotY=H-70;
+    var xL=120, xR=W-80;
+    function PX(x_m){ return xL + (x_m/R.L)*(xR-xL); }
+    function PY(y_m){
+      var mid=(plateTopY+plateBotY)/2;
+      var halfPx=(plateBotY-plateTopY)/2;
+      return mid - (y_m/(R.d/2))*halfPx;
+    }
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=css('--papier'); ctx.fillRect(0,0,W,H);
+
+    ctx.fillStyle=css('--terre'); ctx.fillRect(xL-20,plateTopY-8,xR-xL+40,8);
+    ctx.fillStyle=css('--nere'); ctx.fillRect(xL-20,plateBotY,xR-xL+40,8);
+    ctx.font='bold 16px "IBM Plex Sans",sans-serif'; ctx.textAlign='right';
+    ctx.fillStyle=css('--terre'); ctx.fillText('+', xL-28, plateTopY-2);
+    ctx.fillStyle=css('--nere'); ctx.fillText('−', xL-28, plateBotY+14);
+
+    ctx.strokeStyle=css('--ciel'); ctx.globalAlpha=.5; ctx.lineWidth=1.6;
+    for(var fx=xL+30; fx<xR; fx+=70){
+      ctx.beginPath(); ctx.moveTo(fx,plateTopY+4); ctx.lineTo(fx,plateBotY-4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(fx,plateBotY-4); ctx.lineTo(fx-5,plateBotY-14); ctx.lineTo(fx+5,plateBotY-14); ctx.closePath();
+      ctx.fillStyle=css('--ciel'); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+
+    var tEnd = R.hits ? R.tHit : R.t;
+    ctx.strokeStyle=css('--nere'); ctx.lineWidth=3; ctx.beginPath();
+    var N=80;
+    for(var i=0;i<=N;i++){
+      var tt=tEnd*i/N;
+      var xx=R.v0*tt, yy=0.5*R.a*tt*tt;
+      var X=PX(xx), Y=PY(yy);
+      (i?ctx.lineTo:ctx.moveTo).call(ctx,X,Y);
+    }
+    ctx.stroke();
+
+    var lastX=PX(R.v0*tEnd), lastY=PY(0.5*R.a*tEnd*tEnd);
+    ctx.fillStyle = R.part==='e' ? css('--ciel') : css('--terre');
+    ctx.beginPath(); ctx.arc(lastX,lastY,6,0,7); ctx.fill();
+
+    if(!R.hits){
+      ctx.fillStyle=css('--sauge'); ctx.font='13px "IBM Plex Sans",sans-serif'; ctx.textAlign='left';
+      ctx.fillText('sortie', lastX+10, lastY-8);
+    } else {
+      ctx.fillStyle=css('--terre'); ctx.font='bold 13px "IBM Plex Sans",sans-serif'; ctx.textAlign='left';
+      ctx.fillText('touche !', lastX+10, lastY-8);
+    }
+    ctx.textAlign='left';
+
+    var F='<div><span class="sym">E = U/d</span> = '+R.U+'/'+R.d.toFixed(3)+' = <span class="res">'+R.E.toExponential(2)+' V·m⁻¹</span></div>'+
+      '<div><span class="sym">a = qE/m</span> = <span class="res">'+R.a.toExponential(2)+' m·s⁻²</span></div>'+
+      '<div><span class="sym">t = L/v₀</span> = <span class="res">'+R.t.toExponential(2)+' s</span></div>'+
+      '<div><span class="sym">y = ½·a·t²</span> = <span class="res">'+(R.y*1000).toFixed(2)+' mm</span></div>';
+    document.getElementById('dform').innerHTML=F;
+  };
+  [els.U,els.d,els.L,els.v0,els.part].forEach(function(el){ el.addEventListener('input',drawDev); });
+  drawDev();
+  window.addEventListener('resize',drawDev);
+})();
+
+/* ================= CALCULATRICE : condensateur ================= */
+(function(){
+  "use strict";
+  var cEl=document.getElementById('cc'), uEl=document.getElementById('cu');
+  if(!cEl||!uEl) return;
+  function calc(){
+    var C_uF=+cEl.value, U=+uEl.value;
+    document.getElementById('ccv').textContent=C_uF;
+    document.getElementById('cuv').textContent=U;
+    var C=C_uF*1e-6;
+    var Q=C*U;
+    var Ee=0.5*C*U*U;
+    document.getElementById('cQ').textContent=(Q*1000).toFixed(3);
+    document.getElementById('cE').textContent=Ee.toFixed(4);
+    var F='<div><span class="sym">Q = C·U</span> = ('+C_uF+'×10⁻⁶)('+U+') = <span class="res">'+(Q*1000).toFixed(3)+' mC</span></div>'+
+      '<div><span class="sym">E_e = ½·C·U²</span> = ½('+C_uF+'×10⁻⁶)('+U+')² = <span class="res">'+Ee.toFixed(4)+' J</span></div>';
+    document.getElementById('cform').innerHTML=F;
+  }
+  cEl.addEventListener('input',calc); uEl.addEventListener('input',calc); calc();
+})();
+
+/* ================= CALCULATRICE : accélération d'une charge ================= */
+(function(){
+  "use strict";
+  var uEl=document.getElementById('au'), pEl=document.getElementById('apart');
+  if(!uEl||!pEl) return;
+  var e_=1.6e-19, me_=9.11e-31, mp_=1.67e-27, c_=3e8;
+  function calc(){
+    var U=+uEl.value;
+    document.getElementById('auv').textContent=U;
+    var m = pEl.value==='e' ? me_ : mp_;
+    var v=Math.sqrt(2*e_*U/m);
+    document.getElementById('av').textContent=(v/1e6).toFixed(3);
+    document.getElementById('apct').textContent=(100*v/c_).toFixed(2);
+    var F='<div><span class="sym">v = √(2·e·U/m)</span> = √[2(1,6×10⁻¹⁹)('+U+')/'+m.toExponential(2)+']</div>'+
+      '<div>&nbsp;&nbsp;&nbsp;= <span class="res">'+v.toExponential(3)+' m·s⁻¹</span> = <span class="res">'+(v/1e6).toFixed(3)+'×10⁶ m/s</span></div>'+
+      '<div style="margin-top:.5rem"><span class="sym">v/c</span> = <span class="res">'+(100*v/c_).toFixed(2)+' %</span></div>';
+    document.getElementById('aform').innerHTML=F;
+  }
+  uEl.addEventListener('input',calc); pEl.addEventListener('input',calc); calc();
+})();
+
+/* ================= QUIZ D'AUTO-ÉVALUATION ================= */
+(function(){
+  "use strict";
+  var list=document.getElementById('qzList'); if(!list) return;
+
+  var Q=[
+    {q:"Deux charges de même signe (deux + ou deux &minus;) exercent l'une sur l'autre une force qui...",
+     o:["Les attire toujours","Les repousse","Dépend de leur masse"],
+     c:1, e:"Contrairement à la gravitation (toujours attractive), l'électricité peut repousser : charges identiques = répulsion."},
+    {q:"Vu depuis un point M, le champ créé par une charge négative est dit...",
+     o:["Centrifuge (il pointe en s'éloignant de la charge)","Centripète (il pointe vers la charge)","Nul, une charge négative ne crée pas de champ"],
+     c:1, e:"Une charge négative attire : son champ pointe vers elle depuis n'importe quel point M — c'est le sens centripète. Une charge positive donne un champ centrifuge."},
+    {q:"Quand deux charges créent chacune un champ au même point M, le champ total s'obtient en...",
+     o:["Additionnant directement leurs normes, dans tous les cas","Additionnant les deux champs comme des vecteurs (direction et sens comptent)","Prenant la plus grande des deux valeurs"],
+     c:1, e:"Un champ est un vecteur : sauf cas particulier où les deux champs sont parfaitement alignés dans le même sens, il faut sommer leurs coordonnées, jamais seulement leurs normes."},
+    {q:"La loi de Coulomb F = k·|q₁q₂|/r² ressemble à la loi de gravitation parce que...",
+     o:["C'est une coïncidence sans explication","Les deux sont la signature géométrique d'un espace à trois dimensions (1/r²)","Les charges sont en fait des masses déguisées"],
+     c:1, e:"Le même argument de sphère de surface 4πr² s'applique aux deux lois — c'est la structure de l'espace, pas le type de source, qui impose le 1/r²."},
+    {q:"Le vecteur champ E = F/q en un point dépend-il de la charge test q utilisée pour le mesurer ?",
+     o:["Oui, plus q est grande, plus E est grand","Non, E ne dépend que de la charge source, pas de q","Seulement si q est négative"],
+     c:1, e:"Exactement comme le champ gravitationnel 𝒢 = F/m : diviser par q élimine sa dépendance."},
+    {q:"Entre deux plaques planes parallèles soumises à une tension U, le champ électrique...",
+     o:["Varie en 1/r² comme autour d'une charge ponctuelle","Est uniforme : même valeur, même direction partout entre les plaques","Est nul au centre et maximal sur les bords"],
+     c:1, e:"E = U/d, valeur constante — une configuration différente du champ d'une charge isolée."},
+    {q:"Un électron entre entre deux plaques est dévié vers la plaque positive. Pourquoi ?",
+     o:["Les électrons sont toujours attirés par le pôle positif d'une pile","Sa charge est négative, donc la force qE est opposée au sens du champ E (qui va du + vers le −)","C'est un hasard, ça dépend de la vitesse"],
+     c:1, e:"F = qE avec q négatif : la force pointe dans le sens opposé à E, donc vers la plaque +."},
+    {q:"Dans la déviation électrostatique, pourquoi sépare-t-on le mouvement en x et y ?",
+     o:["Par habitude, sans raison particulière","Ce sont les deux seules directions où une seule force agit (aucune en x, la force électrique en y)","Parce que les plaques sont toujours horizontales"],
+     c:1, e:"Exactement le même principe que le tir oblique dans le champ de pesanteur."},
+    {q:"Le travail de la force électrique dans un champ uniforme, entre deux points A et B, dépend...",
+     o:["Du chemin suivi entre A et B","Seulement du déplacement le long du champ (donc de la tension U_AB), jamais du chemin","De la vitesse de la charge"],
+     c:1, e:"W = q·U_AB — comme le travail du poids, qui ne dépend que de la différence de hauteur."},
+    {q:"La différence de potentiel U (la tension) entre deux points, c'est...",
+     o:["Le champ électrique en ce point","Une énergie par unité de charge : U_AB = V_A − V_B, mesurée en volts","La force exercée sur une charge test"],
+     c:1, e:"Le potentiel V est un scalaire (énergie/charge) ; le champ E est un vecteur (force/charge)."},
+    {q:"Un condensateur de capacité C sous une tension U stocke une charge Q telle que...",
+     o:["Q = C/U","Q = C·U","Q = C + U"],
+     c:1, e:"Q=C·U — plus la capacité ou la tension augmente, plus la charge stockée est grande."},
+    {q:"L'énergie stockée dans un condensateur est donnée par...",
+     o:["E_e = C·U","E_e = ½·C·U²","E_e = Q/U"],
+     c:1, e:"E_e = ½CU² = ½QU — la même forme que l'énergie cinétique ½mv², par analogie."},
+    {q:"Une charge accélérée depuis le repos par une tension U acquiert une vitesse v telle que...",
+     o:["v = qU/m","v = √(2qU/m)","v ne dépend pas de la masse de la particule"],
+     c:1, e:"Théorème de l'énergie cinétique : ½mv² = qU, donc v = √(2qU/m) — dépend bien de la masse."},
+    {q:"Pourquoi une capacité de condensateur plan C = ε₀·S/d augmente-t-elle quand on rapproche les plaques ?",
+     o:["Elle n'augmente pas, elle diminue","Le champ entre les plaques devient plus intense pour une même tension, donc plus de charge est stockée pour la même U","La surface des plaques change automatiquement"],
+     c:1, e:"C est inversement proportionnelle à d : plaques plus proches → capacité plus grande, à surface égale."},
+    {q:"La différence fondamentale entre la gravitation et l'électricité tient...",
+     o:["Au fait que l'électricité ne suit pas une loi en 1/r²","À l'existence de deux signes de charge (+ et −), permettant attraction ET répulsion, alors qu'il n'existe qu'un signe de masse","Au fait que l'électricité ne concerne que les particules très petites"],
+     c:1, e:"C'est la seule vraie différence physique — la forme mathématique (1/r²) est identique dans les deux cas."}
+  ];
+
+  var score=0;
+  function updateScore(){ document.getElementById('qzScore').textContent='Score : '+score+' / '+Q.length; }
+
+  function render(){
+    list.innerHTML='';
+    Q.forEach(function(item,qi){
+      var box=document.createElement('div'); box.className='qz';
+      var qEl=document.createElement('p'); qEl.className='qzQ';
+      qEl.textContent=(qi+1)+'. '+item.q; box.appendChild(qEl);
+      var expEl=document.createElement('div'); expEl.className='qzExp'; expEl.textContent=item.e;
+      item.o.forEach(function(opt,oi){
+        var btn=document.createElement('button'); btn.className='qzOpt'; btn.type='button';
+        btn.textContent=opt;
+        btn.addEventListener('click',function(){
+          var opts=box.querySelectorAll('.qzOpt');
+          opts.forEach(function(b){ b.disabled=true; });
+          if(oi===item.c){ btn.classList.add('correct'); score++; }
+          else{ btn.classList.add('wrong'); opts[item.c].classList.add('correct'); }
+          expEl.classList.add('show');
+          updateScore();
+        });
+        box.appendChild(btn);
+      });
+      box.appendChild(expEl);
+      list.appendChild(box);
+    });
+  }
+  render(); updateScore();
+  document.getElementById('qzRestart').addEventListener('click',function(){
+    score=0; render(); updateScore();
+  });
+})();
+</script>
+</body>
+</html>

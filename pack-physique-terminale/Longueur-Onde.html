@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprendre la longueur d'onde</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papier:#F6F4EF; --carte:#FFFFFF;
+  --encre:#1C2621; --encre-doux:#3E4A43;
+  --nere:#0E5138; --nere-clair:#E4EDE7;
+  --terre:#B34A2F; --terre-clair:#F5E4DE;
+  --mil:#B87A15; --mil-clair:#F7EAD2;
+  --ciel:#245A8D; --ciel-clair:#E1EAF2;
+  --sauge:#5F6F66; --filet:#D9D3C6;
+  --ombre:0 1px 2px rgba(28,38,33,.06),0 12px 34px rgba(28,38,33,.08);
+  --mesure:43rem;
+  --fs:1;
+  --bar:5.6rem;
+}
+:root[data-theme="dark"]{
+  --papier:#141A17; --carte:#1D2521;
+  --encre:#ECEAE3; --encre-doux:#C2C7C1;
+  --nere:#5FC79A; --nere-clair:#1B2C24;
+  --terre:#E7967C; --terre-clair:#2E1F1A;
+  --mil:#E0A93E; --mil-clair:#2C2415;
+  --ciel:#7FB2E0; --ciel-clair:#16283A;
+  --sauge:#9AA79F; --filet:#33403A;
+  --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papier:#141A17; --carte:#1D2521; --encre:#ECEAE3; --encre-doux:#C2C7C1;
+    --nere:#5FC79A; --nere-clair:#1B2C24; --terre:#E7967C; --terre-clair:#2E1F1A;
+    --mil:#E0A93E; --mil-clair:#2C2415; --ciel:#7FB2E0; --ciel-clair:#16283A;
+    --sauge:#9AA79F; --filet:#33403A;
+    --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:calc(112.5% * var(--fs));scroll-behavior:smooth;scroll-padding-top:var(--bar)}
+@media (max-width:600px){ html{font-size:calc(104% * var(--fs))} }
+body{margin:0;background:var(--papier);color:var(--encre);
+  font-family:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  line-height:1.75;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;padding-top:var(--bar)}
+h1,h2,h3{font-family:"Fraunces","Georgia",serif;line-height:1.16;color:var(--encre);overflow-wrap:break-word}
+h1{font-size:2.1rem;margin:.2rem 0 .6rem}
+h2{font-size:1.5rem;margin:2.6rem 0 .8rem}
+h3{font-size:1.12rem;margin:1.6rem 0 .5rem}
+p{margin:0 0 1.15rem}
+a{color:var(--nere);text-underline-offset:2px}
+strong{font-weight:600}
+img{max-width:100%}
+.wrap{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem 5rem}
+.label{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--sauge)}
+.kicker{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mil);margin:0 0 .3rem}
+.lead{font-size:1.12rem;color:var(--encre-doux)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+
+.bar-wrap{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--papier);
+  border-bottom:1px solid var(--filet);transition:transform .3s}
+.bar-wrap.hide{transform:translateY(-100%)}
+.bar{max-width:var(--mesure);margin:0 auto;padding:.55rem 1.25rem;
+  display:flex;align-items:center;gap:.7rem;font-family:"IBM Plex Sans",sans-serif}
+.bar button{font-family:inherit;background:var(--carte);color:var(--encre);border:1px solid var(--filet);
+  border-radius:9px;padding:.32rem .5rem;font-size:.74rem;cursor:pointer;line-height:1}
+.bar button:hover{border-color:var(--nere);color:var(--nere)}
+.bar .sp{flex:1}
+.progress{display:flex;align-items:center;gap:.5rem;width:100%;margin-top:.4rem;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;color:var(--sauge)}
+.progress .track{flex:1;height:5px;border-radius:999px;background:var(--filet);overflow:hidden}
+.progress .fill{display:block;height:100%;background:var(--nere);border-radius:999px;
+  transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.bar-inner{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem .5rem}
+
+.toc-overlay{position:fixed;inset:0;z-index:60;background:rgba(20,26,23,.5);
+  display:flex;align-items:flex-start;justify-content:center;padding:4rem 1rem;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.toc-overlay.open{opacity:1;pointer-events:auto}
+.toc-panel{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1.6rem 1.7rem;max-width:26rem;width:100%;position:relative;
+  max-height:80vh;overflow:auto}
+.toc-close{position:absolute;top:1rem;right:1rem;background:transparent;border:0;font-size:1.1rem;
+  cursor:pointer;color:var(--sauge)}
+.toc-panel ol{margin:.7rem 0 0;padding-left:1.3rem;font-family:"IBM Plex Sans",sans-serif;font-size:.92rem}
+.toc-panel li{margin:.45rem 0}
+.toc-panel a{text-decoration:none;color:var(--encre)}
+.toc-panel a:hover{color:var(--nere)}
+.toc-panel a.done::after{content:" \2713";color:var(--nere);font-weight:700}
+
+.resume-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;
+  padding:.7rem 1rem;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.resume-bar.show{display:flex}
+.resume-bar button{background:#fff;color:var(--nere);border:0;border-radius:999px;
+  padding:.35rem .9rem;font-weight:600;cursor:pointer;font-family:inherit}
+.resume-bar .x{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+
+.card{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.card.note{background:var(--mil-clair);border-color:transparent}
+.card.serieC{background:var(--ciel-clair);border-color:transparent}
+.card .label{margin-bottom:.4rem}
+.formule{font-family:"IBM Plex Mono",monospace;font-size:.96rem;line-height:1.9;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.8rem 1rem;margin:1rem 0;overflow-x:auto;white-space:nowrap}
+.formule .num{color:var(--terre)}
+.formule .res{color:var(--nere);font-weight:600}
+
+.done-row{display:flex;align-items:center;gap:.55rem;margin:1.4rem 0 0;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;color:var(--sauge)}
+.done-row input{width:1.05rem;height:1.05rem;accent-color:var(--nere)}
+
+.sim{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1rem;margin:1.8rem 0;font-family:"IBM Plex Sans",sans-serif}
+.sim h3{font-family:"Fraunces",serif;margin:.2rem 0 .8rem}
+.sim canvas{width:100%;height:auto;display:block;background:var(--papier);
+  border:1px solid var(--filet);border-radius:10px;touch-action:none}
+.sim .controls{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1rem;margin:.9rem 0 .4rem}
+@media (max-width:520px){ .sim .controls{grid-template-columns:1fr} }
+.ctrl{font-size:.78rem;color:var(--encre-doux)}
+.ctrl label{display:flex;justify-content:space-between;margin-bottom:.15rem}
+.ctrl b{color:var(--nere);font-family:"IBM Plex Mono",monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--nere)}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.9rem 0 0}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)} }
+.rd{background:var(--papier);border:1px solid var(--filet);border-radius:9px;padding:.5rem .6rem}
+.rd .k{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sauge)}
+.rd .v{font-family:"IBM Plex Mono",monospace;font-size:.98rem;color:var(--encre);font-weight:500}
+.rd.em{background:var(--nere-clair);border-color:transparent}
+.rd.em .v{color:var(--nere)}
+.rd.warn{background:var(--terre-clair);border-color:transparent}
+.rd.warn .v{color:var(--terre)}
+.simform{font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.85;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.7rem .8rem;margin:.9rem 0 0;overflow-x:auto}
+.simform .sym{color:var(--encre-doux)}
+.simform .num{color:var(--terre)}
+.simform .res{color:var(--nere);font-weight:600}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--encre-doux);margin:.7rem 0 0}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.3rem}
+.foot{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--filet);
+  font-family:"IBM Plex Sans",sans-serif;font-size:.8rem;color:var(--sauge)}
+
+.exo{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.exo .exoNum{font-family:"IBM Plex Sans",sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--mil);margin:0 0 .5rem}
+.revealBtn{font-family:"IBM Plex Sans",sans-serif;background:var(--nere);color:#fff;border:0;
+  border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:600;cursor:pointer;margin:.9rem 0 0}
+.revealBtn:hover{opacity:.9}
+.correction{margin-top:1.1rem;padding-top:1.1rem;border-top:1px dashed var(--filet)}
+.correction .q{font-weight:600;margin:1rem 0 .4rem}
+.correction .q:first-child{margin-top:0}
+
+.quizScore{position:sticky;top:calc(var(--bar) + .6rem);z-index:5;display:inline-block;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-weight:600;
+  font-size:.85rem;border-radius:999px;padding:.4rem 1rem;margin:0 0 1.2rem}
+.qz{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.1rem 1.2rem;margin:1.1rem 0}
+.qz .qzQ{font-weight:600;margin:0 0 .8rem;font-family:"Fraunces",serif;font-size:1.02rem}
+.qzOpt{display:block;width:100%;text-align:left;font-family:"IBM Plex Sans",sans-serif;font-size:.9rem;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;padding:.55rem .8rem;
+  margin:.4rem 0;cursor:pointer;color:var(--encre)}
+.qzOpt:hover:not(:disabled){border-color:var(--nere)}
+.qzOpt:disabled{cursor:default}
+.qzOpt.correct{background:var(--nere-clair);border-color:var(--nere);color:var(--nere);font-weight:600}
+.qzOpt.wrong{background:var(--terre-clair);border-color:var(--terre);color:var(--terre)}
+.qzExp{display:none;margin:.7rem 0 0;padding-top:.7rem;border-top:1px dashed var(--filet);
+  font-size:.86rem;color:var(--encre-doux)}
+.qzExp.show{display:block}
+.quizRestart{font-family:"IBM Plex Sans",sans-serif;background:transparent;color:var(--encre-doux);
+  border:1px solid var(--filet);border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;
+  cursor:pointer;margin:1.2rem 0 0}
+
+.schema{background:var(--papier);border:1px solid var(--filet);border-radius:12px;
+  padding:.7rem .5rem .4rem;margin:.9rem 0 1.3rem}
+.schema svg{display:block;width:100%;height:auto;font-family:"IBM Plex Sans",sans-serif}
+.schema .cap{text-align:center;font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;
+  color:var(--sauge);margin:.35rem 0 0}
+</style>
+</head>
+<body>
+
+<div class="bar-wrap" id="barWrap">
+  <div class="bar">
+    <button id="themeBtn" aria-label="Thème">&#9789;</button>
+    <button data-fs="-" aria-label="Réduire le texte">A&minus;</button>
+    <button data-fs="+" aria-label="Agrandir le texte">A+</button>
+    <span class="sp"></span>
+    <button id="tocBtn">Sommaire</button>
+  </div>
+  <div class="bar-inner">
+    <div class="progress"><span id="pct">0 %</span>
+      <span class="track"><span class="fill" id="fill"></span></span></div>
+  </div>
+</div>
+
+<div class="toc-overlay" id="tocOverlay">
+  <div class="toc-panel">
+    <button class="toc-close" id="tocClose" aria-label="Fermer">&#10005;</button>
+    <p class="label">Sommaire</p>
+    <ol id="tocList"></ol>
+  </div>
+</div>
+
+<div class="resume-bar" id="resumeBar">
+  <span>Reprendre où tu t'es arrêté ?</span>
+  <span><button id="resumeGo">Continuer</button> <button class="x" id="resumeX">Non</button></span>
+</div>
+
+<main class="wrap">
+
+  <p class="kicker">Comprendre la notion</p>
+  <h1>La longueur d'onde</h1>
+  <p class="lead">Le son, la lumière, les vagues sur l'eau, les ondes radio&nbsp;: des phénomènes très
+  différents en apparence, mais qui obéissent tous à la même grammaire mathématique. Une fois que tu
+  comprends ce qu'est une longueur d'onde, tu comprends d'un coup pourquoi le son grave contourne un mur et
+  pas le son aigu, pourquoi ton wifi capte moins bien loin de la box, et pourquoi un CD irise la lumière
+  comme un arc-en-ciel.</p>
+  <p class="label">Programme Terminale C &amp; D — Afrique de l'Ouest</p>
+
+  <section id="s-onde">
+    <h2>1. Une onde&nbsp;: une perturbation qui voyage sans transporter de matière</h2>
+    <p>Jette un caillou dans l'eau calme&nbsp;: un cercle de vaguelettes s'éloigne du point d'impact. Mais
+    une feuille posée sur l'eau, elle, ne part pas avec la vague&nbsp;: elle monte et descend sur place. C'est
+    la définition même d'une onde&nbsp;: <strong>de l'énergie et une forme qui se propagent, sans qu'aucune
+    matière ne voyage avec elles</strong> sur toute la distance.</p>
+    <div class="schema">
+      <svg viewBox="0 0 600 180">
+        <circle cx="300" cy="90" r="8" fill="var(--terre)"/>
+        <circle cx="300" cy="90" r="30" fill="none" stroke="var(--ciel)" stroke-width="2" opacity=".85"/>
+        <circle cx="300" cy="90" r="55" fill="none" stroke="var(--ciel)" stroke-width="2" opacity=".6"/>
+        <circle cx="300" cy="90" r="80" fill="none" stroke="var(--ciel)" stroke-width="2" opacity=".35"/>
+        <circle cx="480" cy="70" r="5" fill="var(--mil)"/>
+        <text x="480" y="55" text-anchor="middle" fill="var(--mil)" font-size="12" font-weight="600">objet flottant&nbsp;: monte/descend</text>
+        <text x="480" y="100" text-anchor="middle" fill="var(--mil)" font-size="12">sur place, ne part pas</text>
+        <text x="300" y="165" text-anchor="middle" fill="var(--sauge)" font-size="12">le cercle de vaguelettes s'éloigne&nbsp;: c'est l'onde qui voyage, pas l'eau</text>
+      </svg>
+      <p class="cap">Même chose pour le son (l'air vibre sur place, l'onde sonore voyage) et pour la lumière (le champ électromagnétique oscille, l'onde voyage à travers le vide).</p>
+    </div>
+    <p style="margin:0">On distingue deux grandes familles&nbsp;: les ondes <strong>mécaniques</strong>
+    (son, vagues, vibrations dans une corde), qui ont besoin d'un support matériel pour exister, et les
+    ondes <strong>électromagnétiques</strong> (lumière, ondes radio, rayons X), qui se propagent même dans le
+    vide.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-onde"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-grandeurs">
+    <h2>2. Longueur d'onde, période, fréquence&nbsp;: trois façons de mesurer la même chose</h2>
+    <p>Pour une onde périodique (qui se répète), trois grandeurs décrivent le même phénomène, vu sous trois
+    angles différents&nbsp;:</p>
+    <div class="formule">&lambda; (longueur d'onde, en m) : distance entre deux crêtes successives</div>
+    <div class="formule">T (période, en s) : durée d'un cycle complet, au même endroit</div>
+    <div class="formule">f = 1/T (fréquence, en Hz) : nombre de cycles par seconde</div>
+    <div class="schema">
+      <svg viewBox="0 0 600 200">
+        <path d="M40,100 Q80,40 120,100 T200,100 T280,100 T360,100 T440,100 T520,100" fill="none" stroke="var(--ciel)" stroke-width="2.5"/>
+        <line x1="120" y1="35" x2="120" y2="100" stroke="var(--sauge)" stroke-width="1.2" stroke-dasharray="3,3"/>
+        <line x1="280" y1="35" x2="280" y2="100" stroke="var(--sauge)" stroke-width="1.2" stroke-dasharray="3,3"/>
+        <line x1="120" y1="30" x2="280" y2="30" stroke="var(--terre)" stroke-width="1.6"/>
+        <polygon points="120,30 130,26 130,34" fill="var(--terre)"/>
+        <polygon points="280,30 270,26 270,34" fill="var(--terre)"/>
+        <text x="200" y="20" text-anchor="middle" fill="var(--terre)" font-size="14" font-weight="700">&lambda;</text>
+        <text x="300" y="170" text-anchor="middle" fill="var(--sauge)" font-size="12">une seule longueur d'onde &lambda; sépare deux crêtes &mdash; le motif se répète ensuite à l'identique</text>
+      </svg>
+      <p class="cap">Distance (λ) et durée (T) sont les deux faces d'une même répétition — reliées par la vitesse de propagation de l'onde.</p>
+    </div>
+    <p style="margin:0">Le lien entre les trois&nbsp;: en une période <code>T</code>, l'onde parcourt
+    exactement une longueur d'onde <code>&lambda;</code>, à la vitesse (célérité) <code>v</code> propre au
+    milieu&nbsp;:</p>
+    <div class="formule">&lambda; = v&middot;T = v/f &nbsp;&nbsp;&rArr;&nbsp;&nbsp; v = &lambda;&middot;f</div>
+    <div class="card note">
+      <p class="label">Un exemple qui parle&nbsp;: le son grave contourne les murs</p>
+      <p style="margin:0">Un son grave (basse fréquence f) a une grande longueur d'onde &lambda; = v/f
+      (v du son dans l'air &asymp; 340 m/s est fixe). Une onde de grande longueur d'onde contourne facilement
+      les obstacles (diffraction, section 4) — c'est pour ça qu'à travers un mur, tu entends la basse d'une
+      musique mais pas les aigus.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-grandeurs"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-sim-onde">
+    <h2>3. Simulation&nbsp;: onde progressive &mdash; λ, T, f et v en direct</h2>
+    <p>Règle la fréquence et la célérité du milieu&nbsp;: regarde comment la longueur d'onde s'ajuste
+    automatiquement pour que <code>v = &lambda;f</code> reste toujours vrai.</p>
+
+    <div class="sim" id="simOnde">
+      <h3>Onde progressive sinusoïdale</h3>
+      <canvas id="cvOnde" width="900" height="300"></canvas>
+      <div class="controls">
+        <div class="ctrl"><label>Fréquence f <b><span id="ofv">2.0</span> Hz</b></label>
+          <input type="range" id="of" min="0.2" max="6" step="0.1" value="2.0"></div>
+        <div class="ctrl"><label>Célérité v (vitesse dans le milieu) <b><span id="ovv">4.0</span> m/s</b></label>
+          <input type="range" id="ov" min="0.5" max="10" step="0.1" value="4.0"></div>
+      </div>
+      <div class="readout">
+        <div class="rd em"><div class="k">Longueur d'onde λ = v/f</div><div class="v"><span id="olam">0</span> m</div></div>
+        <div class="rd"><div class="k">Période T = 1/f</div><div class="v"><span id="oT">0</span> s</div></div>
+      </div>
+      <div class="simform" id="oform"></div>
+    </div>
+    <p>Ce que la simulation montre&nbsp;: augmente la fréquence à célérité fixe, la longueur d'onde
+    <strong>diminue</strong> — les crêtes se resserrent. Augmente la célérité à fréquence fixe (change de
+    milieu), la longueur d'onde <strong>augmente</strong> — c'est ce qui se passe pour le son qui passe de
+    l'air à l'eau (célérité multipliée par 4, donc λ multipliée par 4 à fréquence égale).</p>
+    <div class="done-row"><input type="checkbox" data-done="s-sim-onde"><span>J'ai fait tourner la simulation</span></div>
+  </section>
+
+  <section id="s-diffraction">
+    <h2>4. La diffraction&nbsp;: une onde qui contourne un obstacle</h2>
+    <p>Fais passer une onde par une petite ouverture (une fente) de largeur <code>a</code>. Si l'ouverture est
+    du même ordre de grandeur que la longueur d'onde &lambda;, l'onde ne continue pas tout droit&nbsp;: elle
+    s'étale de part et d'autre, comme si l'ouverture devenait elle-même une nouvelle source. C'est la
+    <strong>diffraction</strong>.</p>
+    <div class="formule">&theta; &asymp; &lambda; / a &nbsp;&nbsp; (en radians, pour a &gt;&gt; &lambda;) &mdash; &theta; = demi-angle d'écart entre le centre et la première extinction</div>
+    <div class="schema">
+      <svg viewBox="0 0 600 220">
+        <g stroke="var(--ciel)" stroke-width="2" fill="none">
+          <line x1="30" y1="60" x2="30" y2="160"/>
+          <line x1="30" y1="90" x2="30" y2="130"/>
+        </g>
+        <rect x="150" y="20" width="10" height="70" fill="var(--sauge)"/>
+        <rect x="150" y="130" width="10" height="70" fill="var(--sauge)"/>
+        <text x="155" y="115" text-anchor="middle" fill="var(--terre)" font-size="12" font-weight="600">a</text>
+        <g stroke="var(--terre)" stroke-width="1.8" fill="none" opacity=".85">
+          <path d="M160,110 L520,40"/>
+          <path d="M160,110 L520,110"/>
+          <path d="M160,110 L520,180"/>
+        </g>
+        <text x="300" y="25" text-anchor="middle" fill="var(--terre)" font-size="12">&theta;</text>
+        <text x="300" y="205" text-anchor="middle" fill="var(--sauge)" font-size="12">quand a se rapproche de &lambda;, l'onde s'étale largement après la fente au lieu de continuer tout droit</text>
+      </svg>
+      <p class="cap">Le même phénomène explique pourquoi le wifi (λ ≈ 12 cm) traverse mal une porte étroite comparé à une onde radio FM (λ ≈ 3 m), qui contourne bien plus facilement les obstacles du même ordre de grandeur.</p>
+    </div>
+    <div class="card serieC">
+      <p class="label">Pour la série C&nbsp;: pourquoi θ = λ/a</p>
+      <p style="margin:0">La diffraction résulte d'interférences entre une infinité de sources secondaires
+      réparties sur l'ouverture (principe de Huygens-Fresnel). Le premier minimum d'intensité apparaît quand
+      les ondes issues des deux bords de la fente arrivent en opposition de phase&nbsp;: cette condition
+      géométrique donne exactement <code>sin&theta;&nbsp;&asymp;&nbsp;&theta;&nbsp;=&nbsp;&lambda;/a</code>
+      pour les petits angles.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-diffraction"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-sim-diff">
+    <h2>5. Simulation&nbsp;: figure de diffraction selon λ/a</h2>
+    <p>Règle la longueur d'onde et la largeur de la fente&nbsp;: regarde l'angle d'étalement θ changer, et la
+    tache centrale de diffraction s'élargir ou se resserrer sur l'écran.</p>
+
+    <div class="sim" id="simDiff">
+      <h3>Diffraction par une fente de largeur a</h3>
+      <canvas id="cvDiff" width="900" height="340"></canvas>
+      <div class="controls">
+        <div class="ctrl"><label>Longueur d'onde λ <b><span id="dlamv">550</span> nm</b></label>
+          <input type="range" id="dlam" min="380" max="750" step="5" value="550"></div>
+        <div class="ctrl"><label>Largeur de la fente a <b><span id="dav">0.20</span> mm</b></label>
+          <input type="range" id="da" min="0.02" max="1" step="0.01" value="0.20"></div>
+      </div>
+      <div class="readout">
+        <div class="rd em"><div class="k">Demi-angle θ ≈ λ/a</div><div class="v"><span id="dtheta">0</span> mrad</div></div>
+        <div class="rd"><div class="k">Largeur tache centrale (écran à D = 2 m)</div><div class="v"><span id="dwidth">0</span> cm</div></div>
+      </div>
+      <div class="simform" id="dform2"></div>
+    </div>
+    <p style="margin:0">Ce que la simulation montre&nbsp;: réduis la largeur de la fente <code>a</code>, la
+    tache de diffraction s'élargit — plus l'ouverture est petite (proche de &lambda;), plus l'onde s'étale.
+    Augmente <code>a</code> bien au-delà de &lambda;, la diffraction devient négligeable&nbsp;: l'onde
+    voyage presque tout droit, comme un rayon lumineux classique.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-sim-diff"><span>J'ai fait tourner la simulation</span></div>
+  </section>
+
+  <section id="s-interferences">
+    <h2>6. Les interférences&nbsp;: deux ondes qui s'additionnent ou s'annulent</h2>
+    <p>Fais passer une onde par deux fentes très rapprochées (expérience des fentes de Young)&nbsp;: chaque
+    fente diffracte, et les deux ondes diffractées se recouvrent sur l'écran. Là où deux crêtes arrivent
+    ensemble, l'onde double d'amplitude (interférence <strong>constructive</strong>)&nbsp;; là où une crête
+    croise un creux, elles s'annulent (interférence <strong>destructive</strong>).</p>
+    <div class="formule">i = &lambda;&middot;D / a &nbsp;&nbsp; (interfrange, distance entre deux franges brillantes successives sur l'écran)</div>
+    <p style="margin:0">avec <code>D</code> la distance fentes&ndash;écran et <code>a</code> l'écartement
+    entre les deux fentes. Plus les fentes sont rapprochées, ou plus l'écran est loin, plus les franges sont
+    espacées et faciles à observer — c'est cette expérience, réalisée par Thomas Young en 1801, qui a
+    convaincu les physiciens que la lumière est bien une onde.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-interferences"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-photon">
+    <h2>7. Le lien avec les photons&nbsp;: quand la lumière redevient une particule</h2>
+    <p>La diffraction et les interférences prouvent que la lumière se comporte comme une onde. Mais l'effet
+    photoélectrique (déjà vu dans une autre vidéo Deeper Science) prouve qu'elle se comporte aussi comme un
+    flux de particules, les <strong>photons</strong>, chacun porteur d'une énergie&nbsp;:</p>
+    <div class="formule">E = h&middot;f = h&middot;c/&lambda; &nbsp;&nbsp; avec h = 6,63&times;10<sup>&minus;34</sup> J&middot;s (constante de Planck)</div>
+    <p>Cette double nature &mdash; onde ET particule &mdash; n'est pas une contradiction à
+    résoudre, c'est le point de départ de la mécanique quantique&nbsp;: une longueur d'onde plus courte
+    correspond à des photons plus énergétiques (le violet plus que le rouge, les rayons X bien plus que la
+    lumière visible).</p>
+    <div class="card note">
+      <p class="label">L'échelle complète des ondes électromagnétiques</p>
+      <p style="margin:0">La lumière visible n'est qu'une toute petite tranche d'un spectre bien plus
+      large, classé uniquement par longueur d'onde&nbsp;: ondes <strong>radio</strong> (&lambda; de
+      quelques cm à plusieurs km) — micro-ondes/<strong>wifi</strong> (&asymp; 12 cm à 1 mm) —
+      <strong>infrarouge</strong> (1 mm à 700 nm, la chaleur que tu sens sans la voir) — <strong>lumière
+      visible</strong> (700 nm rouge à 380 nm violet — un intervalle minuscule à l'échelle du spectre
+      entier) — <strong>ultraviolet</strong> (380 à 10 nm, responsable des coups de soleil) —
+      <strong>rayons X</strong> (10 nm à 10 pm, utilisés en radiographie) — <strong>rayons gamma</strong>
+      (moins de 10 pm, émis par la désintégration radioactive). Une seule et même équation,
+      <code>E&nbsp;=&nbsp;hc/&lambda;</code>, explique pourquoi les rayons X traversent ton corps sans
+      encombre alors que la lumière visible s'arrête à ta peau&nbsp;: plus &lambda; est petit, plus le
+      photon est énergétique et pénétrant.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-photon"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-exos">
+    <h2>8. Exercices corrigés type bac</h2>
+    <p>Trois exercices dans l'esprit des sujets de bac (séries C et D), avec correction complète.
+    Cherche d'abord seul, puis vérifie&nbsp;: célérité du son dans l'air
+    <code>v<sub>son</sub>&nbsp;=&nbsp;340</code>&nbsp;m/s, célérité de la lumière
+    <code>c&nbsp;=&nbsp;3&times;10<sup>8</sup></code>&nbsp;m/s.</p>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 1 — séries C &amp; D</p>
+      <p><strong>Énoncé.</strong> Un haut-parleur émet un son de fréquence <code>f&nbsp;=&nbsp;440</code>&nbsp;Hz
+      (le « la » musical) dans l'air. Calculer sa longueur d'onde.</p>
+      <button class="revealBtn" data-target="e1">Voir la correction</button>
+      <div class="correction" id="e1" hidden>
+        <p class="q">Mise en équation</p>
+        <p><code>&lambda; = v<sub>son</sub>/f</code></p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">&lambda; = 340 / 440 = <span class="res">0,77 m &asymp; 77 cm</span></div>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 2 — série C</p>
+      <p><strong>Énoncé.</strong> Une onde lumineuse de longueur d'onde <code>&lambda;&nbsp;=&nbsp;600</code>&nbsp;nm
+      traverse une fente de largeur <code>a&nbsp;=&nbsp;0,1</code>&nbsp;mm. Calculer le demi-angle de
+      diffraction θ (en radians), puis la largeur de la tache centrale sur un écran situé à
+      <code>D&nbsp;=&nbsp;3</code>&nbsp;m.</p>
+      <button class="revealBtn" data-target="e2">Voir la correction</button>
+      <div class="correction" id="e2" hidden>
+        <p class="q">Angle de diffraction</p>
+        <div class="formule" style="white-space:normal">&theta; = &lambda;/a = (600&times;10<sup>&minus;9</sup>) / (0,1&times;10<sup>&minus;3</sup>)
+          = <span class="res">6&times;10<sup>&minus;3</sup> rad</span></div>
+        <p class="q">Largeur de la tache centrale</p>
+        <p>La tache s'étend de part et d'autre du centre sur un angle θ&nbsp;: largeur totale
+        <code>L&nbsp;=&nbsp;2&middot;&theta;&middot;D</code>.</p>
+        <div class="formule" style="white-space:normal">L = 2 &times; (6&times;10<sup>&minus;3</sup>) &times; 3 = <span class="res">3,6&times;10<sup>&minus;2</sup> m = 3,6 cm</span></div>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 3 — série D (plus simple)</p>
+      <p><strong>Énoncé.</strong> Dans une expérience de fentes de Young, deux fentes espacées de
+      <code>a&nbsp;=&nbsp;0,5</code>&nbsp;mm sont éclairées par une lumière de longueur d'onde
+      <code>&lambda;&nbsp;=&nbsp;650</code>&nbsp;nm. L'écran est placé à <code>D&nbsp;=&nbsp;2</code>&nbsp;m.
+      Calculer l'interfrange i.</p>
+      <button class="revealBtn" data-target="e3">Voir la correction</button>
+      <div class="correction" id="e3" hidden>
+        <p class="q">Mise en équation</p>
+        <p><code>i = &lambda;&middot;D/a</code></p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">i = (650&times;10<sup>&minus;9</sup>)(2) / (0,5&times;10<sup>&minus;3</sup>)
+          = <span class="res">2,6&times;10<sup>&minus;3</sup> m = 2,6 mm</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-quiz">
+    <h2>9. Quiz d'auto-évaluation</h2>
+    <p>Douze questions couvrant tout le document. Réponds sans revenir en arrière&nbsp;: le but n'est pas
+    d'avoir 12/12 du premier coup, mais de voir précisément ce qu'il faut relire.</p>
+    <div class="quizScore" id="qzScore">Score&nbsp;: 0 / 12</div>
+    <div id="qzList"></div>
+    <button class="quizRestart" id="qzRestart">Recommencer le quiz</button>
+  </section>
+
+  <section id="s-suite">
+    <h2>10. Ce pack, et la suite</h2>
+    <p>Ce document couvre l'essentiel du programme «&nbsp;ondes, longueur d'onde, diffraction,
+    interférences&nbsp;» des séries C et D. Il fait le pendant des packs sur le champ gravitationnel, le
+    champ électrique et le champ magnétique — même méthode, même exigence, une nouvelle famille de
+    phénomènes cette fois : les ondes, plutôt que les forces à distance.</p>
+    <div class="card">
+      <p class="label">La suite de la collection «&nbsp;Comprendre la notion&nbsp;»</p>
+      <p style="margin:0">Ensuite viendra l'optique (lentilles, formation des images) — un chapitre qui
+      s'appuie directement sur les notions d'onde et de longueur d'onde déjà posées ici.</p>
+    </div>
+    <div class="card note">
+      <p class="label">Cette version</p>
+      <p style="margin:0">v1 — définition d'une onde, longueur d'onde/période/fréquence/célérité,
+      diffraction, interférences (fentes de Young), lien avec les photons. Les valeurs et notations seront
+      calées sur le manuel béninois avant la version finale.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    Deeper Science &mdash; Comprendre la notion. Fichier autonome&nbsp;: ta progression et tes réglages
+    restent sur cet appareil. Ce document est un support de compréhension, pas un substitut au cours ni
+    au professeur.
+  </div>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var LS=null; try{ LS=window.localStorage; }catch(e){}
+  var KEY="plo_";
+  function get(k,d){ try{ var v=LS.getItem(KEY+k); return v===null?d:v; }catch(e){ return d; } }
+  function set(k,v){ try{ LS.setItem(KEY+k,v); }catch(e){} }
+
+  var root=document.documentElement;
+
+  var tb=document.getElementById('themeBtn');
+  var savedTheme=get('theme',null);
+  if(savedTheme) root.setAttribute('data-theme',savedTheme);
+  function tlbl(){ tb.innerHTML = root.getAttribute('data-theme')==='dark' ? '&#9788;' : '&#9789;'; }
+  tlbl();
+  tb.addEventListener('click',function(){
+    var d=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',d); set('theme',d); tlbl();
+    if(typeof drawOnde==='function') drawOnde();
+    if(typeof drawDiff==='function') drawDiff();
+  });
+
+  var fs=parseFloat(get('fs','1'))||1;
+  function applyFs(){ fs=Math.max(0.85,Math.min(1.35,fs)); root.style.setProperty('--fs',fs); set('fs',fs); }
+  applyFs();
+  document.querySelectorAll('.bar button[data-fs]').forEach(function(b){
+    b.addEventListener('click',function(){ fs+=(b.getAttribute('data-fs')==='+'?0.08:-0.08); applyFs(); });
+  });
+
+  var barWrap=document.getElementById('barWrap');
+  function sizeBar(){ root.style.setProperty('--bar',(barWrap.offsetHeight+8)+'px'); }
+  sizeBar(); window.addEventListener('resize',sizeBar); window.addEventListener('load',sizeBar);
+  var lastY=0;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    barWrap.classList.toggle('hide', y>lastY && y>120);
+    lastY=y;
+    progress();
+    var cur=currentSection();
+    if(cur) set('pos',cur);
+  },{passive:true});
+
+  var sections=[].slice.call(document.querySelectorAll('main section'));
+  var tocList=document.getElementById('tocList');
+  sections.forEach(function(s){
+    var h=s.querySelector('h2'); if(!h) return;
+    var li=document.createElement('li');
+    var a=document.createElement('a');
+    a.href='#'+s.id; a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+    a.dataset.for=s.id;
+    li.appendChild(a); tocList.appendChild(li);
+  });
+  var ov=document.getElementById('tocOverlay');
+  function tocOpen(o){ ov.classList.toggle('open',o); }
+  document.getElementById('tocBtn').addEventListener('click',function(){ syncToc(); tocOpen(true); });
+  document.getElementById('tocClose').addEventListener('click',function(){ tocOpen(false); });
+  ov.addEventListener('click',function(e){ if(e.target===ov) tocOpen(false); });
+  ov.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ tocOpen(false); }); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') tocOpen(false); });
+
+  document.querySelectorAll('.revealBtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=document.getElementById(b.getAttribute('data-target'));
+      var open=t.hasAttribute('hidden');
+      if(open){ t.removeAttribute('hidden'); b.textContent='Masquer la correction'; }
+      else{ t.setAttribute('hidden',''); b.textContent='Voir la correction'; }
+    });
+  });
+
+  var doneSet;
+  try{ doneSet=JSON.parse(get('done','[]')); }catch(e){ doneSet=[]; }
+  if(!Array.isArray(doneSet)) doneSet=[];
+  document.querySelectorAll('input[data-done]').forEach(function(c){
+    var id=c.getAttribute('data-done');
+    c.checked=doneSet.indexOf(id)>=0;
+    c.addEventListener('change',function(){
+      var i=doneSet.indexOf(id);
+      if(c.checked && i<0) doneSet.push(id);
+      if(!c.checked && i>=0) doneSet.splice(i,1);
+      set('done',JSON.stringify(doneSet));
+      syncToc(); progress();
+    });
+  });
+  function syncToc(){
+    tocList.querySelectorAll('a').forEach(function(a){
+      a.classList.toggle('done', doneSet.indexOf(a.dataset.for)>=0);
+    });
+  }
+  syncToc();
+
+  var fill=document.getElementById('fill'), pct=document.getElementById('pct');
+  function progress(){
+    var total=document.querySelectorAll('input[data-done]').length;
+    var r=total? doneSet.length/total : 0;
+    var docH=document.body.scrollHeight-window.innerHeight;
+    var scr=docH>0? Math.min(1,window.scrollY/docH) : 0;
+    var p=Math.max(r,scr*0.6+r*0.4);
+    fill.style.transform='scaleX('+p+')';
+    pct.textContent=Math.round(p*100)+' %';
+  }
+  progress();
+
+  function currentSection(){
+    var best=null,bd=1e9;
+    sections.forEach(function(s){
+      var d=Math.abs(s.getBoundingClientRect().top-80);
+      if(d<bd){ bd=d; best=s.id; }
+    });
+    return best;
+  }
+
+  var rb=document.getElementById('resumeBar');
+  var pos=get('pos',null);
+  if(pos && document.getElementById(pos) && window.scrollY<40){
+    rb.classList.add('show');
+    document.getElementById('resumeGo').addEventListener('click',function(){
+      document.getElementById(pos).scrollIntoView(); rb.classList.remove('show');
+    });
+    document.getElementById('resumeX').addEventListener('click',function(){ rb.classList.remove('show'); });
+    setTimeout(function(){ rb.classList.remove('show'); },9000);
+  }
+
+  function css(v){ return getComputedStyle(root).getPropertyValue(v).trim(); }
+
+  /* ================= SIMULATION : onde progressive ================= */
+  var cvO=document.getElementById('cvOnde'), ctxO=cvO.getContext('2d');
+  cvO.width=900; cvO.height=300;
+  var elsO={ f:document.getElementById('of'), v:document.getElementById('ov') };
+  var tPhase=0, rafOnde=null;
+
+  function ondeCalc(){
+    var f=+elsO.f.value, v=+elsO.v.value;
+    var lam=v/f, T=1/f;
+    return {f:f,v:v,lam:lam,T:T};
+  }
+
+  window.drawOnde = function drawOnde(){
+    var R=ondeCalc();
+    document.getElementById('ofv').textContent=R.f.toFixed(1);
+    document.getElementById('ovv').textContent=R.v.toFixed(1);
+    document.getElementById('olam').textContent=R.lam.toFixed(2);
+    document.getElementById('oT').textContent=R.T.toFixed(2);
+
+    var W=cvO.width,H=cvO.height,mid=H/2,amp=90;
+    var pxPerM = (W-60)/(R.lam*3.2 > 0 ? R.lam*3.2 : 1);
+    /* affiche toujours ~3.2 longueurs d'onde sur la largeur du canvas */
+    var k = 2*Math.PI/R.lam;
+
+    ctxO.clearRect(0,0,W,H);
+    ctxO.fillStyle=css('--papier'); ctxO.fillRect(0,0,W,H);
+    ctxO.strokeStyle=css('--filet'); ctxO.lineWidth=1;
+    ctxO.beginPath(); ctxO.moveTo(30,mid); ctxO.lineTo(W-30,mid); ctxO.stroke();
+
+    ctxO.strokeStyle=css('--ciel'); ctxO.lineWidth=3; ctxO.beginPath();
+    for(var px=30; px<=W-30; px++){
+      var xm=(px-30)/pxPerM;
+      var y=mid - amp*Math.sin(k*xm - 2*Math.PI*R.f*tPhase);
+      (px===30?ctxO.moveTo:ctxO.lineTo).call(ctxO,px,y);
+    }
+    ctxO.stroke();
+
+    var F='<div><span class="sym">λ = v/f</span> = '+R.v.toFixed(1)+'/'+R.f.toFixed(1)+' = <span class="res">'+R.lam.toFixed(2)+' m</span></div>'+
+      '<div><span class="sym">T = 1/f</span> = <span class="res">'+R.T.toFixed(2)+' s</span></div>';
+    document.getElementById('oform').innerHTML=F;
+  };
+  [elsO.f,elsO.v].forEach(function(el){ el.addEventListener('input',drawOnde); });
+  function animOnde(){ tPhase+=1/60; drawOnde(); rafOnde=requestAnimationFrame(animOnde); }
+  animOnde();
+  window.addEventListener('resize',drawOnde);
+
+  /* ================= SIMULATION : diffraction ================= */
+  var cvD=document.getElementById('cvDiff'), ctxD=cvD.getContext('2d');
+  cvD.width=900; cvD.height=340;
+  var elsD={ lam:document.getElementById('dlam'), a:document.getElementById('da') };
+
+  function diffCalc(){
+    var lam_nm=+elsD.lam.value, a_mm=+elsD.a.value;
+    var lam=lam_nm*1e-9, a=a_mm*1e-3;
+    var theta=lam/a; /* rad */
+    var D=2; /* m, écran fictif pour affichage pédagogique */
+    var width=2*theta*D;
+    return {lam:lam,a:a,theta:theta,D:D,width:width,lam_nm:lam_nm,a_mm:a_mm};
+  }
+
+  function wavelenColor(nm){
+    /* approx visible spectrum -> CSS color */
+    var r,g,b;
+    if(nm<440){ r=(440-nm)/(440-380); g=0; b=1; }
+    else if(nm<490){ r=0; g=(nm-440)/(490-440); b=1; }
+    else if(nm<510){ r=0; g=1; b=(510-nm)/(510-490); }
+    else if(nm<580){ r=(nm-510)/(580-510); g=1; b=0; }
+    else if(nm<645){ r=1; g=(645-nm)/(645-580); b=0; }
+    else { r=1; g=0; b=0; }
+    return 'rgb('+Math.round(r*255)+','+Math.round(g*255)+','+Math.round(b*255)+')';
+  }
+
+  window.drawDiff = function drawDiff(){
+    var R=diffCalc();
+    document.getElementById('dlamv').textContent=R.lam_nm;
+    document.getElementById('dav').textContent=R.a_mm.toFixed(2);
+    document.getElementById('dtheta').textContent=(R.theta*1000).toFixed(2);
+    document.getElementById('dwidth').textContent=(R.width*100).toFixed(2);
+
+    var W=cvD.width,H=cvD.height,cx=W/2,cy=H/2;
+    ctxD.clearRect(0,0,W,H);
+    ctxD.fillStyle=css('--papier'); ctxD.fillRect(0,0,W,H);
+
+    var col=wavelenColor(R.lam_nm);
+    /* tache centrale : largeur visuelle proportionnelle a theta (avec plafond visuel) */
+    var visW=Math.min(W-100, Math.max(20, R.theta*4000));
+    var grad=ctxD.createLinearGradient(cx-visW/2,0,cx+visW/2,0);
+    grad.addColorStop(0,'rgba(0,0,0,0)');
+    grad.addColorStop(0.5,col);
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    ctxD.fillStyle=grad;
+    ctxD.fillRect(cx-visW/2,cy-70,visW,140);
+
+    /* franges secondaires attenuees */
+    ctxD.globalAlpha=.35;
+    for(var s=1;s<=2;s++){
+      ctxD.fillStyle=grad;
+      ctxD.fillRect(cx-visW/2-s*visW*0.55,cy-45,visW*0.4,90);
+      ctxD.fillRect(cx+visW/2+s*visW*0.15,cy-45,visW*0.4,90);
+    }
+    ctxD.globalAlpha=1;
+
+    ctxD.fillStyle=css('--sauge'); ctxD.font='12px "IBM Plex Sans",sans-serif'; ctxD.textAlign='center';
+    ctxD.fillText('écran (D = 2 m)', cx, H-15);
+    ctxD.fillText('tache centrale de diffraction', cx, 25);
+
+    var F='<div><span class="sym">θ = λ/a</span> = ('+R.lam_nm+'×10⁻⁹)/('+R.a_mm.toFixed(2)+'×10⁻³) = <span class="res">'+(R.theta*1000).toFixed(2)+' mrad</span></div>'+
+      '<div><span class="sym">largeur = 2·θ·D</span> = <span class="res">'+(R.width*100).toFixed(2)+' cm</span> (à D = 2 m)</div>';
+    document.getElementById('dform2').innerHTML=F;
+  };
+  [elsD.lam,elsD.a].forEach(function(el){ el.addEventListener('input',drawDiff); });
+  drawDiff();
+  window.addEventListener('resize',drawDiff);
+
+  /* ================= QUIZ D'AUTO-ÉVALUATION ================= */
+  var list=document.getElementById('qzList');
+  var Q=[
+    {q:"Quand une onde se propage à la surface de l'eau, un bouchon flottant qui la traverse...",
+     o:["Est emporté avec l'onde jusqu'au bord","Monte et descend sur place, sans être emporté","Coule immédiatement"],
+     c:1, e:"Une onde transporte de l'énergie et une forme, jamais de la matière : le bouchon oscille sur place."},
+    {q:"La longueur d'onde λ, c'est...",
+     o:["Le temps que dure un cycle complet","La distance entre deux crêtes successives","La vitesse de propagation de l'onde"],
+     c:1, e:"λ est une distance (en mètres). Le temps d'un cycle, c'est la période T ; la vitesse, c'est la célérité v."},
+    {q:"La relation entre longueur d'onde, célérité et fréquence est...",
+     o:["λ = v/f","λ = v·f","λ = f/v"],
+     c:0, e:"λ = v/f (ou v = λf) : en une période, l'onde parcourt exactement une longueur d'onde."},
+    {q:"Un son grave (basse fréquence) a, comparé à un son aigu, une longueur d'onde...",
+     o:["Plus petite","Plus grande","Identique, la fréquence n'a pas d'effet sur λ"],
+     c:1, e:"λ = v/f : à célérité du son fixe dans l'air, une fréquence plus basse donne une longueur d'onde plus grande."},
+    {q:"La diffraction se produit lorsqu'une onde traverse une ouverture...",
+     o:["Beaucoup plus grande que sa longueur d'onde","Du même ordre de grandeur que sa longueur d'onde","De taille nulle"],
+     c:1, e:"C'est quand a est proche de λ que l'onde s'étale fortement après l'ouverture — l'effet est négligeable si a >> λ."},
+    {q:"La formule de l'angle de diffraction θ ≈ λ/a montre que plus la fente est étroite (a petit)...",
+     o:["Plus l'onde s'étale (θ augmente)","Moins l'onde s'étale (θ diminue)","a n'a aucun effet sur θ"],
+     c:0, e:"θ = λ/a est inversement proportionnel à a : une fente plus étroite diffracte davantage."},
+    {q:"Pourquoi le signal wifi passe-t-il moins bien à travers un mur qu'une station de radio FM ?",
+     o:["Le wifi a une longueur d'onde bien plus courte, donc il diffracte moins bien autour des obstacles","Le wifi n'existe pas vraiment, c'est un mythe","La radio FM n'est pas une onde électromagnétique"],
+     c:0, e:"Une longueur d'onde plus courte (wifi ≈ 12 cm) diffracte moins qu'une grande longueur d'onde (FM ≈ 3 m) autour d'obstacles de taille comparable."},
+    {q:"Dans l'expérience des fentes de Young, deux ondes qui arrivent en phase (crête sur crête) donnent...",
+     o:["Une interférence destructive (elles s'annulent)","Une interférence constructive (l'amplitude double)","Aucun effet, les ondes s'ignorent"],
+     c:1, e:"Crête + crête = amplitude qui s'ajoute : c'est une frange brillante sur l'écran."},
+    {q:"L'interfrange i = λD/a dans l'expérience de Young augmente si...",
+     o:["On rapproche l'écran des fentes","On écarte davantage les deux fentes","On éloigne l'écran des fentes (D augmente)"],
+     c:2, e:"i est proportionnel à D : plus l'écran est loin, plus les franges sont espacées et visibles."},
+    {q:"L'expérience des fentes de Young (1801) a été historiquement décisive parce qu'elle a démontré...",
+     o:["Que la lumière est uniquement composée de particules","Que la lumière se comporte comme une onde (par les interférences observées)","Que la vitesse de la lumière est infinie"],
+     c:1, e:"Seules des ondes peuvent interférer de cette façon caractéristique — cela a fait pencher la balance vers le modèle ondulatoire de la lumière au 19e siècle."},
+    {q:"L'énergie d'un photon E = h·f montre que...",
+     o:["Un photon de grande longueur d'onde (rouge) est plus énergétique qu'un photon de courte longueur d'onde (violet)","Un photon de courte longueur d'onde (violet) est plus énergétique qu'un photon de grande longueur d'onde (rouge)","L'énergie d'un photon ne dépend jamais de sa longueur d'onde"],
+     c:1, e:"E = hf = hc/λ : plus λ est petit, plus f est grand, plus l'énergie du photon est grande (violet > rouge, rayons X >> lumière visible)."},
+    {q:"Le fait que la lumière se comporte à la fois comme une onde (diffraction, interférences) ET comme des particules (effet photoélectrique) est...",
+     o:["Une erreur de mesure à corriger","Le point de départ de la mécanique quantique, pas une contradiction à éliminer","Une preuve que l'un des deux modèles est totalement faux"],
+     c:1, e:"Cette dualité onde-particule est un fait expérimental accepté : la lumière (et toute matière) possède les deux aspects selon l'expérience réalisée."}
+  ];
+
+  var score=0;
+  function updateScore(){ document.getElementById('qzScore').textContent='Score : '+score+' / '+Q.length; }
+
+  function render(){
+    list.innerHTML='';
+    Q.forEach(function(item,qi){
+      var box=document.createElement('div'); box.className='qz';
+      var qEl=document.createElement('p'); qEl.className='qzQ';
+      qEl.textContent=(qi+1)+'. '+item.q; box.appendChild(qEl);
+      var expEl=document.createElement('div'); expEl.className='qzExp'; expEl.textContent=item.e;
+      item.o.forEach(function(opt,oi){
+        var btn=document.createElement('button'); btn.className='qzOpt'; btn.type='button';
+        btn.textContent=opt;
+        btn.addEventListener('click',function(){
+          var opts=box.querySelectorAll('.qzOpt');
+          opts.forEach(function(b){ b.disabled=true; });
+          if(oi===item.c){ btn.classList.add('correct'); score++; }
+          else{ btn.classList.add('wrong'); opts[item.c].classList.add('correct'); }
+          expEl.classList.add('show');
+          updateScore();
+        });
+        box.appendChild(btn);
+      });
+      box.appendChild(expEl);
+      list.appendChild(box);
+    });
+  }
+  render(); updateScore();
+  document.getElementById('qzRestart').addEventListener('click',function(){
+    score=0; render(); updateScore();
+  });
+})();
+</script>
+</body>
+</html>

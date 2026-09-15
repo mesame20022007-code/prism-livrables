@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pack Physique Terminale — PRISM Éducation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --papier:#F6F4EF; --carte:#FFFFFF;
+    --encre:#0F1B3D; --encre-doux:#3E4A66;
+    --accent:#0F1B3D; --cyan:#0E9CB8; --cyan-clair:#E4F5F8;
+    --filet:#D9D3C6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--papier);
+    color:var(--encre);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 60px;}
+  h1,h2{font-family:'Fraunces',Georgia,serif;}
+
+  header{text-align:center;padding-top:52px;}
+  .badge{
+    display:inline-block;background:var(--cyan);color:#fff;
+    font-weight:600;font-size:13px;letter-spacing:.5px;
+    padding:8px 18px;border-radius:999px;margin-bottom:18px;
+  }
+  h1{font-size:clamp(26px,5vw,38px);margin:0 0 12px;font-weight:700;text-wrap:balance;}
+  .sub{color:var(--encre-doux);font-size:16px;max-width:520px;margin:0 auto 40px;}
+
+  .list{list-style:none;padding:0;margin:0;display:grid;gap:16px;}
+  .card{
+    display:flex;align-items:center;gap:18px;
+    background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+    padding:20px 22px;text-decoration:none;color:var(--encre);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,27,61,.08);}
+  .num{
+    flex:0 0 auto;width:40px;height:40px;border-radius:50%;
+    background:var(--cyan-clair);color:var(--cyan);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:600;font-size:15px;font-family:'IBM Plex Sans',sans-serif;
+  }
+  .card .title{font-weight:600;font-size:17px;margin:0 0 2px;}
+  .card .desc{font-size:13.5px;color:var(--encre-doux);margin:0;}
+  .arrow{margin-left:auto;color:var(--cyan);font-size:20px;flex:0 0 auto;}
+
+  footer{text-align:center;margin-top:48px;color:var(--encre-doux);font-size:13px;}
+  footer a{color:var(--cyan);text-decoration:none;}
+
+  @media (max-width:480px){
+    .card{padding:16px 16px;gap:14px;}
+    .num{width:34px;height:34px;font-size:13px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="badge">PACK PHYSIQUE TERMINALE</div>
+    <h1>5 notions clés, expliquées avec des simulations interactives</h1>
+    <p class="sub">Cliquez sur une notion pour ouvrir sa fiche interactive. Calé sur le programme béninois.</p>
+  </header>
+
+  <ul class="list">
+    <li>
+      <a class="card" href="Champ-Gravitationnel.html">
+        <div class="num">1</div>
+        <div>
+          <p class="title">Champ gravitationnel</p>
+          <p class="desc">Comprendre l'interaction entre les masses</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="Champ-Electrostatique.html">
+        <div class="num">2</div>
+        <div>
+          <p class="title">Champ électrique</p>
+          <p class="desc">Comprendre l'interaction entre les charges</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="Champ-Magnetique.html">
+        <div class="num">3</div>
+        <div>
+          <p class="title">Champ magnétique</p>
+          <p class="desc">Comprendre la force de Laplace et Lorentz</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="Longueur-Onde.html">
+        <div class="num">4</div>
+        <div>
+          <p class="title">Longueur d'onde</p>
+          <p class="desc">Comprendre la propagation des ondes</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="Lentilles.html">
+        <div class="num">5</div>
+        <div>
+          <p class="title">Lentilles minces</p>
+          <p class="desc">Comprendre la formation des images optiques</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </li>
+  </ul>
+
+  <footer>
+    Une question ? WhatsApp <a href="https://wa.me/2290193388631">+229 01 93 38 86 31</a><br>
+    Prism Éducation
+  </footer>
+
+</div>
+</body>
+</html>

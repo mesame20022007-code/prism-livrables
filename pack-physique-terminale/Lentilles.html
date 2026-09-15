@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprendre les lentilles minces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papier:#F6F4EF; --carte:#FFFFFF;
+  --encre:#1C2621; --encre-doux:#3E4A43;
+  --nere:#0E5138; --nere-clair:#E4EDE7;
+  --terre:#B34A2F; --terre-clair:#F5E4DE;
+  --mil:#B87A15; --mil-clair:#F7EAD2;
+  --ciel:#245A8D; --ciel-clair:#E1EAF2;
+  --sauge:#5F6F66; --filet:#D9D3C6;
+  --ombre:0 1px 2px rgba(28,38,33,.06),0 12px 34px rgba(28,38,33,.08);
+  --mesure:43rem;
+  --fs:1;
+  --bar:5.6rem;
+}
+:root[data-theme="dark"]{
+  --papier:#141A17; --carte:#1D2521;
+  --encre:#ECEAE3; --encre-doux:#C2C7C1;
+  --nere:#5FC79A; --nere-clair:#1B2C24;
+  --terre:#E7967C; --terre-clair:#2E1F1A;
+  --mil:#E0A93E; --mil-clair:#2C2415;
+  --ciel:#7FB2E0; --ciel-clair:#16283A;
+  --sauge:#9AA79F; --filet:#33403A;
+  --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papier:#141A17; --carte:#1D2521; --encre:#ECEAE3; --encre-doux:#C2C7C1;
+    --nere:#5FC79A; --nere-clair:#1B2C24; --terre:#E7967C; --terre-clair:#2E1F1A;
+    --mil:#E0A93E; --mil-clair:#2C2415; --ciel:#7FB2E0; --ciel-clair:#16283A;
+    --sauge:#9AA79F; --filet:#33403A;
+    --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:calc(112.5% * var(--fs));scroll-behavior:smooth;scroll-padding-top:var(--bar)}
+@media (max-width:600px){ html{font-size:calc(104% * var(--fs))} }
+body{margin:0;background:var(--papier);color:var(--encre);
+  font-family:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  line-height:1.75;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;padding-top:var(--bar)}
+h1,h2,h3{font-family:"Fraunces","Georgia",serif;line-height:1.16;color:var(--encre);overflow-wrap:break-word}
+h1{font-size:2.1rem;margin:.2rem 0 .6rem}
+h2{font-size:1.5rem;margin:2.6rem 0 .8rem}
+h3{font-size:1.12rem;margin:1.6rem 0 .5rem}
+p{margin:0 0 1.15rem}
+a{color:var(--nere);text-underline-offset:2px}
+strong{font-weight:600}
+img{max-width:100%}
+.wrap{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem 5rem}
+.label{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--sauge)}
+.kicker{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mil);margin:0 0 .3rem}
+.lead{font-size:1.12rem;color:var(--encre-doux)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+
+.bar-wrap{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--papier);
+  border-bottom:1px solid var(--filet);transition:transform .3s}
+.bar-wrap.hide{transform:translateY(-100%)}
+.bar{max-width:var(--mesure);margin:0 auto;padding:.55rem 1.25rem;
+  display:flex;align-items:center;gap:.7rem;font-family:"IBM Plex Sans",sans-serif}
+.bar button{font-family:inherit;background:var(--carte);color:var(--encre);border:1px solid var(--filet);
+  border-radius:9px;padding:.32rem .5rem;font-size:.74rem;cursor:pointer;line-height:1}
+.bar button:hover{border-color:var(--nere);color:var(--nere)}
+.bar .sp{flex:1}
+.progress{display:flex;align-items:center;gap:.5rem;width:100%;margin-top:.4rem;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;color:var(--sauge)}
+.progress .track{flex:1;height:5px;border-radius:999px;background:var(--filet);overflow:hidden}
+.progress .fill{display:block;height:100%;background:var(--nere);border-radius:999px;
+  transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.bar-inner{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem .5rem}
+
+.toc-overlay{position:fixed;inset:0;z-index:60;background:rgba(20,26,23,.5);
+  display:flex;align-items:flex-start;justify-content:center;padding:4rem 1rem;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.toc-overlay.open{opacity:1;pointer-events:auto}
+.toc-panel{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1.6rem 1.7rem;max-width:26rem;width:100%;position:relative;
+  max-height:80vh;overflow:auto}
+.toc-close{position:absolute;top:1rem;right:1rem;background:transparent;border:0;font-size:1.1rem;
+  cursor:pointer;color:var(--sauge)}
+.toc-panel ol{margin:.7rem 0 0;padding-left:1.3rem;font-family:"IBM Plex Sans",sans-serif;font-size:.92rem}
+.toc-panel li{margin:.45rem 0}
+.toc-panel a{text-decoration:none;color:var(--encre)}
+.toc-panel a:hover{color:var(--nere)}
+.toc-panel a.done::after{content:" \2713";color:var(--nere);font-weight:700}
+
+.resume-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;
+  padding:.7rem 1rem;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.resume-bar.show{display:flex}
+.resume-bar button{background:#fff;color:var(--nere);border:0;border-radius:999px;
+  padding:.35rem .9rem;font-weight:600;cursor:pointer;font-family:inherit}
+.resume-bar .x{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+
+.card{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.card.note{background:var(--mil-clair);border-color:transparent}
+.card.serieC{background:var(--ciel-clair);border-color:transparent}
+.card .label{margin-bottom:.4rem}
+.formule{font-family:"IBM Plex Mono",monospace;font-size:.96rem;line-height:1.9;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.8rem 1rem;margin:1rem 0;overflow-x:auto;white-space:nowrap}
+.formule .num{color:var(--terre)}
+.formule .res{color:var(--nere);font-weight:600}
+
+.done-row{display:flex;align-items:center;gap:.55rem;margin:1.4rem 0 0;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;color:var(--sauge)}
+.done-row input{width:1.05rem;height:1.05rem;accent-color:var(--nere)}
+
+.sim{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1rem;margin:1.8rem 0;font-family:"IBM Plex Sans",sans-serif}
+.sim h3{font-family:"Fraunces",serif;margin:.2rem 0 .8rem}
+.sim canvas{width:100%;height:auto;display:block;background:var(--papier);
+  border:1px solid var(--filet);border-radius:10px;touch-action:none}
+.sim .controls{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1rem;margin:.9rem 0 .4rem}
+@media (max-width:520px){ .sim .controls{grid-template-columns:1fr} }
+.ctrl{font-size:.78rem;color:var(--encre-doux)}
+.ctrl label{display:flex;justify-content:space-between;margin-bottom:.15rem}
+.ctrl b{color:var(--nere);font-family:"IBM Plex Mono",monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--nere)}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.9rem 0 0}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)} }
+.rd{background:var(--papier);border:1px solid var(--filet);border-radius:9px;padding:.5rem .6rem}
+.rd .k{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sauge)}
+.rd .v{font-family:"IBM Plex Mono",monospace;font-size:.98rem;color:var(--encre);font-weight:500}
+.rd.em{background:var(--nere-clair);border-color:transparent}
+.rd.em .v{color:var(--nere)}
+.rd.warn{background:var(--terre-clair);border-color:transparent}
+.rd.warn .v{color:var(--terre)}
+.simform{font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.85;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.7rem .8rem;margin:.9rem 0 0;overflow-x:auto}
+.simform .sym{color:var(--encre-doux)}
+.simform .num{color:var(--terre)}
+.simform .res{color:var(--nere);font-weight:600}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--encre-doux);margin:.7rem 0 0}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.3rem}
+.foot{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--filet);
+  font-family:"IBM Plex Sans",sans-serif;font-size:.8rem;color:var(--sauge)}
+
+.exo{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.exo .exoNum{font-family:"IBM Plex Sans",sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--mil);margin:0 0 .5rem}
+.revealBtn{font-family:"IBM Plex Sans",sans-serif;background:var(--nere);color:#fff;border:0;
+  border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:600;cursor:pointer;margin:.9rem 0 0}
+.revealBtn:hover{opacity:.9}
+.correction{margin-top:1.1rem;padding-top:1.1rem;border-top:1px dashed var(--filet)}
+.correction .q{font-weight:600;margin:1rem 0 .4rem}
+.correction .q:first-child{margin-top:0}
+
+.quizScore{position:sticky;top:calc(var(--bar) + .6rem);z-index:5;display:inline-block;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-weight:600;
+  font-size:.85rem;border-radius:999px;padding:.4rem 1rem;margin:0 0 1.2rem}
+.qz{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.1rem 1.2rem;margin:1.1rem 0}
+.qz .qzQ{font-weight:600;margin:0 0 .8rem;font-family:"Fraunces",serif;font-size:1.02rem}
+.qzOpt{display:block;width:100%;text-align:left;font-family:"IBM Plex Sans",sans-serif;font-size:.9rem;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;padding:.55rem .8rem;
+  margin:.4rem 0;cursor:pointer;color:var(--encre)}
+.qzOpt:hover:not(:disabled){border-color:var(--nere)}
+.qzOpt:disabled{cursor:default}
+.qzOpt.correct{background:var(--nere-clair);border-color:var(--nere);color:var(--nere);font-weight:600}
+.qzOpt.wrong{background:var(--terre-clair);border-color:var(--terre);color:var(--terre)}
+.qzExp{display:none;margin:.7rem 0 0;padding-top:.7rem;border-top:1px dashed var(--filet);
+  font-size:.86rem;color:var(--encre-doux)}
+.qzExp.show{display:block}
+.quizRestart{font-family:"IBM Plex Sans",sans-serif;background:transparent;color:var(--encre-doux);
+  border:1px solid var(--filet);border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;
+  cursor:pointer;margin:1.2rem 0 0}
+
+.schema{background:var(--papier);border:1px solid var(--filet);border-radius:12px;
+  padding:.7rem .5rem .4rem;margin:.9rem 0 1.3rem}
+.schema svg{display:block;width:100%;height:auto;font-family:"IBM Plex Sans",sans-serif}
+.schema .cap{text-align:center;font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;
+  color:var(--sauge);margin:.35rem 0 0}
+</style>
+</head>
+<body>
+
+<div class="bar-wrap" id="barWrap">
+  <div class="bar">
+    <button id="themeBtn" aria-label="Thème">&#9789;</button>
+    <button data-fs="-" aria-label="Réduire le texte">A&minus;</button>
+    <button data-fs="+" aria-label="Agrandir le texte">A+</button>
+    <span class="sp"></span>
+    <button id="tocBtn">Sommaire</button>
+  </div>
+  <div class="bar-inner">
+    <div class="progress"><span id="pct">0 %</span>
+      <span class="track"><span class="fill" id="fill"></span></span></div>
+  </div>
+</div>
+
+<div class="toc-overlay" id="tocOverlay">
+  <div class="toc-panel">
+    <button class="toc-close" id="tocClose" aria-label="Fermer">&#10005;</button>
+    <p class="label">Sommaire</p>
+    <ol id="tocList"></ol>
+  </div>
+</div>
+
+<div class="resume-bar" id="resumeBar">
+  <span>Reprendre où tu t'es arrêté ?</span>
+  <span><button id="resumeGo">Continuer</button> <button class="x" id="resumeX">Non</button></span>
+</div>
+
+<main class="wrap">
+
+  <p class="kicker">Comprendre la notion</p>
+  <h1>Les lentilles minces</h1>
+  <p class="lead">Un œil, un appareil photo, une loupe, des lunettes&nbsp;: tous fabriquent une image en
+  pliant la lumière avec un morceau de verre courbé. Une seule formule, et trois rayons faciles à tracer,
+  suffisent pour prédire exactement où se forme cette image, et si elle est droite ou renversée, plus
+  grande ou plus petite que l'objet.</p>
+  <p class="label">Programme Terminale C &amp; D — Afrique de l'Ouest</p>
+
+  <section id="s-lentille">
+    <h2>1. Une lentille&nbsp;: dévier la lumière pour former une image</h2>
+    <p>Une lentille mince est un morceau de verre transparent, taillé avec des faces courbes, qui dévie les
+    rayons lumineux qui la traversent. On distingue deux familles&nbsp;:</p>
+    <div class="schema">
+      <svg viewBox="0 0 600 220">
+        <path d="M180,40 Q210,110 180,180 Q150,110 180,40 Z" fill="var(--ciel-clair)" stroke="var(--ciel)" stroke-width="2"/>
+        <text x="180" y="205" text-anchor="middle" fill="var(--ciel)" font-size="13" font-weight="600">convergente (bords minces)</text>
+        <g stroke="var(--terre)" stroke-width="1.6" fill="none">
+          <line x1="40" y1="60" x2="180" y2="60"/><line x1="180" y1="60" x2="320" y2="110"/>
+          <line x1="40" y1="90" x2="180" y2="90"/><line x1="180" y1="90" x2="320" y2="110"/>
+          <line x1="40" y1="110" x2="320" y2="110"/>
+          <line x1="40" y1="130" x2="180" y2="130"/><line x1="180" y1="130" x2="320" y2="110"/>
+          <line x1="40" y1="160" x2="180" y2="160"/><line x1="180" y1="160" x2="320" y2="110"/>
+        </g>
+        <circle cx="320" cy="110" r="3" fill="var(--terre)"/>
+        <text x="320" y="130" text-anchor="middle" fill="var(--terre)" font-size="11">F'</text>
+
+        <path d="M440,40 Q410,110 440,180 M470,40 Q500,110 470,180" fill="none" stroke="var(--mil)" stroke-width="2"/>
+        <text x="455" y="205" text-anchor="middle" fill="var(--mil)" font-size="13" font-weight="600">divergente (bords épais)</text>
+        <g stroke="var(--terre)" stroke-width="1.6" fill="none" opacity=".85">
+          <line x1="380" y1="70" x2="455" y2="110"/><line x1="455" y1="110" x2="560" y2="88"/>
+          <line x1="380" y1="90" x2="455" y2="110"/><line x1="455" y1="110" x2="560" y2="99"/>
+          <line x1="380" y1="110" x2="560" y2="110"/>
+          <line x1="380" y1="130" x2="455" y2="110"/><line x1="455" y1="110" x2="560" y2="121"/>
+          <line x1="380" y1="150" x2="455" y2="110"/><line x1="455" y1="110" x2="560" y2="132"/>
+        </g>
+      </svg>
+      <p class="cap">Une lentille convergente (bords minces, cœur épais) rassemble les rayons parallèles en un point F' &mdash; une lentille divergente (bords épais, cœur mince) les écarte, comme s'ils venaient d'un point virtuel avant elle.</p>
+    </div>
+    <p style="margin:0">Le point où se rassemblent (ou semblent provenir) les rayons initialement parallèles
+    à l'axe s'appelle le <strong>foyer image</strong> <code>F&prime;</code>. Sa distance au centre optique
+    <code>O</code> est la <strong>distance focale</strong> <code>f&prime;&nbsp;=&nbsp;OF&prime;</code>,
+    positive pour une convergente, négative pour une divergente.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-lentille"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-rayons">
+    <h2>2. Trois rayons qui suffisent à tout construire</h2>
+    <p>Pour trouver l'image d'un point, inutile de tracer tous les rayons possibles&nbsp;: trois rayons
+    particuliers, faciles à dessiner, se croisent tous exactement au même endroit&nbsp;: l'image.</p>
+    <div class="schema">
+      <svg viewBox="0 0 600 240">
+        <line x1="20" y1="150" x2="580" y2="150" stroke="var(--sauge)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="260" y1="30" x2="260" y2="230" stroke="var(--ciel)" stroke-width="2.5"/>
+        <text x="260" y="22" text-anchor="middle" fill="var(--ciel)" font-size="12" font-weight="600">lentille</text>
+        <circle cx="260" cy="150" r="3" fill="var(--encre)"/>
+        <text x="260" y="168" text-anchor="middle" fill="var(--encre-doux)" font-size="11">O</text>
+        <circle cx="340" cy="150" r="3" fill="var(--terre)"/>
+        <text x="340" y="168" text-anchor="middle" fill="var(--terre)" font-size="11">F'</text>
+        <circle cx="180" cy="150" r="3" fill="var(--terre)"/>
+        <text x="180" y="168" text-anchor="middle" fill="var(--terre)" font-size="11">F</text>
+
+        <line x1="120" y1="90" x2="120" y2="150" stroke="var(--mil)" stroke-width="2"/>
+        <polygon points="120,90 115,100 125,100" fill="var(--mil)"/>
+        <text x="112" y="85" fill="var(--mil)" font-size="12" font-weight="600">objet AB</text>
+
+        <line x1="120" y1="90" x2="260" y2="90" stroke="var(--nere)" stroke-width="1.8"/>
+        <line x1="260" y1="90" x2="420" y2="180" stroke="var(--nere)" stroke-width="1.8" stroke-dasharray="0"/>
+        <text x="440" y="185" fill="var(--nere)" font-size="11">1) // axe &rarr; passe par F'</text>
+
+        <line x1="120" y1="90" x2="260" y2="150" stroke="var(--terre)" stroke-width="1.8"/>
+        <line x1="260" y1="150" x2="420" y2="210" stroke="var(--terre)" stroke-width="1.8"/>
+        <text x="440" y="210" fill="var(--terre)" font-size="11">2) passe par O &rarr; pas dévié</text>
+
+        <line x1="120" y1="90" x2="180" y2="150" stroke="var(--ciel)" stroke-width="1.8"/>
+        <line x1="180" y1="150" x2="420" y2="180" stroke="var(--ciel)" stroke-width="1.8"/>
+        <text x="440" y="150" fill="var(--ciel)" font-size="11">3) passe par F &rarr; ressort // axe</text>
+
+        <line x1="420" y1="150" x2="420" y2="180" stroke="var(--mil)" stroke-width="2"/>
+        <polygon points="420,180 415,170 425,170" fill="var(--mil)"/>
+        <text x="428" y="200" fill="var(--mil)" font-size="12" font-weight="600">image A'B'</text>
+      </svg>
+      <p class="cap">Les trois rayons partis du sommet B de l'objet se recroisent tous en un seul point B' : l'image, ici réelle, renversée et plus petite (objet placé au-delà de 2F).</p>
+    </div>
+    <div class="card note">
+      <p class="label">Image réelle ou virtuelle ?</p>
+      <p style="margin:0">Si les rayons se recroisent <strong>vraiment</strong> après la lentille, l'image
+      est <strong>réelle</strong> — on peut la récupérer sur un écran (comme au cinéma). Si les rayons
+      semblent seulement provenir d'un point situé avant la lentille (ils ne se recroisent jamais
+      physiquement), l'image est <strong>virtuelle</strong> — impossible à projeter sur un écran, mais
+      visible en regardant à travers la lentille (comme une loupe).</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-rayons"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-formule">
+    <h2>3. La formule de conjugaison&nbsp;: prédire l'image sans dessiner</h2>
+    <p>Plutôt que de tracer des rayons à chaque fois, une seule relation donne directement la position de
+    l'image, avec la convention «&nbsp;origine au centre optique O, sens de la lumière compté
+    positivement&nbsp;»&nbsp;:</p>
+    <div class="formule">1/OA&prime; &minus; 1/OA = 1/f&prime; &nbsp;&nbsp; (formule de conjugaison de Descartes)</div>
+    <p>et le <strong>grandissement</strong>, qui donne la taille et l'orientation de l'image par rapport à
+    l'objet&nbsp;:</p>
+    <div class="formule">&gamma; = A&prime;B&prime;/AB = OA&prime;/OA</div>
+    <div class="card serieC">
+      <p class="label">Pour la série C&nbsp;: lire le signe de &gamma;</p>
+      <p style="margin:0"><code>&gamma;&nbsp;&gt;&nbsp;0</code>&nbsp;: image droite (même sens que l'objet).
+      <code>&gamma;&nbsp;&lt;&nbsp;0</code>&nbsp;: image renversée. <code>|&gamma;|&nbsp;&gt;&nbsp;1</code>&nbsp;:
+      image agrandie. <code>|&gamma;|&nbsp;&lt;&nbsp;1</code>&nbsp;: image réduite. Ces quatre cas se lisent
+      directement sur le signe et la valeur de &gamma;, sans refaire le tracé des rayons.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-formule"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-sim">
+    <h2>4. Simulation&nbsp;: banc optique &mdash; déplace l'objet et regarde l'image bouger</h2>
+    <p>Règle la distance focale de la lentille et la position de l'objet. Observe où se forme l'image, sa
+    taille, et si elle est réelle (trait plein) ou virtuelle (trait pointillé).</p>
+
+    <div class="sim" id="simBanc">
+      <h3>Banc optique</h3>
+      <canvas id="cvBanc" width="900" height="380"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--mil)"></i>objet</span>
+        <span><i style="background:var(--nere)"></i>image réelle</span>
+        <span><i style="background:var(--ciel)"></i>image virtuelle</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl"><label>Distance focale f' <b><span id="lfv">8.0</span> cm</b></label>
+          <input type="range" id="lf" min="-15" max="15" step="0.5" value="8.0"></div>
+        <div class="ctrl"><label>Distance objet OA <b><span id="lov">20.0</span> cm</b></label>
+          <input type="range" id="lo" min="1" max="40" step="0.5" value="20.0"></div>
+      </div>
+      <div class="readout">
+        <div class="rd em"><div class="k">Position image OA'</div><div class="v"><span id="lA">0</span> cm</div></div>
+        <div class="rd"><div class="k">Grandissement γ</div><div class="v"><span id="lg">0</span></div></div>
+        <div class="rd" id="lnatBox"><div class="k">Nature</div><div class="v" id="lnat">—</div></div>
+      </div>
+      <div class="simform" id="lform"></div>
+    </div>
+    <p>Ce que la simulation montre&nbsp;: avec une lentille convergente (f&prime;&nbsp;&gt;&nbsp;0), un objet
+    placé au-delà de <code>2f&prime;</code> donne une image réelle, renversée, réduite (comme dans un
+    appareil photo) — un objet placé entre <code>O</code> et <code>F</code> donne une image virtuelle,
+    droite, agrandie (comme une loupe). Une lentille divergente (f&prime;&nbsp;&lt;&nbsp;0), elle, ne donne
+    jamais d'image réelle&nbsp;: toujours virtuelle, droite et réduite, quelle que soit la position de
+    l'objet.</p>
+    <div class="done-row"><input type="checkbox" data-done="s-sim"><span>J'ai fait tourner la simulation</span></div>
+  </section>
+
+  <section id="s-vergence">
+    <h2>5. La vergence&nbsp;: l'unité des opticiens</h2>
+    <p>Plutôt que la distance focale, les opticiens utilisent la <strong>vergence</strong>, en dioptries
+    (&delta;)&nbsp;:</p>
+    <div class="formule">C = 1/f&prime; &nbsp;&nbsp; (f&prime; en mètres, C en dioptries &delta;)</div>
+    <p style="margin:0">Une lentille très «&nbsp;puissante&nbsp;» (qui dévie beaucoup, focale courte) a une
+    vergence élevée&nbsp;: une paire de lunettes de +3&nbsp;&delta; correspond à
+    <code>f&prime;&nbsp;=&nbsp;1/3&nbsp;&asymp;&nbsp;0,33</code>&nbsp;m&nbsp;=&nbsp;33&nbsp;cm. Une vergence
+    négative (lunettes de myope) correspond à une lentille divergente. C'est aussi pour ça que les
+    vergences de plusieurs lentilles accolées <strong>s'additionnent</strong>&nbsp;:
+    <code>C&nbsp;=&nbsp;C&#8321;&nbsp;+&nbsp;C&#8322;</code>, ce qui serait beaucoup plus compliqué à
+    calculer directement avec des distances focales.</p>
+    <div class="card note">
+      <p class="label">Échelle des vergences&nbsp;: du regard humain à l'objectif photo</p>
+      <p style="margin:0">Œil humain au repos &asymp; <strong>60</strong>&nbsp;&delta; (f&prime;&nbsp;&asymp;&nbsp;1,7&nbsp;cm,
+      la distance cristallin-rétine) — lunettes courantes&nbsp;: de <strong>&minus;8</strong> (myopie
+      forte) à <strong>+4</strong>&nbsp;&delta; (hypermétropie ou presbytie) — loupe de bureau
+      &asymp; <strong>10</strong>&nbsp;&delta; (f&prime;&nbsp;=&nbsp;10&nbsp;cm) — objectif d'appareil photo
+      standard (50 mm) &asymp; <strong>20</strong>&nbsp;&delta; — téléobjectif (500 mm)
+      &asymp; <strong>2</strong>&nbsp;&delta; seulement, malgré sa taille&nbsp;: une longue focale correspond
+      toujours à une faible vergence, même si la lentille elle-même est physiquement grande.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-vergence"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-applications">
+    <h2>6. Applications&nbsp;: l'œil, la loupe, l'appareil photo</h2>
+    <div class="card">
+      <p class="label">L'œil</p>
+      <p style="margin:0">Le cristallin est une lentille convergente à focale variable (l'accommodation), qui
+      projette une image réelle et renversée sur la rétine — c'est le cerveau qui « remet l'image à
+      l'endroit ». Un œil myope forme l'image avant la rétine (trop convergent)&nbsp;: on corrige avec une
+      lentille divergente. Un œil hypermétrope la forme après (pas assez convergent)&nbsp;: on corrige avec
+      une lentille convergente.</p>
+    </div>
+    <div class="card">
+      <p class="label">La loupe</p>
+      <p style="margin:0">Une simple lentille convergente, utilisée avec l'objet placé entre <code>O</code>
+      et <code>F</code>&nbsp;: l'image obtenue est virtuelle, droite et agrandie — exactement le cas
+      identifié dans la simulation ci-dessus.</p>
+    </div>
+    <div class="card">
+      <p class="label">L'appareil photo</p>
+      <p style="margin:0">L'inverse&nbsp;: l'objet (la scène photographiée) est très loin, bien au-delà de
+      <code>2f&prime;</code>&nbsp;: l'image obtenue sur le capteur est réelle, renversée et réduite — le
+      capteur (ou la pellicule) doit être placé exactement là où l'image se forme, sinon la photo est
+      floue.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="s-applications"><span>J'ai compris</span></div>
+  </section>
+
+  <section id="s-exos">
+    <h2>7. Exercices corrigés type bac</h2>
+    <p>Trois exercices dans l'esprit des sujets de bac (séries C et D), avec correction complète.
+    Cherche d'abord seul, puis vérifie avec la convention «&nbsp;origine au centre optique, sens de la
+    lumière positif&nbsp;».</p>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 1 — séries C &amp; D</p>
+      <p><strong>Énoncé.</strong> Une lentille convergente a une distance focale
+      <code>f&prime;&nbsp;=&nbsp;10</code>&nbsp;cm. Un objet est placé à <code>OA&nbsp;=&nbsp;&minus;30</code>&nbsp;cm
+      (donc 30 cm avant la lentille). Trouver la position de l'image OA&prime;.</p>
+      <button class="revealBtn" data-target="e1">Voir la correction</button>
+      <div class="correction" id="e1" hidden>
+        <p class="q">Mise en équation</p>
+        <p><code>1/OA&prime; = 1/f&prime; + 1/OA</code></p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">1/OA&prime; = 1/10 + 1/(&minus;30) = 3/30 &minus; 1/30 = 2/30
+          &nbsp;&rArr;&nbsp; <span class="res">OA&prime; = 15 cm</span></div>
+        <p style="margin:0">OA&prime; est positif&nbsp;: l'image est réelle, formée après la lentille.</p>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 2 — série C</p>
+      <p><strong>Énoncé.</strong> Reprendre l'exercice 1. Calculer le grandissement &gamma;, et préciser si
+      l'image est droite ou renversée, agrandie ou réduite.</p>
+      <button class="revealBtn" data-target="e2">Voir la correction</button>
+      <div class="correction" id="e2" hidden>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">&gamma; = OA&prime;/OA = 15 / (&minus;30) = <span class="res">&minus;0,5</span></div>
+        <p style="margin:0">&gamma; négatif&nbsp;: image <strong>renversée</strong>. <code>|&gamma;|&nbsp;=&nbsp;0,5&nbsp;&lt;&nbsp;1</code>&nbsp;:
+        image <strong>réduite</strong> (deux fois plus petite que l'objet). C'est la configuration typique
+        d'un appareil photo.</p>
+      </div>
+    </div>
+
+    <div class="exo">
+      <p class="exoNum">Exercice 3 — série D (plus simple)</p>
+      <p><strong>Énoncé.</strong> Une lentille a une vergence <code>C&nbsp;=&nbsp;+5</code>&nbsp;&delta;.
+      Est-elle convergente ou divergente ? Calculer sa distance focale en cm.</p>
+      <button class="revealBtn" data-target="e3">Voir la correction</button>
+      <div class="correction" id="e3" hidden>
+        <p class="q">Nature</p>
+        <p>Vergence positive&nbsp;: la lentille est <strong>convergente</strong>.</p>
+        <p class="q">Calcul</p>
+        <div class="formule" style="white-space:normal">f&prime; = 1/C = 1/5 = <span class="res">0,20 m = 20 cm</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-quiz">
+    <h2>8. Quiz d'auto-évaluation</h2>
+    <p>Douze questions couvrant tout le document. Réponds sans revenir en arrière&nbsp;: le but n'est pas
+    d'avoir 12/12 du premier coup, mais de voir précisément ce qu'il faut relire.</p>
+    <div class="quizScore" id="qzScore">Score&nbsp;: 0 / 12</div>
+    <div id="qzList"></div>
+    <button class="quizRestart" id="qzRestart">Recommencer le quiz</button>
+  </section>
+
+  <section id="s-suite">
+    <h2>9. Ce pack, et la suite</h2>
+    <p>Ce document couvre l'essentiel du programme «&nbsp;lentilles minces, formule de conjugaison,
+    grandissement, vergence&nbsp;» des séries C et D. Il complète la collection «&nbsp;Comprendre la
+    notion&nbsp;»&nbsp;: champ gravitationnel, champ électrique, champ magnétique, longueur d'onde, et
+    maintenant l'optique géométrique.</p>
+    <div class="card note">
+      <p class="label">Cette version</p>
+      <p style="margin:0">v1 — lentilles convergentes/divergentes, construction par les trois rayons,
+      formule de conjugaison, grandissement, vergence, applications (œil, loupe, appareil photo). Les
+      valeurs et notations seront calées sur le manuel béninois avant la version finale.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    Deeper Science &mdash; Comprendre la notion. Fichier autonome&nbsp;: ta progression et tes réglages
+    restent sur cet appareil. Ce document est un support de compréhension, pas un substitut au cours ni
+    au professeur.
+  </div>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var LS=null; try{ LS=window.localStorage; }catch(e){}
+  var KEY="plt_";
+  function get(k,d){ try{ var v=LS.getItem(KEY+k); return v===null?d:v; }catch(e){ return d; } }
+  function set(k,v){ try{ LS.setItem(KEY+k,v); }catch(e){} }
+
+  var root=document.documentElement;
+
+  var tb=document.getElementById('themeBtn');
+  var savedTheme=get('theme',null);
+  if(savedTheme) root.setAttribute('data-theme',savedTheme);
+  function tlbl(){ tb.innerHTML = root.getAttribute('data-theme')==='dark' ? '&#9788;' : '&#9789;'; }
+  tlbl();
+  tb.addEventListener('click',function(){
+    var d=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',d); set('theme',d); tlbl();
+    if(typeof drawBanc==='function') drawBanc();
+  });
+
+  var fs=parseFloat(get('fs','1'))||1;
+  function applyFs(){ fs=Math.max(0.85,Math.min(1.35,fs)); root.style.setProperty('--fs',fs); set('fs',fs); }
+  applyFs();
+  document.querySelectorAll('.bar button[data-fs]').forEach(function(b){
+    b.addEventListener('click',function(){ fs+=(b.getAttribute('data-fs')==='+'?0.08:-0.08); applyFs(); });
+  });
+
+  var barWrap=document.getElementById('barWrap');
+  function sizeBar(){ root.style.setProperty('--bar',(barWrap.offsetHeight+8)+'px'); }
+  sizeBar(); window.addEventListener('resize',sizeBar); window.addEventListener('load',sizeBar);
+  var lastY=0;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    barWrap.classList.toggle('hide', y>lastY && y>120);
+    lastY=y;
+    progress();
+    var cur=currentSection();
+    if(cur) set('pos',cur);
+  },{passive:true});
+
+  var sections=[].slice.call(document.querySelectorAll('main section'));
+  var tocList=document.getElementById('tocList');
+  sections.forEach(function(s){
+    var h=s.querySelector('h2'); if(!h) return;
+    var li=document.createElement('li');
+    var a=document.createElement('a');
+    a.href='#'+s.id; a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+    a.dataset.for=s.id;
+    li.appendChild(a); tocList.appendChild(li);
+  });
+  var ov=document.getElementById('tocOverlay');
+  function tocOpen(o){ ov.classList.toggle('open',o); }
+  document.getElementById('tocBtn').addEventListener('click',function(){ syncToc(); tocOpen(true); });
+  document.getElementById('tocClose').addEventListener('click',function(){ tocOpen(false); });
+  ov.addEventListener('click',function(e){ if(e.target===ov) tocOpen(false); });
+  ov.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ tocOpen(false); }); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') tocOpen(false); });
+
+  document.querySelectorAll('.revealBtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=document.getElementById(b.getAttribute('data-target'));
+      var open=t.hasAttribute('hidden');
+      if(open){ t.removeAttribute('hidden'); b.textContent='Masquer la correction'; }
+      else{ t.setAttribute('hidden',''); b.textContent='Voir la correction'; }
+    });
+  });
+
+  var doneSet;
+  try{ doneSet=JSON.parse(get('done','[]')); }catch(e){ doneSet=[]; }
+  if(!Array.isArray(doneSet)) doneSet=[];
+  document.querySelectorAll('input[data-done]').forEach(function(c){
+    var id=c.getAttribute('data-done');
+    c.checked=doneSet.indexOf(id)>=0;
+    c.addEventListener('change',function(){
+      var i=doneSet.indexOf(id);
+      if(c.checked && i<0) doneSet.push(id);
+      if(!c.checked && i>=0) doneSet.splice(i,1);
+      set('done',JSON.stringify(doneSet));
+      syncToc(); progress();
+    });
+  });
+  function syncToc(){
+    tocList.querySelectorAll('a').forEach(function(a){
+      a.classList.toggle('done', doneSet.indexOf(a.dataset.for)>=0);
+    });
+  }
+  syncToc();
+
+  var fill=document.getElementById('fill'), pct=document.getElementById('pct');
+  function progress(){
+    var total=document.querySelectorAll('input[data-done]').length;
+    var r=total? doneSet.length/total : 0;
+    var docH=document.body.scrollHeight-window.innerHeight;
+    var scr=docH>0? Math.min(1,window.scrollY/docH) : 0;
+    var p=Math.max(r,scr*0.6+r*0.4);
+    fill.style.transform='scaleX('+p+')';
+    pct.textContent=Math.round(p*100)+' %';
+  }
+  progress();
+
+  function currentSection(){
+    var best=null,bd=1e9;
+    sections.forEach(function(s){
+      var d=Math.abs(s.getBoundingClientRect().top-80);
+      if(d<bd){ bd=d; best=s.id; }
+    });
+    return best;
+  }
+
+  var rb=document.getElementById('resumeBar');
+  var pos=get('pos',null);
+  if(pos && document.getElementById(pos) && window.scrollY<40){
+    rb.classList.add('show');
+    document.getElementById('resumeGo').addEventListener('click',function(){
+      document.getElementById(pos).scrollIntoView(); rb.classList.remove('show');
+    });
+    document.getElementById('resumeX').addEventListener('click',function(){ rb.classList.remove('show'); });
+    setTimeout(function(){ rb.classList.remove('show'); },9000);
+  }
+
+  function css(v){ return getComputedStyle(root).getPropertyValue(v).trim(); }
+
+  /* ================= SIMULATION : banc optique ================= */
+  var cv=document.getElementById('cvBanc'), ctx=cv.getContext('2d');
+  cv.width=900; cv.height=380;
+  var els={ f:document.getElementById('lf'), o:document.getElementById('lo') };
+
+  function bancCalc(){
+    var fp=+els.f.value;               /* cm, signé */
+    var OA=-Math.abs(+els.o.value);    /* objet toujours avant la lentille : OA négatif */
+    if(fp===0) fp=0.01;
+    var invOAp = 1/fp + 1/OA;
+    var OAp = 1/invOAp;
+    var gamma = OAp/OA;
+    var real = OAp>0;
+    return {fp:fp,OA:OA,OAp:OAp,gamma:gamma,real:real};
+  }
+
+  window.drawBanc = function drawBanc(){
+    var R=bancCalc();
+    document.getElementById('lfv').textContent=R.fp.toFixed(1);
+    document.getElementById('lov').textContent=Math.abs(R.OA).toFixed(1);
+    document.getElementById('lA').textContent=R.OAp.toFixed(2);
+    document.getElementById('lg').textContent=R.gamma.toFixed(2);
+    var natBox=document.getElementById('lnatBox'), natEl=document.getElementById('lnat');
+    natBox.className='rd';
+    if(R.real){ natEl.textContent='Réelle, '+(R.gamma<0?'renversée':'droite'); natBox.classList.add('em'); }
+    else{ natEl.textContent='Virtuelle, '+(R.gamma<0?'renversée':'droite'); natBox.classList.add('warn'); }
+
+    var W=cv.width,H=cv.height,midY=H/2;
+    var pxPerCm=8, cx=W/2;
+    function PX(cm){ return cx+cm*pxPerCm; }
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=css('--papier'); ctx.fillRect(0,0,W,H);
+
+    ctx.strokeStyle=css('--sauge'); ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(20,midY); ctx.lineTo(W-20,midY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    /* lentille */
+    ctx.strokeStyle=css('--ciel'); ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(cx,midY-140); ctx.lineTo(cx,midY+140); ctx.stroke();
+    var arrowUp = R.fp>0 ? 1 : -1;
+    ctx.beginPath();
+    ctx.moveTo(cx-8,midY-140+8*arrowUp); ctx.lineTo(cx,midY-140); ctx.lineTo(cx+8,midY-140+8*arrowUp);
+    ctx.moveTo(cx-8,midY+140-8*arrowUp); ctx.lineTo(cx,midY+140); ctx.lineTo(cx+8,midY+140-8*arrowUp);
+    ctx.stroke();
+
+    /* foyers */
+    ctx.fillStyle=css('--terre');
+    ctx.beginPath(); ctx.arc(PX(R.fp),midY,3,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(PX(-R.fp),midY,3,0,7); ctx.fill();
+    ctx.font='11px "IBM Plex Sans",sans-serif'; ctx.textAlign='center';
+    ctx.fillText('F\'',PX(R.fp),midY+16); ctx.fillText('F',PX(-R.fp),midY+16);
+
+    /* objet */
+    var objH=40;
+    ctx.strokeStyle=css('--mil'); ctx.fillStyle=css('--mil'); ctx.lineWidth=2.5;
+    var oxPx=PX(R.OA);
+    ctx.beginPath(); ctx.moveTo(oxPx,midY); ctx.lineTo(oxPx,midY-objH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(oxPx,midY-objH); ctx.lineTo(oxPx-6,midY-objH+10); ctx.lineTo(oxPx+6,midY-objH+10); ctx.closePath(); ctx.fill();
+
+    /* rayon 1: parallele a l'axe -> passe par F' (ou semble venir de F si divergente) */
+    ctx.strokeStyle=css('--nere'); ctx.lineWidth=1.6;
+    ctx.beginPath(); ctx.moveTo(oxPx,midY-objH); ctx.lineTo(cx,midY-objH); ctx.stroke();
+    var slope1 = -objH/R.fp;
+    var xEnd=W-20, dx=xEnd-cx;
+    ctx.beginPath(); ctx.moveTo(cx,midY-objH); ctx.lineTo(xEnd, midY-objH + slope1*dx); ctx.stroke();
+    if(R.fp<0){
+      ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(cx,midY-objH); ctx.lineTo(20, midY-objH - slope1*(cx-20)); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    /* rayon 2: passe par O -> pas devie */
+    ctx.strokeStyle=css('--terre'); ctx.lineWidth=1.6;
+    var slope2=(midY-(midY-objH))/(cx-oxPx)*-1;
+    var m2=(objH)/(cx-oxPx);
+    ctx.beginPath(); ctx.moveTo(oxPx,midY-objH); ctx.lineTo(cx,midY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,midY); ctx.lineTo(xEnd, midY + m2*(xEnd-cx)); ctx.stroke();
+
+    /* image : recalcul via OAp et gamma */
+    var imgH=-R.gamma*objH;
+    var ixPx=PX(R.OAp);
+    ctx.strokeStyle = R.real ? css('--nere') : css('--ciel');
+    ctx.lineWidth=3;
+    if(!R.real) ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(ixPx,midY); ctx.lineTo(ixPx,midY-imgH); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = R.real ? css('--nere') : css('--ciel');
+    var ah = imgH>=0?1:-1;
+    ctx.beginPath(); ctx.moveTo(ixPx,midY-imgH); ctx.lineTo(ixPx-6,midY-imgH-10*ah); ctx.lineTo(ixPx+6,midY-imgH-10*ah); ctx.closePath(); ctx.fill();
+
+    var F='<div><span class="sym">1/OA\' = 1/f\' + 1/OA</span> = 1/'+R.fp.toFixed(1)+' + 1/'+R.OA.toFixed(1)+' &rArr; <span class="res">OA\' = '+R.OAp.toFixed(2)+' cm</span></div>'+
+      '<div><span class="sym">γ = OA\'/OA</span> = <span class="res">'+R.gamma.toFixed(2)+'</span></div>';
+    document.getElementById('lform').innerHTML=F;
+  };
+  [els.f,els.o].forEach(function(el){ el.addEventListener('input',drawBanc); });
+  drawBanc();
+  window.addEventListener('resize',drawBanc);
+
+  /* ================= QUIZ D'AUTO-ÉVALUATION ================= */
+  var list=document.getElementById('qzList');
+  var Q=[
+    {q:"Une lentille convergente a des bords...",
+     o:["Plus épais que le centre","Plus minces que le centre","Toujours plats"],
+     c:1, e:"Bords minces, cœur épais : c'est la forme qui rassemble les rayons parallèles en un point (le foyer image)."},
+    {q:"Le foyer image F' d'une lentille convergente est le point où se rassemblent...",
+     o:["Tous les rayons, quelle que soit leur direction","Les rayons initialement parallèles à l'axe optique","Uniquement les rayons de couleur rouge"],
+     c:1, e:"C'est la définition même du foyer image : le point de convergence des rayons parallèles à l'axe."},
+    {q:"Une lentille divergente a une distance focale f' qui est...",
+     o:["Toujours positive","Toujours négative","Toujours nulle"],
+     c:1, e:"Par convention, f' > 0 pour une convergente, f' < 0 pour une divergente."},
+    {q:"Parmi les trois rayons particuliers utilisés pour construire une image, celui qui passe par le centre optique O...",
+     o:["Est fortement dévié","Ressort sans être dévié (il continue tout droit)","N'existe pas pour les lentilles minces"],
+     c:1, e:"Le rayon passant par le centre optique d'une lentille mince n'est jamais dévié — c'est ce qui le rend si pratique pour la construction."},
+    {q:"Une image réelle, contrairement à une image virtuelle...",
+     o:["Peut être récupérée sur un écran, car les rayons s'y croisent vraiment","Ne peut jamais être vue par l'œil","N'existe que pour les lentilles divergentes"],
+     c:0, e:"Une image virtuelle correspond à des rayons qui ne se recroisent jamais réellement (ils semblent seulement provenir d'un point) : impossible à projeter sur un écran."},
+    {q:"La formule de conjugaison des lentilles minces s'écrit...",
+     o:["1/OA' − 1/OA = 1/f'","1/OA' + 1/OA = 1/f'","OA' × OA = f'"],
+     c:0, e:"1/OA' − 1/OA = 1/f' (convention origine au centre optique, sens de la lumière positif)."},
+    {q:"Le grandissement γ = OA'/OA est négatif quand...",
+     o:["L'image est droite","L'image est renversée par rapport à l'objet","L'image est virtuelle"],
+     c:1, e:"Le signe de γ donne l'orientation : positif = image droite, négatif = image renversée (indépendamment du caractère réel ou virtuel)."},
+    {q:"Un objet placé entre le centre optique O et le foyer F d'une lentille convergente donne une image...",
+     o:["Réelle, renversée, réduite","Virtuelle, droite, agrandie (c'est le principe de la loupe)","Impossible à former"],
+     c:1, e:"C'est exactement la configuration de la loupe : objet très proche de la lentille (entre O et F)."},
+    {q:"Un objet placé au-delà de 2f' d'une lentille convergente (comme un paysage photographié) donne une image...",
+     o:["Virtuelle, droite, agrandie","Réelle, renversée, réduite","Aucune image ne se forme"],
+     c:1, e:"C'est le principe de l'appareil photo : le capteur récupère une image réelle, renversée et réduite."},
+    {q:"La vergence C = 1/f' d'une lentille se mesure en...",
+     o:["Mètres","Dioptries (δ)","Newtons"],
+     c:1, e:"La dioptrie (δ) est l'unité des opticiens ; une distance focale courte correspond à une vergence élevée."},
+    {q:"Deux lentilles minces accolées, de vergences C₁ et C₂, ont une vergence totale égale à...",
+     o:["C₁ × C₂","C₁ + C₂","C₁ − C₂"],
+     c:1, e:"Les vergences s'additionnent directement — c'est justement l'un des avantages pratiques de la vergence sur la distance focale."},
+    {q:"Un œil myope forme l'image d'un objet lointain...",
+     o:["Avant la rétine (trop convergent) — on corrige avec une lentille divergente","Après la rétine (pas assez convergent) — on corrige avec une lentille convergente","Exactement sur la rétine, sans besoin de correction"],
+     c:0, e:"La myopie correspond à un œil trop convergent : l'image se forme avant la rétine, corrigée par une lentille divergente qui réduit la convergence totale."}
+  ];
+
+  var score=0;
+  function updateScore(){ document.getElementById('qzScore').textContent='Score : '+score+' / '+Q.length; }
+
+  function render(){
+    list.innerHTML='';
+    Q.forEach(function(item,qi){
+      var box=document.createElement('div'); box.className='qz';
+      var qEl=document.createElement('p'); qEl.className='qzQ';
+      qEl.textContent=(qi+1)+'. '+item.q; box.appendChild(qEl);
+      var expEl=document.createElement('div'); expEl.className='qzExp'; expEl.textContent=item.e;
+      item.o.forEach(function(opt,oi){
+        var btn=document.createElement('button'); btn.className='qzOpt'; btn.type='button';
+        btn.textContent=opt;
+        btn.addEventListener('click',function(){
+          var opts=box.querySelectorAll('.qzOpt');
+          opts.forEach(function(b){ b.disabled=true; });
+          if(oi===item.c){ btn.classList.add('correct'); score++; }
+          else{ btn.classList.add('wrong'); opts[item.c].classList.add('correct'); }
+          expEl.classList.add('show');
+          updateScore();
+        });
+        box.appendChild(btn);
+      });
+      box.appendChild(expEl);
+      list.appendChild(box);
+    });
+  }
+  render(); updateScore();
+  document.getElementById('qzRestart').addEventListener('click',function(){
+    score=0; render(); updateScore();
+  });
+})();
+</script>
+</body>
+</html>
