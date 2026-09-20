@@ -1007,7 +1007,7 @@
     <button type="button" id="achat-fermer" aria-label="Fermer">&times;</button>
     <h3 id="achat-titre">Dernière étape avant le paiement</h3>
     <p>Ton accès t'est envoyé à cet email. Un souci au moment de payer ? On peut te retrouver et t'aider.</p>
-    <label for="achat-nom">Ton prénom</label>
+    <label for="achat-nom">Ton prénom et nom</label>
     <input id="achat-nom" type="text" autocomplete="name" maxlength="60" placeholder="Ex. Aïcha Koffi">
     <label for="achat-email">Ton email</label>
     <input id="achat-email" type="email" autocomplete="email" inputmode="email" maxlength="120" placeholder="ton.email@gmail.com">
@@ -1061,14 +1061,14 @@
       ecrire('prism_achat_nom', n);
       ecrire('prism_achat_email', e);
       const ctrl = ('AbortController' in window) ? new AbortController() : null;
-      const minuteur = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 12000);
+      const minuteur = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 25000);
       fetch(API + '?action=checkout&nom=' + encodeURIComponent(n) + '&email=' + encodeURIComponent(e), ctrl ? { signal: ctrl.signal } : {})
         .then(function(r){ return r.json(); })
         .then(function(d){
           clearTimeout(minuteur);
           if(d && d.ok && /^https:\/\//.test(d.url)) window.location.href = d.url; else direct();
         })
-        .catch(function(){ clearTimeout(minuteur); direct(); });
+        .catch(function(er){ clearTimeout(minuteur); ecrire("prism_achat_err", String(er)); direct(); });
     });
   })();
 </script>
