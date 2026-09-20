@@ -1110,5 +1110,91 @@
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') lb.classList.remove('open'); });
 })();
 </script>
+<!-- Formulaire avant paiement : prénom + email, puis panier Maketou créé par l'API -->
+<style>
+  #achat-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(20,8,36,.78);}
+  #achat-modal.open{display:flex;}
+  #achat-box{width:100%;max-width:420px;background:var(--violet-fonce);border:1px solid rgba(242,192,92,.45);border-radius:18px;padding:26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;}
+  #achat-box h3{margin:0 0 6px;font-size:22px;}
+  #achat-box p{margin:0 0 16px;font-size:14.5px;opacity:.85;}
+  #achat-box label{display:block;font-size:13.5px;margin:10px 0 4px;color:var(--dore-clair);}
+  #achat-box input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:16px;font-family:inherit;}
+  #achat-box input:focus{outline:2px solid var(--dore);}
+  #achat-erreur{color:#ff9b8a;font-size:13.5px;min-height:18px;margin:8px 0 0;}
+  #achat-go{width:100%;margin-top:10px;}
+  #achat-direct{display:block;text-align:center;margin-top:14px;font-size:13px;opacity:.7;background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;width:100%;font-family:inherit;}
+  #achat-fermer{position:absolute;top:8px;right:12px;background:none;border:none;color:#fff;font-size:26px;cursor:pointer;opacity:.7;}
+</style>
+<div id="achat-modal" role="dialog" aria-modal="true" aria-labelledby="achat-titre">
+  <form id="achat-box" novalidate>
+    <button type="button" id="achat-fermer" aria-label="Fermer">&times;</button>
+    <h3 id="achat-titre">Dernière étape avant le paiement</h3>
+    <p>Ton accès t'est envoyé à cet email. Un souci au moment de payer ? On peut te retrouver et t'aider.</p>
+    <label for="achat-nom">Ton prénom</label>
+    <input id="achat-nom" type="text" autocomplete="name" maxlength="60" placeholder="Ex. Aïcha Koffi">
+    <label for="achat-email">Ton email</label>
+    <input id="achat-email" type="email" autocomplete="email" inputmode="email" maxlength="120" placeholder="ton.email@gmail.com">
+    <div id="achat-erreur" role="alert"></div>
+    <button type="submit" id="achat-go" class="cta-btn">Passer au paiement →</button>
+    <button type="button" id="achat-direct">Continuer sans laisser mes infos</button>
+  </form>
+</div>
+<script>
+  (function(){
+    const API = 'https://script.google.com/macros/s/AKfycbzCCnm4FV2TYd1c00YKqoVrpRUEBRc-UteVQOtHefZNEyKeH8StrKlVSCdimESLNFaO2A/exec';
+    const DIRECT = 'https://prism-france.mymaketou.shop/fr/products/comprendre-les-notions-de-physique-en-terminale/checkout';
+    const modal = document.getElementById('achat-modal');
+    const form = document.getElementById('achat-box');
+    const nom = document.getElementById('achat-nom');
+    const email = document.getElementById('achat-email');
+    const erreur = document.getElementById('achat-erreur');
+    const go = document.getElementById('achat-go');
+    let enCours = false;
+
+    function lire(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } }
+    function ecrire(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+    function ouvrir(){
+      nom.value = lire('prism_achat_nom');
+      email.value = lire('prism_achat_email');
+      erreur.textContent = '';
+      modal.classList.add('open');
+      setTimeout(function(){ (nom.value ? email : nom).focus(); }, 50);
+    }
+    function fermer(){ if(!enCours) modal.classList.remove('open'); }
+    function direct(){ window.location.href = DIRECT; }
+
+    document.querySelectorAll('a[href*="/checkout"]').forEach(function(a){
+      a.addEventListener('click', function(ev){ ev.preventDefault(); ouvrir(); });
+    });
+    document.getElementById('achat-fermer').addEventListener('click', fermer);
+    modal.addEventListener('click', function(ev){ if(ev.target === modal) fermer(); });
+    document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape') fermer(); });
+    document.getElementById('achat-direct').addEventListener('click', direct);
+
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      if(enCours) return;
+      const n = nom.value.trim();
+      const e = email.value.trim();
+      if(!n){ erreur.textContent = 'Indique ton prénom.'; nom.focus(); return; }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){ erreur.textContent = 'Vérifie ton email, il semble incomplet.'; email.focus(); return; }
+      enCours = true;
+      go.textContent = 'Un instant…';
+      go.disabled = true;
+      ecrire('prism_achat_nom', n);
+      ecrire('prism_achat_email', e);
+      const ctrl = ('AbortController' in window) ? new AbortController() : null;
+      const minuteur = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 12000);
+      fetch(API + '?action=checkout&nom=' + encodeURIComponent(n) + '&email=' + encodeURIComponent(e), ctrl ? { signal: ctrl.signal } : {})
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          clearTimeout(minuteur);
+          if(d && d.ok && /^https:\/\//.test(d.url)) window.location.href = d.url; else direct();
+        })
+        .catch(function(){ clearTimeout(minuteur); direct(); });
+    });
+  })();
+</script>
+
 </body>
 </html>
