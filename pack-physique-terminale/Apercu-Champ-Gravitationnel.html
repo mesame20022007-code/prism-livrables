@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aperçu — Le champ gravitationnel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papier:#F6F4EF; --carte:#FFFFFF;
+  --encre:#1C2621; --encre-doux:#3E4A43;
+  --nere:#0E5138; --nere-clair:#E4EDE7;
+  --terre:#B34A2F; --terre-clair:#F5E4DE;
+  --mil:#B87A15; --mil-clair:#F7EAD2;
+  --ciel:#245A8D; --ciel-clair:#E1EAF2;
+  --sauge:#5F6F66; --filet:#D9D3C6;
+  --ombre:0 1px 2px rgba(28,38,33,.06),0 12px 34px rgba(28,38,33,.08);
+  --mesure:43rem;
+}
+*{box-sizing:border-box}
+html{font-size:112.5%;scroll-behavior:smooth}
+@media (max-width:600px){ html{font-size:104%} }
+body{margin:0;background:var(--papier);color:var(--encre);
+  font-family:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  line-height:1.75;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+h1,h2,h3{font-family:"Fraunces","Georgia",serif;line-height:1.16;color:var(--encre);overflow-wrap:break-word}
+h1{font-size:2rem;margin:.2rem 0 .6rem}
+h2{font-size:1.45rem;margin:2.2rem 0 .8rem}
+h3{font-size:1.08rem;margin:1.4rem 0 .5rem}
+p{margin:0 0 1.1rem}
+strong{font-weight:600}
+.wrap{max-width:var(--mesure);margin:0 auto;padding:2.2rem 1.25rem 4rem}
+.kicker{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mil);margin:0 0 .3rem}
+.label{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--sauge)}
+.lead{font-size:1.1rem;color:var(--encre-doux)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+
+.card{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.formule{font-family:"IBM Plex Mono",monospace;font-size:.94rem;line-height:1.9;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.8rem 1rem;margin:1rem 0;overflow-x:auto;white-space:nowrap}
+
+.sim{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1rem;margin:1.8rem 0;font-family:"IBM Plex Sans",sans-serif}
+.sim h3{font-family:"Fraunces",serif;margin:.2rem 0 .8rem}
+.sim canvas{width:100%;height:auto;display:block;background:var(--papier);
+  border:1px solid var(--filet);border-radius:10px;touch-action:none}
+.sim .controls{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1rem;margin:.9rem 0 .4rem}
+@media (max-width:520px){ .sim .controls{grid-template-columns:1fr} }
+.ctrl{font-size:.78rem;color:var(--encre-doux)}
+.ctrl label{display:flex;justify-content:space-between;margin-bottom:.15rem}
+.ctrl b{color:var(--nere);font-family:"IBM Plex Mono",monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--nere)}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.9rem 0 0}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)} }
+.rd{background:var(--papier);border:1px solid var(--filet);border-radius:9px;padding:.5rem .6rem}
+.rd .k{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sauge)}
+.rd .v{font-family:"IBM Plex Mono",monospace;font-size:.98rem;color:var(--encre);font-weight:500}
+.rd.em{background:var(--nere-clair);border-color:transparent}
+.rd.em .v{color:var(--nere)}
+.simform{font-family:"IBM Plex Mono",monospace;font-size:.8rem;line-height:1.85;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.7rem .8rem;margin:.9rem 0 0;overflow-x:auto}
+.simform .sym{color:var(--encre-doux)}
+.simform .res{color:var(--nere);font-weight:600}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--encre-doux);margin:.7rem 0 0}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.3rem}
+.touch-hint{font-family:"IBM Plex Sans",sans-serif;font-size:.86rem;font-weight:600;color:var(--mil);
+  background:var(--mil-clair);border-radius:9px;padding:.55rem .8rem;margin:0 0 .8rem}
+.plain{font-family:"IBM Plex Sans",sans-serif;font-size:.9rem;line-height:1.6;color:var(--encre);
+  background:var(--nere-clair);border-radius:10px;padding:.85rem 1rem;margin:.7rem 0 0}
+.plain b{color:var(--nere)}
+
+.divider{text-align:center;margin:2.6rem 0;color:var(--sauge);font-family:"IBM Plex Sans",sans-serif;
+  font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+.divider::before,.divider::after{content:"";display:inline-block;width:2.2rem;height:1px;background:var(--filet);vertical-align:middle;margin:0 .7rem}
+
+/* ===== bloc promo final ===== */
+.promo{margin-top:3rem;background:linear-gradient(160deg,var(--nere) 0%,#0a3d2b 100%);
+  color:#fff;border-radius:20px;padding:2.2rem 1.6rem;text-align:center;
+  box-shadow:0 20px 50px rgba(14,81,56,.35)}
+.promo .tick{font-size:2.2rem;line-height:1;margin-bottom:.6rem}
+.promo h2{color:#fff;margin:.2rem 0 1rem;font-size:1.5rem}
+.promo p{color:rgba(255,255,255,.88);font-size:1rem;max-width:32rem;margin:0 auto 1.1rem}
+.promo .promo-strong{color:#fff;font-weight:700}
+.promo-code{display:inline-block;background:rgba(255,255,255,.12);border:1.5px dashed rgba(255,255,255,.55);
+  border-radius:12px;padding:.7rem 1.4rem;margin:.6rem 0 1.3rem;font-family:"IBM Plex Mono",monospace;
+  font-size:1.15rem;letter-spacing:.12em;color:#fff;min-width:10rem}
+.promo-code .fill{opacity:.75;font-size:.85rem;letter-spacing:.04em}
+.promo-cta{display:inline-block;background:#fff;color:var(--nere);font-family:"IBM Plex Sans",sans-serif;
+  font-weight:700;font-size:.98rem;border:0;border-radius:999px;padding:.85rem 2.1rem;
+  text-decoration:none;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.promo-cta:hover{opacity:.92}
+.promo-foot{margin-top:1.1rem;font-size:.78rem;color:rgba(255,255,255,.65)}
+.promo-list{text-align:left;max-width:30rem;margin:1.3rem auto;display:grid;gap:.7rem}
+.promo-item{display:flex;align-items:flex-start;gap:.8rem;background:rgba(255,255,255,.08);
+  border-radius:12px;padding:.7rem .9rem;font-size:.92rem;color:rgba(255,255,255,.9)}
+.promo-num{flex:0 0 auto;width:2.4rem;height:2.4rem;border-radius:50%;background:#fff;color:var(--nere);
+  font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:1.05rem;
+  display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <p class="kicker">Aperçu gratuit — 2 minutes de lecture</p>
+  <h1>Le champ gravitationnel</h1>
+  <p class="lead">Bienvenue dans cet aperçu&nbsp;👋 Extrait du pack <strong>« Comprendre le champ
+  gravitationnel »</strong> — Terminale, programme Afrique de l'Ouest, pensé pour quelqu'un qui repart de
+  zéro autant que pour un bon élève. Deux simulations interactives, tirées telles quelles du document
+  complet&nbsp;: touche les boutons, règle-les comme tu veux, regarde ce qui se passe. En bas de chaque
+  simulation, on t'explique simplement ce que tu viens de voir.</p>
+
+  <div class="card">
+    <p class="label">Le canon de Newton — pourquoi une orbite ne s'écrase jamais</p>
+    <p>Imagine un canon tirant à l'horizontale depuis une tour très haute. Le boulet tombe et touche
+    le sol. Tire plus fort&nbsp;: il va plus loin avant de toucher le sol. Tire encore plus fort — à un
+    moment, un détail change&nbsp;: <strong>le sol de la Terre est courbé, lui aussi</strong>. Si le
+    boulet avance assez vite, la Terre s'incurve vers le bas exactement à la vitesse où le boulet tombe.
+    Il ne touche jamais le sol&nbsp;: il tombe pour toujours, en ratant la Terre à chaque instant.</p>
+    <p style="margin:0">C'est exactement ce que fait l'ISS&nbsp;: elle tombe sans arrêt vers la Terre,
+    mais elle va si vite (environ 7,7&nbsp;km/s) qu'elle la rate en boucle. Une orbite, ce n'est pas
+    l'absence de gravité — c'est une chute qui rate sa cible indéfiniment.</p>
+  </div>
+
+  <div class="sim" id="simOrbit">
+    <h3>Le canon de Newton, en vrai&nbsp;: règle la vitesse et regarde</h3>
+    <p class="touch-hint">👉 À toi de jouer&nbsp;: bouge les deux curseurs ci-dessous comme tu veux, regarde
+    ce qui arrive au boulet.</p>
+    <canvas id="cvOrbit" width="900" height="560"></canvas>
+    <div class="legend">
+      <span><i style="background:var(--sauge)"></i>trop lent&nbsp;: retombe sur Terre</span>
+      <span><i style="background:var(--nere)"></i>orbite stable</span>
+      <span><i style="background:var(--terre)"></i>échappe à la Terre</span>
+    </div>
+    <div class="controls">
+      <div class="ctrl"><label>Altitude de la tour h <b><span id="ohv">300</span> km</b></label>
+        <input type="range" id="oh" min="0" max="1200" step="10" value="300"></div>
+      <div class="ctrl"><label>Vitesse initiale v<sub>0</sub> <b><span id="ov0v">6.0</span> km/s</b></label>
+        <input type="range" id="ov0" min="0" max="12" step="0.05" value="6.0"></div>
+    </div>
+    <div class="readout">
+      <div class="rd"><div class="k">v circulaire ici</div><div class="v"><span id="ovc">0</span> km/s</div></div>
+      <div class="rd"><div class="k">v de libération ici</div><div class="v"><span id="ove">0</span> km/s</div></div>
+      <div class="rd em" style="grid-column:1/-1"><div class="k">Résultat</div><div class="v" id="ores">—</div></div>
+    </div>
+    <div class="simform" id="oform"></div>
+    <div class="plain" id="oplain"></div>
+    <p style="margin:1rem 0 0;font-size:.86rem;color:var(--encre-doux)">Le calcul est le vrai calcul à deux
+    corps (<code>a = G&middot;M<sub>T</sub>/r&sup2;</code>, dirigée vers le centre) intégré pas à pas —
+    pas une animation truquée. Augmente <code>v<sub>0</sub></code> doucement&nbsp;: sous la vitesse
+    circulaire, ça retombe&nbsp;; à la vitesse circulaire, cercle parfait&nbsp;; entre les deux vitesses,
+    ellipse stable&nbsp;; au-delà de la vitesse de libération, ça part pour de bon.</p>
+  </div>
+
+  <div class="divider">Deuxième extrait</div>
+
+  <p>Un satellite en orbite circulaire tourne d'autant plus vite qu'il est proche de la Terre. Il existe
+  une seule altitude où sa période orbitale vaut exactement <strong>un jour sidéral</strong>&nbsp;: vu du
+  sol, il semble alors <strong>immobile, toujours au-dessus du même point</strong> de l'équateur — c'est là
+  que vivent les satellites de télévision et de météo.</p>
+  <div class="formule">(G&middot;M<sub>T</sub>&middot;m) / r&sup2; = (m&middot;4&pi;&sup2;&middot;r) / T&sup2;
+    &nbsp;&nbsp;&rArr;&nbsp;&nbsp; r&sup3; = (G&middot;M<sub>T</sub>&middot;T&sup2;) / (4&pi;&sup2;)</div>
+
+  <div class="sim" id="simGeo">
+    <h3>Trouve l'altitude où le satellite reste immobile</h3>
+    <p class="touch-hint">👉 À toi de jouer&nbsp;: fais glisser le curseur d'altitude, regarde le point bleu
+    (satellite) et le point rouge (repère fixe sur Terre) tourner l'un par rapport à l'autre.</p>
+    <canvas id="cvGeo" width="900" height="560"></canvas>
+    <div class="legend">
+      <span><i style="background:var(--terre)"></i>repère fixe sur Terre (méridien)</span>
+      <span><i style="background:var(--ciel)"></i>satellite</span>
+      <span><i style="background:var(--nere)"></i>trace de l'orbite</span>
+    </div>
+    <div class="controls">
+      <div class="ctrl"><label>Altitude h <b><span id="ghv">2000</span> km</b></label>
+        <input type="range" id="gh" min="300" max="42000" step="50" value="2000"></div>
+    </div>
+    <div class="readout">
+      <div class="rd"><div class="k">Période orbitale T</div><div class="v"><span id="gT">0</span> h</div></div>
+      <div class="rd"><div class="k">Période Terre</div><div class="v">23,93 h</div></div>
+      <div class="rd em" style="grid-column:1/-1"><div class="k">Vu du sol</div><div class="v" id="gres">—</div></div>
+    </div>
+    <div class="simform" id="gform"></div>
+    <div class="plain" id="gplain"></div>
+  </div>
+
+  <div class="promo">
+    <div class="tick">🎉</div>
+    <h2>Félicitations, tu es allé au bout !</h2>
+    <p>90&nbsp;% des gens n'ouvrent même pas un aperçu jusqu'au bout — toi si. Et ce que tu viens de
+    manipuler, ce ne sont que <span class="promo-strong">2 simulations sur les 36</span> que contient le
+    pack complet <strong>Physique Terminale</strong>.</p>
+
+    <div class="promo-list">
+      <div class="promo-item"><span class="promo-num">0</span><span>prérequis nécessaire&nbsp;: chaque
+      fiche commence par une section « Avant de commencer » qui reprend les bases (notation scientifique,
+      conversions d'unités, symboles) — pensée pour quelqu'un qui n'y connaît presque rien, pas seulement
+      pour les meilleurs de la classe</span></div>
+      <div class="promo-item"><span class="promo-num">9</span><span>chapitres du programme, chacun
+      avec sa fiche interactive complète&nbsp;: champ gravitationnel, champ électrique, champ magnétique,
+      mécanique du solide, oscillations mécaniques, oscillations électriques (RC, RLC, résonance),
+      longueur d'onde, lentilles minces, physique atomique et nucléaire</span></div>
+      <div class="promo-item"><span class="promo-num">36</span><span>simulations comme celles que tu viens
+      de tester — tu règles les curseurs, tu vois tout de suite le résultat, sans jamais deviner</span></div>
+      <div class="promo-item"><span class="promo-num">38</span><span>exercices corrigés type bac, avec la
+      correction détaillée cachée derrière un bouton pour t'entraîner d'abord seul</span></div>
+      <div class="promo-item"><span class="promo-num">133</span><span>questions de quiz réparties sur les 9
+      fiches, pour savoir exactement ce que tu maîtrises avant le jour de l'examen</span></div>
+    </div>
+
+    <p>Un seul fichier, qui s'ouvre sur ton téléphone ou ton ordinateur, sans connexion internet une fois
+    téléchargé. Tu avances à ton rythme, tu reprends où tu t'es arrêté, et tu coches chaque section au fur
+    et à mesure.</p>
+
+    <p style="margin-bottom:.3rem">Pour encourager ta curiosité, voici un code promo pour obtenir
+    <span class="promo-strong">15&nbsp;% de réduction</span> sur le pack complet&nbsp;:</p>
+    <div class="promo-code"><span id="promoCode">&nbsp;</span><span class="fill">code à venir</span></div>
+    <br>
+    <a href="#" class="promo-cta">Obtenir le pack complet</a>
+    <p class="promo-foot">Prism Éducation — Comprendre la notion, pas juste l'apprendre.</p>
+  </div>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement;
+  function css(v){ return getComputedStyle(root).getPropertyValue(v).trim(); }
+
+  /* ===== Simulation 1 : canon de Newton ===== */
+  (function(){
+    var RE=6371, GM=398600;
+    var cv=document.getElementById('cvOrbit'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    cv.width=900; cv.height=560;
+    var els={ h:document.getElementById('oh'), v0:document.getElementById('ov0') };
+
+    function simulate(h,v0){
+      var r0=RE+h;
+      var vc=Math.sqrt(GM/r0), ve=Math.sqrt(2*GM/r0);
+      var x=0,y=r0, vx=v0,vy=0;
+      var pts=[[x,y]];
+      var period=2*Math.PI*r0/Math.max(vc,0.01);
+      var dt=Math.max(period/1600, 0.2);
+      var maxSteps=6000, ang0=Math.atan2(y,x), swept=0, lastAng=ang0;
+      var out='orbit', imp=null;
+
+      function accel(px,py){
+        var r=Math.sqrt(px*px+py*py), f=-GM/(r*r*r);
+        return [f*px, f*py];
+      }
+      for(var i=0;i<maxSteps;i++){
+        var a1=accel(x,y);
+        var x2=x+vx*dt*0.5, y2=y+vy*dt*0.5;
+        var vx2=vx+a1[0]*dt*0.5, vy2=vy+a1[1]*dt*0.5;
+        var a2=accel(x2,y2);
+        vx+=a2[0]*dt; vy+=a2[1]*dt;
+        x+=vx*dt; y+=vy*dt;
+        pts.push([x,y]);
+        var r=Math.sqrt(x*x+y*y);
+        if(r<=RE){ out='crash'; imp=[x,y]; break; }
+        var ang=Math.atan2(y,x);
+        var d=ang-lastAng; if(d>Math.PI) d-=2*Math.PI; if(d<-Math.PI) d+=2*Math.PI;
+        swept+=d; lastAng=ang;
+        if(Math.abs(swept)>=2*Math.PI+0.03){ out='orbit'; break; }
+        if(r>7*r0 && r>RE*1.02){
+          var rr=Math.sqrt((x-vx*dt)*(x-vx*dt)+(y-vy*dt)*(y-vy*dt));
+          if(r>rr){ out='escape'; break; }
+        }
+      }
+      return {pts:pts, out:out, imp:imp, vc:vc, ve:ve, r0:r0};
+    }
+
+    function draw(){
+      var h=+els.h.value, v0=+els.v0.value;
+      document.getElementById('ohv').textContent=h;
+      document.getElementById('ov0v').textContent=v0.toFixed(2);
+      var R=simulate(h,v0);
+      document.getElementById('ovc').textContent=R.vc.toFixed(2);
+      document.getElementById('ove').textContent=R.ve.toFixed(2);
+
+      var lbl, color;
+      if(R.out==='crash'){ lbl='Retombe sur Terre'; color=css('--sauge'); }
+      else if(R.out==='escape'){ lbl='Échappe à l\'attraction terrestre'; color=css('--terre'); }
+      else if(Math.abs(v0-R.vc)<0.05){ lbl='Orbite circulaire stable'; color=css('--nere'); }
+      else { lbl='Orbite elliptique stable'; color=css('--nere'); }
+      var resEl=document.getElementById('ores');
+      resEl.textContent=lbl; resEl.style.color=color;
+
+      var W=cv.width,H=cv.height;
+      var maxR=0; R.pts.forEach(function(p){ var r=Math.sqrt(p[0]*p[0]+p[1]*p[1]); if(r>maxR) maxR=r; });
+      maxR=Math.min(maxR, R.r0*3.2);
+      var ppk=Math.min(W,H)*0.42/Math.max(maxR,RE*1.15);
+      function PX(x){ return W/2+x*ppk; }
+      function PY(y){ return H/2-y*ppk; }
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle=css('--papier'); ctx.fillRect(0,0,W,H);
+
+      ctx.fillStyle=css('--nere-clair'); ctx.strokeStyle=css('--nere'); ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.arc(PX(0),PY(0),RE*ppk,0,7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle=css('--nere'); ctx.font='bold 15px "IBM Plex Sans",sans-serif'; ctx.textAlign='center';
+      ctx.fillText('Terre', PX(0), PY(0)+5);
+
+      var pathColor = R.out==='crash'?css('--sauge') : R.out==='escape'?css('--terre') : css('--nere');
+      ctx.strokeStyle=pathColor; ctx.lineWidth=3; ctx.beginPath();
+      R.pts.forEach(function(p,i){ var X=PX(p[0]),Y=PY(p[1]); (i?ctx.lineTo:ctx.moveTo).call(ctx,X,Y); });
+      ctx.stroke();
+
+      var lx=PX(0), ly=PY(R.r0);
+      ctx.fillStyle=css('--encre-doux');
+      ctx.fillRect(lx-5, ly-18, 10, 18);
+      ctx.font='12px "IBM Plex Sans",sans-serif'; ctx.fillText('tour', lx, ly-24);
+
+      var last=R.pts[R.pts.length-1];
+      if(R.out==='escape'){
+        var Lx=PX(last[0]), Ly=PY(last[1]);
+        var dxp=last[0]-R.pts[R.pts.length-4][0], dyp=last[1]-R.pts[R.pts.length-4][1];
+        var ang=Math.atan2(-dyp,dxp);
+        ctx.strokeStyle=pathColor; ctx.fillStyle=pathColor; ctx.lineWidth=3;
+        var ex=Lx+Math.cos(ang)*36, ey=Ly-Math.sin(ang)*36;
+        ctx.beginPath(); ctx.moveTo(Lx,Ly); ctx.lineTo(ex,ey); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ex,ey);
+        ctx.lineTo(ex-12*Math.cos(ang-0.4),ey+12*Math.sin(ang-0.4));
+        ctx.lineTo(ex-12*Math.cos(ang+0.4),ey+12*Math.sin(ang+0.4));
+        ctx.closePath(); ctx.fill();
+      }
+      if(R.out==='crash'){
+        ctx.fillStyle=pathColor;
+        ctx.beginPath(); ctx.arc(PX(last[0]),PY(last[1]),5,0,7); ctx.fill();
+      }
+      ctx.textAlign='left';
+
+      var F=
+        '<div><span class="sym">v_circulaire = &radic;(G&middot;M_T / r)</span> = <span class="res">'+R.vc.toFixed(2)+' km/s</span> &nbsp;<span class="sym">à r = R_T + h = '+R.r0.toFixed(0)+' km</span></div>'+
+        '<div><span class="sym">v_libération = &radic;(2&middot;G&middot;M_T / r)</span> = <span class="res">'+R.ve.toFixed(2)+' km/s</span></div>'+
+        '<div style="margin-top:.5rem"><span class="sym">v&#8320; choisie = '+v0.toFixed(2)+' km/s</span> &nbsp;&rarr;&nbsp; <span class="res" style="color:'+pathColor+'">'+lbl+'</span></div>';
+      document.getElementById('oform').innerHTML=F;
+
+      var plain;
+      if(R.out==='crash'){
+        plain='En clair&nbsp;: à <b>'+v0.toFixed(1)+' km/s</b>, le boulet n\'avance pas assez vite. La Terre '+
+          'a le temps de le rattraper avant qu\'il n\'ait fait le tour&nbsp;: il retombe, comme une pierre '+
+          'lancée à l\'horizontale depuis un toit.';
+      } else if(R.out==='escape'){
+        plain='En clair&nbsp;: à <b>'+v0.toFixed(1)+' km/s</b>, le boulet va trop vite pour que la Terre le '+
+          'retienne. Il ne tombe plus du tout&nbsp;: il quitte l\'attraction terrestre pour de bon, comme une '+
+          'sonde spatiale envoyée vers une autre planète.';
+      } else {
+        plain='En clair&nbsp;: à <b>'+v0.toFixed(1)+' km/s</b>, le boulet tombe juste assez vite pour '+
+          'échapper au sol à chaque instant, sans jamais s\'échapper complètement de la Terre. '+
+          'Il reste coincé en orbite, pour toujours &mdash; exactement ce que fait l\'ISS à 400 km '+
+          'd’altitude, à environ 7,7 km/s.';
+      }
+      document.getElementById('oplain').innerHTML=plain;
+    }
+
+    els.h.addEventListener('input',draw);
+    els.v0.addEventListener('input',draw);
+    draw();
+  })();
+
+  /* ===== Simulation 2 : satellite géostationnaire ===== */
+  (function(){
+    var RE=6371, GM=398600, T_EARTH=86164;
+    var cv=document.getElementById('cvGeo'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    cv.width=900; cv.height=560;
+    var hEl=document.getElementById('gh');
+    var angEarth=0, angSat=0, raf=null, last=null;
+
+    function compute(h){
+      var r=RE+h;
+      var T=2*Math.PI*Math.sqrt(r*r*r/GM);
+      return {r:r, T:T};
+    }
+
+    function tick(ts){
+      if(!last) last=ts;
+      var dtReal=(ts-last)/1000; last=ts;
+      var h=+hEl.value, R=compute(h);
+      var k=R.T/6;
+      var dtSim=dtReal*k;
+      angEarth+=(2*Math.PI/T_EARTH)*dtSim;
+      angSat+=(2*Math.PI/R.T)*dtSim;
+      draw(R,h);
+      raf=requestAnimationFrame(tick);
+    }
+
+    function draw(R,h){
+      var W=cv.width,H=cv.height;
+      var maxR=42164*1.08;
+      var ppk=Math.min(W,H)*0.46/maxR;
+      function PX(x){ return W/2+x*ppk; }
+      function PY(y){ return H/2-y*ppk; }
+
+      document.getElementById('ghv').textContent=h;
+      document.getElementById('gT').textContent=(R.T/3600).toFixed(2);
+      var resEl=document.getElementById('gres');
+      var lbl,color;
+      if(Math.abs(R.T-T_EARTH)<180){ lbl='Immobile au-dessus du même point (géostationnaire)'; color=css('--nere'); }
+      else if(R.T<T_EARTH){ lbl='Trop bas : dépasse la Terre, dérive vers l\'est'; color=css('--ciel'); }
+      else { lbl='Trop haut : traîne derrière, dérive vers l\'ouest'; color=css('--terre'); }
+      resEl.textContent=lbl; resEl.style.color=color;
+
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle=css('--papier'); ctx.fillRect(0,0,W,H);
+
+      ctx.strokeStyle=css('--filet'); ctx.lineWidth=1.5; ctx.setLineDash([4,5]);
+      ctx.beginPath(); ctx.arc(PX(0),PY(0),42164*ppk,0,7); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=css('--sauge'); ctx.font='11px "IBM Plex Sans",sans-serif'; ctx.textAlign='left';
+      ctx.fillText('orbite géostationnaire (35 786 km)', PX(0)+42164*ppk*0.66, PY(0)-42164*ppk*0.72);
+
+      ctx.strokeStyle=css('--nere'); ctx.lineWidth=1.5; ctx.globalAlpha=.5;
+      ctx.beginPath(); ctx.arc(PX(0),PY(0),R.r*ppk,0,7); ctx.stroke(); ctx.globalAlpha=1;
+
+      ctx.fillStyle=css('--nere-clair'); ctx.strokeStyle=css('--nere'); ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.arc(PX(0),PY(0),RE*ppk,0,7); ctx.fill(); ctx.stroke();
+
+      var mx=PX(RE*Math.cos(angEarth)), my=PY(RE*Math.sin(angEarth));
+      ctx.strokeStyle=css('--terre'); ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(PX(0),PY(0)); ctx.lineTo(mx,my); ctx.stroke();
+      ctx.fillStyle=css('--terre'); ctx.beginPath(); ctx.arc(mx,my,5,0,7); ctx.fill();
+
+      var sx=PX(R.r*Math.cos(angSat)), sy=PY(R.r*Math.sin(angSat));
+      ctx.fillStyle=css('--ciel'); ctx.beginPath(); ctx.arc(sx,sy,7,0,7); ctx.fill();
+      ctx.strokeStyle=css('--papier'); ctx.lineWidth=2; ctx.stroke();
+
+      var F=
+        '<div><span class="sym">r&sup3; = G&middot;M_T&middot;T&sup2; / (4&pi;&sup2;)</span> &nbsp;&rarr;&nbsp; à h = '+h+' km, r = '+R.r.toFixed(0)+' km</div>'+
+        '<div><span class="sym">T = 2&pi;&middot;&radic;(r&sup3;/G&middot;M_T)</span> = <span class="res">'+(R.T/3600).toFixed(2)+' h</span> &nbsp;<span class="sym">(Terre : 23,93 h)</span></div>'+
+        '<div style="margin-top:.5rem"><span class="res" style="color:'+color+'">'+lbl+'</span></div>';
+      document.getElementById('gform').innerHTML=F;
+
+      var Th=(R.T/3600).toFixed(1), plain;
+      if(Math.abs(R.T-T_EARTH)<180){
+        plain='En clair&nbsp;: à <b>'+h.toLocaleString('fr-FR')+' km</b> d’altitude, le satellite met '+
+          '<b>'+Th+' h</b> à faire un tour de la Terre &mdash; exactement le temps que met la Terre '+
+          'pour tourner sur elle-même. Vu du sol, il ne bouge jamais dans le ciel&nbsp;: c’est à '+
+          'cette altitude précise que sont placés les satellites de télévision et de météo.';
+      } else if(R.T<T_EARTH){
+        plain='En clair&nbsp;: à <b>'+h.toLocaleString('fr-FR')+' km</b>, le satellite fait le tour en '+
+          '<b>'+Th+' h</b>, plus vite que la Terre (23,93 h). Il double la Terre en permanence&nbsp;: '+
+          'vu du sol, on le verrait filer d’ouest en est dans le ciel.';
+      } else {
+        plain='En clair&nbsp;: à <b>'+h.toLocaleString('fr-FR')+' km</b>, le satellite fait le tour en '+
+          '<b>'+Th+' h</b>, plus lentement que la Terre (23,93 h). Il traîne derrière&nbsp;: vu du '+
+          'sol, on le verrait dériver lentement d’est en ouest.';
+      }
+      document.getElementById('gplain').innerHTML=plain;
+    }
+
+    hEl.addEventListener('input',function(){ angSat=0; angEarth=0; });
+    raf=requestAnimationFrame(tick);
+    window.addEventListener('resize',function(){ draw(compute(+hEl.value),+hEl.value); });
+  })();
+})();
+</script>
+
+</body>
+</html>
