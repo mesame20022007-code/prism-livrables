@@ -788,57 +788,50 @@
 </footer>
 
 <script>
-  // ---------- Compte à rebours individuel 20 min, avec vraie sanction (localStorage) ----------
+  // ---------- Compte à rebours individuel 20 min ----------
+  // Note : passé le délai, le code CHANCE1 reste honoré (voir appliquerFenetrePassee) —
+  // le minuteur crée de l'urgence, il ne prive de rien. Pas de blocage réel possible côté
+  // client de toute façon (le code fonctionne toujours sur la vraie page de paiement).
   (function(){
     try{
       const DUREE_MS = 20 * 60 * 1000;
-      const COOLDOWN_MS = 24 * 60 * 60 * 1000;
       const KEY_DEADLINE = 'prism_physique_deadline';
       const KEY_EXPIRED = 'prism_physique_expired_at';
       const bar = document.getElementById('promo-bar');
       const el = document.getElementById('cd-bar');
       const codeLine = document.getElementById('promo-code-line');
 
-      function appliquerSanction(){
-        bar.innerHTML = '⏱ Offre spéciale terminée pour cette visite — reviens demain';
+      function appliquerFenetrePassee(){
+        bar.innerHTML = '⏱ Ton délai de lancement est passé — on te laisse quand même le code CHANCE1';
         bar.style.background = 'var(--sauge, #6b6b5a)';
         if(codeLine){
-          codeLine.innerHTML = '🔒 Code promo <strong>CHANCE1</strong> : fenêtre de 20&nbsp;min expirée pour cette visite. Le prix reste 5&nbsp;000&nbsp;F&nbsp;CFA sans le code, reviens dans 24h pour retenter -20%.';
-          codeLine.style.opacity = '.75';
+          codeLine.innerHTML = 'Ton délai de 20&nbsp;min est passé. On pense que tu en as vraiment besoin, alors le code <strong>CHANCE1</strong> reste valable : 5&nbsp;000&nbsp;F&nbsp;CFA → <strong>4&nbsp;000&nbsp;F&nbsp;CFA</strong>.';
+          codeLine.style.opacity = '.9';
         }
       }
 
-      const expiredAt = parseInt(localStorage.getItem(KEY_EXPIRED));
-      if(expiredAt && Date.now() < expiredAt){
-        // sanction encore active : pas de nouvelle fenêtre tant que le cooldown n'est pas passé
-        appliquerSanction();
+      let deadline = parseInt(localStorage.getItem(KEY_DEADLINE));
+      if(!deadline || isNaN(deadline)){
+        deadline = Date.now() + DUREE_MS;
+        localStorage.setItem(KEY_DEADLINE, deadline);
+      }
+      if(deadline < Date.now()){
+        localStorage.setItem(KEY_EXPIRED, Date.now());
+        appliquerFenetrePassee();
       } else {
-        let deadline = parseInt(localStorage.getItem(KEY_DEADLINE));
-        if(!deadline || isNaN(deadline)){
-          deadline = Date.now() + DUREE_MS;
-          localStorage.setItem(KEY_DEADLINE, deadline);
-        }
-        if(deadline < Date.now()){
-          // la fenêtre de 20 min vient d'expirer : on déclenche la vraie sanction (24h de cooldown)
-          localStorage.setItem(KEY_EXPIRED, Date.now() + COOLDOWN_MS);
-          localStorage.removeItem(KEY_DEADLINE);
-          appliquerSanction();
-        } else {
-          function tick(){
-            const restant = deadline - Date.now();
-            if(restant <= 0){
-              localStorage.setItem(KEY_EXPIRED, Date.now() + COOLDOWN_MS);
-              localStorage.removeItem(KEY_DEADLINE);
-              appliquerSanction();
-              return;
-            }
-            const m = Math.floor(restant / 60000);
-            const s = Math.floor((restant % 60000) / 1000);
-            el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-            requestAnimationFrame(() => setTimeout(tick, 250));
+        function tick(){
+          const restant = deadline - Date.now();
+          if(restant <= 0){
+            localStorage.setItem(KEY_EXPIRED, Date.now());
+            appliquerFenetrePassee();
+            return;
           }
-          tick();
+          const m = Math.floor(restant / 60000);
+          const s = Math.floor((restant % 60000) / 1000);
+          el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+          requestAnimationFrame(() => setTimeout(tick, 250));
         }
+        tick();
       }
     }catch(e){
       // stockage indisponible (navigation privée, sandbox) : le bandeau garde son texte par défaut
@@ -942,6 +935,37 @@
     entries.forEach(e => stickyCta.classList.toggle('show', !e.isIntersecting));
   }, { threshold: 0 });
   stickyObserver.observe(heroEl);
+
+  // ---------- Taux de complétion : sections atteintes (funnel agrégé) ----------
+  // Signal agrégé, pas de suivi d'intention individuelle : ça dit où les visiteurs décrochent,
+  // pas pourquoi. Pour l'activer, colle l'URL de déploiement du Web App Code.gs
+  // (Extensions > Apps Script > Déployer > Application Web) ci-dessous ; laissé vide = désactivé,
+  // rien n'est envoyé et aucune erreur n'apparaît.
+  (function(){
+    const TRACK_URL = ''; // ex: 'https://script.google.com/macros/s/XXXXX/exec'
+    if(!TRACK_URL) return;
+    try{
+      let visitId = sessionStorage.getItem('prism_physique_visit');
+      if(!visitId){
+        visitId = 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        sessionStorage.setItem('prism_physique_visit', visitId);
+      }
+      const vu = new Set();
+      function envoyer(section){
+        if(vu.has(section)) return;
+        vu.add(section);
+        const img = new Image();
+        img.src = TRACK_URL + '?action=track&v=' + encodeURIComponent(visitId) + '&s=' + encodeURIComponent(section);
+      }
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if(e.isIntersecting && e.target.id) envoyer(e.target.id); });
+      }, { threshold: 0.3 });
+      ['probleme','cible','fonctionnalites','temoignages','livraison','faq','comparatif','garantie','offre']
+        .forEach(id => { const el = document.getElementById(id); if(el) sectionObserver.observe(el); });
+    }catch(e){
+      // stockage/réseau indisponible : le funnel n'est pas critique, on n'affiche rien
+    }
+  })();
 
   // ---------- Simulations interactives (champ gravitationnel) ----------
   (function(){
