@@ -972,6 +972,13 @@
         const img = new Image();
         img.src = TRACK_URL + '?action=track&v=' + encodeURIComponent(visitId) + '&s=' + encodeURIComponent(section);
       }
+      // Source du trafic : lien tagué ?src=fb|ig|tt|yt|wa (sinon "direct"), une ligne "arrivee_<src>" par visite
+      let src = sessionStorage.getItem('prism_physique_src');
+      if(!src){
+        src = (new URLSearchParams(location.search).get('src') || 'direct').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12) || 'direct';
+        sessionStorage.setItem('prism_physique_src', src);
+      }
+      envoyer('arrivee_' + src);
       const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(e => { if(e.isIntersecting && e.target.id) envoyer(e.target.id); });
       }, { threshold: 0.3 });
