@@ -1242,5 +1242,170 @@
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') lb.classList.remove('open'); });
 })();
 </script>
+<!-- ================================================================
+     FOND ANIMÉ "COSMOS" (injecté avant </body> par build_landing_sections.py)
+     Étoiles en rotation lente (timelapse), étoiles filantes, astronaute qui dérive,
+     Terre de nuit qui monte et tourne avec le défilement, lever de soleil
+     derrière la Terre en fin de page (bloc prix).
+     Canvas fixe sous le contenu ; pause si onglet caché ; statique si
+     "réduire les animations" est activé sur l'appareil.
+     ================================================================ -->
+<canvas id="cosmos" aria-hidden="true"></canvas>
+<div id="astronaute" aria-hidden="true">🧑‍🚀</div>
+<style>
+  #cosmos{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
+  #astronaute{position:fixed;z-index:-1;pointer-events:none;font-size:34px;opacity:.55;
+    left:0;top:0;will-change:transform;filter:drop-shadow(0 0 6px rgba(160,190,255,.35));}
+  @media (max-width:560px){#astronaute{font-size:26px;opacity:.45;}}
+</style>
+<script>
+(function(){
+  var cv=document.getElementById('cosmos'), cx=cv.getContext('2d');
+  var astro=document.getElementById('astronaute');
+  var calme=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W,H,DPR,R;
+  var etoiles=[],villes=[],filante=null,prochaineFilante=2500;
+  function rnd(a,b){return a+Math.random()*(b-a);}
+
+  function taille(){
+    DPR=Math.min(window.devicePixelRatio||1,1.5);
+    W=innerWidth;H=innerHeight;
+    cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);
+    R=Math.max(W,H)*1.15;               // rayon de la Terre, bien plus large que l'écran
+  }
+  taille();addEventListener('resize',taille);
+
+  // Étoiles réparties sur un grand disque (elles tournent autour d'un pôle hors écran)
+  var N=W<600?140:230;
+  for(var i=0;i<N;i++){
+    var d=Math.sqrt(Math.random())*1.6;
+    etoiles.push({a:rnd(0,Math.PI*2),d:d,r:rnd(.3,1.5),ph:rnd(0,6.28),v:rnd(.6,2),
+      c:Math.random()<.15?'255,220,170':(Math.random()<.2?'180,200,255':'255,255,255')});
+  }
+  // Lumières des villes : grappes sur la sphère (lon, lat)
+  for(var k=0;k<34;k++){
+    var lon0=rnd(0,Math.PI*2),lat0=rnd(-.2,.9),n=Math.floor(rnd(6,22));
+    for(var j=0;j<n;j++) villes.push({lon:lon0+rnd(-.09,.09),lat:lat0+rnd(-.06,.06),b:rnd(.35,1)});
+  }
+
+  function progression(){
+    var m=document.documentElement.scrollHeight-innerHeight;
+    return m>0?Math.min(1,Math.max(0,scrollY/m)):0;
+  }
+
+  function dessiner(t){
+    var p=progression();
+    cx.clearRect(0,0,W,H);
+
+    // --- Étoiles : rotation lente (timelapse) + léger décalage avec le défilement
+    var ang=t*0.000018+p*0.35, pcx=W*0.5, pcy=-H*0.35, D=Math.max(W,H);
+    for(var i=0;i<etoiles.length;i++){
+      var e=etoiles[i], a=e.a+ang;
+      var x=pcx+Math.cos(a)*e.d*D, y=pcy+Math.sin(a)*e.d*D+H*0.35;
+      if(x<-5||x>W+5||y<-5||y>H+5) continue;
+      var tw=calme?0.8:0.55+0.45*Math.sin(t*0.001*e.v+e.ph);
+      cx.fillStyle='rgba('+e.c+','+(0.35+0.6*tw).toFixed(2)+')';
+      cx.beginPath();cx.arc(x,y,e.r,0,6.283);cx.fill();
+    }
+
+    // --- Étoile filante occasionnelle
+    if(!calme){
+      if(!filante&&t>prochaineFilante){
+        filante={x:rnd(W*.1,W*.9),y:rnd(0,H*.4),vx:rnd(-.9,-.5),vy:rnd(.25,.45),t0:t};
+      }
+      if(filante){
+        var dt=t-filante.t0, L=Math.min(dt*0.9,160);
+        var fx=filante.x+filante.vx*dt, fy=filante.y+filante.vy*dt*1.4;
+        var g=cx.createLinearGradient(fx,fy,fx-filante.vx*L,fy-filante.vy*L*1.4);
+        g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(1,'rgba(255,255,255,0)');
+        cx.strokeStyle=g;cx.lineWidth=1.6;cx.beginPath();cx.moveTo(fx,fy);
+        cx.lineTo(fx-filante.vx*L,fy-filante.vy*L*1.4);cx.stroke();
+        if(dt>1100){filante=null;prochaineFilante=t+rnd(5000,11000);}
+      }
+    }
+
+    // --- La Terre : monte avec le défilement (de 6 % à 26 % de l'écran)
+    var visible=H*(0.06+0.20*p);
+    var ex=W*0.5, ey=H-visible+R;
+
+    // halo d'atmosphère
+    var halo=cx.createRadialGradient(ex,ey,R*0.985,ex,ey,R*1.05);
+    halo.addColorStop(0,'rgba(90,150,255,.55)');halo.addColorStop(.35,'rgba(70,120,230,.18)');halo.addColorStop(1,'rgba(40,80,200,0)');
+    cx.fillStyle=halo;cx.beginPath();cx.arc(ex,ey,R*1.05,0,6.283);cx.fill();
+
+    // disque (côté nuit)
+    var sol=cx.createRadialGradient(ex,ey-R*0.9,R*0.1,ex,ey,R);
+    sol.addColorStop(0,'#0d1a33');sol.addColorStop(1,'#03060e');
+    cx.fillStyle=sol;cx.beginPath();cx.arc(ex,ey,R,0,6.283);cx.fill();
+
+    // lumières des villes : la Terre tourne avec le défilement + très lentement toute seule
+    var rot=p*Math.PI*1.3+(calme?0:t*0.000015), tilt=0.42;
+    cx.save();cx.beginPath();cx.arc(ex,ey,R,0,6.283);cx.clip();
+    for(var v=0;v<villes.length;v++){
+      var c=villes[v], lon=c.lon+rot, cl=Math.cos(c.lat);
+      var X=cl*Math.sin(lon), Y=Math.sin(c.lat), Z=cl*Math.cos(lon);
+      var Y2=Y*Math.cos(tilt)-Z*Math.sin(tilt), Z2=Y*Math.sin(tilt)+Z*Math.cos(tilt);
+      if(Z2<0) continue;
+      var sx=ex+X*R, sy=ey-Y2*R;
+      if(sy>H+4) continue;
+      var bord=Math.min(1,Z2*3);
+      cx.fillStyle='rgba(255,196,110,'+(0.75*c.b*bord).toFixed(2)+')';
+      cx.fillRect(sx,sy,1.6,1.6);
+    }
+    cx.restore();
+
+    // --- Lever de soleil derrière la Terre (fin de page)
+    var s=Math.max(0,(p-0.72)/0.28); s=s*s*(3-2*s);
+    if(s>0){
+      var th=Math.min(0.12,(W*0.18)/R), sx2=ex+R*Math.sin(th), sy2=ey-R*Math.cos(th)-2; // point du limbe où le soleil perce
+      var lueur=cx.createRadialGradient(sx2,sy2,0,sx2,sy2,W*0.9);
+      lueur.addColorStop(0,'rgba(255,236,190,'+(0.95*s)+')');
+      lueur.addColorStop(.08,'rgba(255,190,100,'+(0.55*s)+')');
+      lueur.addColorStop(.35,'rgba(242,140,60,'+(0.16*s)+')');
+      lueur.addColorStop(1,'rgba(242,140,60,0)');
+      cx.fillStyle=lueur;cx.fillRect(0,0,W,H);
+      // liseré doré sur le limbe
+      cx.save();cx.lineWidth=2+3*s;cx.strokeStyle='rgba(255,210,140,'+(0.8*s)+')';
+      cx.shadowColor='rgba(255,190,110,.9)';cx.shadowBlur=18*s;
+      cx.beginPath();cx.arc(ex,ey,R,-Math.PI/2-0.35,-Math.PI/2+0.55);cx.stroke();cx.restore();
+      // éclat
+      cx.save();cx.globalAlpha=s;cx.translate(sx2,sy2);
+      for(var r2=0;r2<2;r2++){cx.rotate(Math.PI/2);cx.fillStyle='rgba(255,245,220,.55)';
+        cx.fillRect(-W*0.35*s,-0.8,W*0.7*s,1.6);}
+      cx.restore();
+      // la Terre repasse devant la lueur (on voit le soleil depuis son ombre)
+      cx.fillStyle=sol;cx.beginPath();cx.arc(ex,ey,R-1,0,6.283);cx.fill();
+      cx.save();cx.beginPath();cx.arc(ex,ey,R,0,6.283);cx.clip();
+      for(var v2=0;v2<villes.length;v2++){
+        var c2=villes[v2], lon2=c2.lon+rot, cl2=Math.cos(c2.lat);
+        var X2=cl2*Math.sin(lon2), Yb=Math.sin(c2.lat), Zb=cl2*Math.cos(lon2);
+        var Y3=Yb*Math.cos(tilt)-Zb*Math.sin(tilt), Z3=Yb*Math.sin(tilt)+Zb*Math.cos(tilt);
+        if(Z3<0) continue;
+        cx.fillStyle='rgba(255,196,110,'+(0.75*c2.b*Math.min(1,Z3*3)).toFixed(2)+')';
+        cx.fillRect(ex+X2*R,ey-Y3*R,1.6,1.6);
+      }
+      cx.restore();
+      cx.lineWidth=1.5+2*s;cx.strokeStyle='rgba(255,215,150,'+(0.85*s)+')';
+      cx.beginPath();cx.arc(ex,ey,R,-Math.PI/2-0.3,-Math.PI/2+0.5);cx.stroke();
+    }
+
+    // --- Astronaute qui dérive lentement
+    if(!calme){
+      var u=(t*0.000022)%1;
+      var axp=-60+u*(W+120), ayp=H*0.22+Math.sin(t*0.0004)*H*0.06+p*H*0.12;
+      astro.style.transform='translate('+axp.toFixed(1)+'px,'+ayp.toFixed(1)+'px) rotate('+(t*0.012%360).toFixed(1)+'deg)';
+    } else {
+      astro.style.transform='translate('+(W*0.8)+'px,'+(H*0.2)+'px) rotate(-20deg)';
+    }
+  }
+
+  function boucle(t){
+    if(!document.hidden) dessiner(t);
+    if(!calme) requestAnimationFrame(boucle);
+  }
+  if(calme){dessiner(0);addEventListener('scroll',function(){dessiner(0);},{passive:true});}
+  else requestAnimationFrame(boucle);
+})();
+</script>
 </body>
 </html>
