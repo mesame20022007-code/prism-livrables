@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le champ gravitationnel, de zéro — cadeau Prism Éducation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papier:#F6F4EF; --carte:#FFFFFF;
+  --encre:#1C2621; --encre-doux:#3E4A43;
+  --nere:#0E5138; --nere-clair:#E4EDE7;
+  --terre:#B34A2F; --terre-clair:#F5E4DE;
+  --mil:#B87A15; --mil-clair:#F7EAD2;
+  --ciel:#245A8D; --ciel-clair:#E1EAF2;
+  --sauge:#5F6F66; --filet:#D9D3C6;
+  --ombre:0 1px 2px rgba(28,38,33,.06),0 12px 34px rgba(28,38,33,.08);
+  --mesure:43rem;
+  --fs:1;
+  --bar:5.6rem;
+}
+:root[data-theme="dark"]{
+  --papier:#141A17; --carte:#1D2521;
+  --encre:#ECEAE3; --encre-doux:#C2C7C1;
+  --nere:#5FC79A; --nere-clair:#1B2C24;
+  --terre:#E7967C; --terre-clair:#2E1F1A;
+  --mil:#E0A93E; --mil-clair:#2C2415;
+  --ciel:#7FB2E0; --ciel-clair:#16283A;
+  --sauge:#9AA79F; --filet:#33403A;
+  --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papier:#141A17; --carte:#1D2521; --encre:#ECEAE3; --encre-doux:#C2C7C1;
+    --nere:#5FC79A; --nere-clair:#1B2C24; --terre:#E7967C; --terre-clair:#2E1F1A;
+    --mil:#E0A93E; --mil-clair:#2C2415; --ciel:#7FB2E0; --ciel-clair:#16283A;
+    --sauge:#9AA79F; --filet:#33403A;
+    --ombre:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:calc(112.5% * var(--fs));scroll-behavior:smooth;scroll-padding-top:var(--bar)}
+@media (max-width:600px){ html{font-size:calc(104% * var(--fs))} }
+body{margin:0;background:var(--papier);color:var(--encre);
+  font-family:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  line-height:1.75;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;padding-top:var(--bar)}
+h1,h2,h3{font-family:"Fraunces","Georgia",serif;line-height:1.16;color:var(--encre);overflow-wrap:break-word}
+h1{font-size:2.1rem;margin:.2rem 0 .6rem}
+h2{font-size:1.5rem;margin:2.6rem 0 .8rem}
+h3{font-size:1.12rem;margin:1.6rem 0 .5rem}
+p{margin:0 0 1.15rem}
+a{color:var(--nere);text-underline-offset:2px}
+strong{font-weight:600}
+img{max-width:100%}
+.wrap{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem 5rem}
+.label{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--sauge)}
+.kicker{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mil);margin:0 0 .3rem}
+.lead{font-size:1.12rem;color:var(--encre-doux)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+
+/* topbar */
+.bar-wrap{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--papier);
+  border-bottom:1px solid var(--filet);transition:transform .3s}
+.bar-wrap.hide{transform:translateY(-100%)}
+.bar{max-width:var(--mesure);margin:0 auto;padding:.55rem 1.25rem;
+  display:flex;align-items:center;gap:.7rem;font-family:"IBM Plex Sans",sans-serif}
+.bar button{font-family:inherit;background:var(--carte);color:var(--encre);border:1px solid var(--filet);
+  border-radius:9px;padding:.32rem .5rem;font-size:.74rem;cursor:pointer;line-height:1}
+.bar button:hover{border-color:var(--nere);color:var(--nere)}
+.bar .sp{flex:1}
+.progress{display:flex;align-items:center;gap:.5rem;width:100%;margin-top:.4rem;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;color:var(--sauge)}
+.progress .track{flex:1;height:5px;border-radius:999px;background:var(--filet);overflow:hidden}
+.progress .fill{display:block;height:100%;background:var(--nere);border-radius:999px;
+  transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.bar-inner{max-width:var(--mesure);margin:0 auto;padding:0 1.25rem .5rem}
+
+/* sommaire */
+.toc-overlay{position:fixed;inset:0;z-index:60;background:rgba(20,26,23,.5);
+  display:flex;align-items:flex-start;justify-content:center;padding:4rem 1rem;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.toc-overlay.open{opacity:1;pointer-events:auto}
+.toc-panel{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1.6rem 1.7rem;max-width:26rem;width:100%;position:relative;
+  max-height:80vh;overflow:auto}
+.toc-close{position:absolute;top:1rem;right:1rem;background:transparent;border:0;font-size:1.1rem;
+  cursor:pointer;color:var(--sauge)}
+.toc-panel ol{margin:.7rem 0 0;padding-left:1.3rem;font-family:"IBM Plex Sans",sans-serif;font-size:.92rem}
+.toc-panel li{margin:.45rem 0}
+.toc-panel a{text-decoration:none;color:var(--encre)}
+.toc-panel a:hover{color:var(--nere)}
+.toc-panel a.done::after{content:" \2713";color:var(--nere);font-weight:700}
+
+/* resume */
+.resume-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;
+  padding:.7rem 1rem;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.resume-bar.show{display:flex}
+.resume-bar button{background:#fff;color:var(--nere);border:0;border-radius:999px;
+  padding:.35rem .9rem;font-weight:600;cursor:pointer;font-family:inherit}
+.resume-bar .x{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+
+/* encarts pédagogiques */
+.card{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.card.note{background:var(--mil-clair);border-color:transparent}
+.card.serieC{background:var(--ciel-clair);border-color:transparent}
+.card .label{margin-bottom:.4rem}
+.formule{font-family:"IBM Plex Mono",monospace;font-size:.96rem;line-height:1.9;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.8rem 1rem;margin:1rem 0;overflow-x:auto;white-space:nowrap}
+.formule .num{color:var(--terre)}
+.formule .res{color:var(--nere);font-weight:600}
+
+/* checkbox de section */
+.done-row{display:flex;align-items:center;gap:.55rem;margin:1.4rem 0 0;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;color:var(--sauge)}
+.done-row input{width:1.05rem;height:1.05rem;accent-color:var(--nere)}
+
+/* ===== SIMULATION ===== */
+.sim{background:var(--carte);border:1px solid var(--filet);border-radius:16px;
+  box-shadow:var(--ombre);padding:1rem;margin:1.8rem 0;font-family:"IBM Plex Sans",sans-serif}
+.sim h3{font-family:"Fraunces",serif;margin:.2rem 0 .8rem}
+.sim canvas{width:100%;height:auto;display:block;background:var(--papier);
+  border:1px solid var(--filet);border-radius:10px;touch-action:none}
+.sim .controls{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1rem;margin:.9rem 0 .4rem}
+@media (max-width:520px){ .sim .controls{grid-template-columns:1fr} }
+.ctrl{font-size:.78rem;color:var(--encre-doux)}
+.ctrl label{display:flex;justify-content:space-between;margin-bottom:.15rem}
+.ctrl b{color:var(--nere);font-family:"IBM Plex Mono",monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--nere)}
+.scrub{margin:.8rem 0 .2rem}
+.scrub label{display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;margin-bottom:.2rem}
+.scrub input[type=range]{width:100%;height:26px;accent-color:var(--terre)}
+.playbtn{background:var(--nere);color:#fff;border:0;border-radius:9px;padding:.4rem .8rem;
+  font-family:inherit;font-size:.8rem;cursor:pointer;margin-right:.5rem}
+.reset{background:transparent;border:1px solid var(--filet);color:var(--encre-doux);
+  border-radius:9px;padding:.4rem .7rem;font-family:inherit;font-size:.8rem;cursor:pointer}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.9rem 0 0}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,1fr)} }
+.rd{background:var(--papier);border:1px solid var(--filet);border-radius:9px;padding:.5rem .6rem}
+.rd .k{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sauge)}
+.rd .v{font-family:"IBM Plex Mono",monospace;font-size:.98rem;color:var(--encre);font-weight:500}
+.rd.em{background:var(--nere-clair);border-color:transparent}
+.rd.em .v{color:var(--nere)}
+.simform{font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.85;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;
+  padding:.7rem .8rem;margin:.9rem 0 0;overflow-x:auto}
+.simform .sym{color:var(--encre-doux)}
+.simform .num{color:var(--terre)}
+.simform .res{color:var(--nere);font-weight:600}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--encre-doux);margin:.7rem 0 0}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.3rem}
+.viewmode{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin:.7rem 0 0}
+.viewmode button{background:var(--papier);border:1px solid var(--filet);color:var(--encre-doux);
+  border-radius:999px;padding:.32rem .8rem;font-family:inherit;font-size:.76rem;cursor:pointer}
+.viewmode button.active{background:var(--nere);color:#fff;border-color:transparent}
+.viewmode .hint{font-size:.7rem;color:var(--sauge);flex-basis:100%}
+.foot{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--filet);
+  font-family:"IBM Plex Sans",sans-serif;font-size:.8rem;color:var(--sauge)}
+
+/* ===== exercices ===== */
+.exo{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.2rem 1.3rem;margin:1.6rem 0}
+.exo .exoNum{font-family:"IBM Plex Sans",sans-serif;font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--mil);margin:0 0 .5rem}
+.revealBtn{font-family:"IBM Plex Sans",sans-serif;background:var(--nere);color:#fff;border:0;
+  border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:600;cursor:pointer;margin:.9rem 0 0}
+.revealBtn:hover{opacity:.9}
+.correction{margin-top:1.1rem;padding-top:1.1rem;border-top:1px dashed var(--filet)}
+.correction .q{font-weight:600;margin:1rem 0 .4rem}
+.correction .q:first-child{margin-top:0}
+
+/* ===== quiz ===== */
+.quizScore{position:sticky;top:calc(var(--bar) + .6rem);z-index:5;display:inline-block;
+  background:var(--nere);color:#fff;font-family:"IBM Plex Sans",sans-serif;font-weight:600;
+  font-size:.85rem;border-radius:999px;padding:.4rem 1rem;margin:0 0 1.2rem}
+.qz{background:var(--carte);border:1px solid var(--filet);border-radius:14px;
+  box-shadow:var(--ombre);padding:1.1rem 1.2rem;margin:1.1rem 0}
+.qz .qzQ{font-weight:600;margin:0 0 .8rem;font-family:"Fraunces",serif;font-size:1.02rem}
+.qzOpt{display:block;width:100%;text-align:left;font-family:"IBM Plex Sans",sans-serif;font-size:.9rem;
+  background:var(--papier);border:1px solid var(--filet);border-radius:10px;padding:.55rem .8rem;
+  margin:.4rem 0;cursor:pointer;color:var(--encre)}
+.qzOpt:hover:not(:disabled){border-color:var(--nere)}
+.qzOpt:disabled{cursor:default}
+.qzOpt.correct{background:var(--nere-clair);border-color:var(--nere);color:var(--nere);font-weight:600}
+.qzOpt.wrong{background:var(--terre-clair);border-color:var(--terre);color:var(--terre)}
+.qzExp{display:none;margin:.7rem 0 0;padding-top:.7rem;border-top:1px dashed var(--filet);
+  font-size:.86rem;color:var(--encre-doux)}
+.qzExp.show{display:block}
+.quizRestart{font-family:"IBM Plex Sans",sans-serif;background:transparent;color:var(--encre-doux);
+  border:1px solid var(--filet);border-radius:999px;padding:.5rem 1.1rem;font-size:.82rem;
+  cursor:pointer;margin:1.2rem 0 0}
+
+/* ===== schémas SVG ===== */
+.schema{background:var(--papier);border:1px solid var(--filet);border-radius:12px;
+  padding:.7rem .5rem .4rem;margin:.9rem 0 1.3rem}
+.schema svg{display:block;width:100%;height:auto;font-family:"IBM Plex Sans",sans-serif}
+.schema .cap{text-align:center;font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;
+  color:var(--sauge);margin:.35rem 0 0}
+
+.chap-sep{border:0;border-top:2px solid var(--nere);margin:4.5rem 0 0;opacity:.35}
+.chapitre{counter-reset:none}
+.toc-panel .toc-chap{list-style:none;margin:1.1rem 0 .3rem;padding:0;
+  font-family:"IBM Plex Sans",sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--nere)}
+.toc-panel .toc-chap:first-child{margin-top:.2rem}
+</style>
+
+<style>
+.formule math{font-size:1.2em;margin:.2rem 0}
+@media (max-width:420px){.formule math{font-size:1em}}
+.formule .res,.formule mn.res{color:var(--dore,#b8862b);font-weight:700}
+.lettres{border:1px solid var(--filet);border-left:4px solid var(--dore,#c9a04a);border-radius:10px;
+  padding:.6rem .8rem .4rem;margin:-.4rem 0 1.1rem;background:var(--papier);font-family:"IBM Plex Sans",sans-serif;font-size:.9rem}
+.lettres .l-titre{margin:0 0 .4rem;font-weight:700;font-size:.85rem}
+.l-row{display:grid;grid-template-columns:4.2rem 1fr;gap:.6rem;padding:.3rem 0;border-top:1px dashed var(--filet)}
+.l-sym{font-family:"Fraunces",serif;font-style:italic;font-weight:700;font-size:1.05rem;text-align:center}
+.l-def{line-height:1.45}
+</style>
+</head>
+<body>
+
+<div class="bar-wrap" id="barWrap">
+  <div class="bar">
+    <button id="themeBtn" aria-label="Thème">&#9789;</button>
+    <button data-fs="-" aria-label="Réduire le texte">A&minus;</button>
+    <button data-fs="+" aria-label="Agrandir le texte">A+</button>
+    <span class="sp"></span>
+    <button id="tocBtn">Sommaire</button>
+  </div>
+  <div class="bar-inner">
+    <div class="progress"><span id="pct">0 %</span>
+      <span class="track"><span class="fill" id="fill"></span></span></div>
+  </div>
+</div>
+
+<div class="toc-overlay" id="tocOverlay">
+  <div class="toc-panel">
+    <button class="toc-close" id="tocClose" aria-label="Fermer">&#10005;</button>
+    <p class="label">Sommaire</p>
+    <ol id="tocList"></ol>
+  </div>
+</div>
+
+<div class="resume-bar" id="resumeBar">
+  <span>Reprendre où tu t'es arrêté ?</span>
+  <span><button id="resumeGo">Continuer</button> <button class="x" id="resumeX">Non</button></span>
+</div>
+
+<main class="wrap">
+  <p class="kicker">🎁 Cadeau Prism Éducation</p>
+  <h1>Le champ gravitationnel, de zéro</h1>
+  <p class="lead">Le début du chapitre 1 du pack « Comprendre les notions de physique en Terminale ».
+  Tu pars de zéro : les puissances de 10, les unités, puis la gravitation pas à pas. Chaque formule a son encadré
+  <b>« Ce que veut dire chaque lettre »</b>. Une simulation à manipuler, et un exercice type bac corrigé pour finir.</p>
+  <p class="label">Programme Terminale C &amp; D — Bénin / Afrique de l'Ouest</p>
+<article class="chapitre" data-chap="1" data-titre="Le champ gravitationnel, de zéro">
+<section data-chap="1" id="grav_s-avant">
+    <h2>0. Avant de commencer — si tu pars de zéro</h2>
+    <p>Si la physique n'a jamais vraiment «&nbsp;pris&nbsp;» pour toi, ce n'est presque jamais à cause de la
+    physique elle-même — c'est à cause de trois ou quatre petites habitudes de calcul que personne ne prend
+    le temps d'expliquer, et qui bloquent tout le reste. On les pose ici, une fois pour toutes. Reviens sur
+    cette section à chaque fois qu'une formule te perd — c'est fait pour ça.</p>
+
+    <div class="card note">
+      <p class="label">1. La notation scientifique&nbsp;: ×10 puissance quelque chose</p>
+      <p>Tu vas voir des nombres comme <code>6,67&times;10<sup>&minus;11</sup></code> ou
+      <code>5,97&times;10<sup>24</sup></code>. Ce n'est pas un code secret&nbsp;: c'est juste une façon
+      d'écrire un nombre très grand ou très petit sans compter les zéros à la main.</p>
+      <div class="formule" style="white-space:normal">10<sup>3</sup> = 1 000 &nbsp;(3 zéros) &nbsp;&nbsp;&nbsp;
+        10<sup>&minus;3</sup> = 0,001 &nbsp;(la virgule recule de 3 rangs)</div>
+      <p style="margin:0">Règle simple&nbsp;: <strong>exposant positif</strong> → nombre grand, tu ajoutes des
+      zéros après. <strong>Exposant négatif</strong> → nombre petit (plus petit que 1), tu recules la virgule.
+      Sur ta calculatrice, ça s'affiche souvent <code>6.67E-11</code> ou <code>6.67&#8331;11</code> — c'est
+      exactement la même chose que <code>6,67&times;10<sup>&minus;11</sup></code>, juste écrit en mode
+      calculatrice.</p>
+    </div>
+
+    <div class="card note">
+      <p class="label">2. Les unités&nbsp;: toujours tout en mètres, kilogrammes, secondes avant de calculer</p>
+      <p>C'est l'erreur la plus fréquente, et elle rend un exercice juste totalement faux&nbsp;: un énoncé te
+      donne une distance en kilomètres, une masse en tonnes, un temps en heures — et toutes les formules de ce
+      pack attendent des <strong>mètres (m)</strong>, des <strong>kilogrammes (kg)</strong> et des
+      <strong>secondes (s)</strong>. Toujours. Avant même de commencer à poser une formule, convertis&nbsp;:</p>
+      <div class="formule" style="white-space:normal">1 km = 1 000 m &nbsp;&nbsp;&rarr;&nbsp;&nbsp;
+        700 km = 700 &times; 1 000 = 700 000 m = 7&times;10<sup>5</sup> m</div>
+      <p style="margin:0">Dans tout ce pack, quand tu vois une formule avec <code>r</code>, <code>h</code> ou
+      une distance, le réflexe à avoir <em>avant</em> de toucher ta calculatrice, c'est&nbsp;: «&nbsp;est-ce que
+      c'est déjà en mètres&nbsp;?&nbsp;». Si la réponse est non, tu convertis d'abord.</p>
+    </div>
+
+    <div class="card note">
+      <p class="label">3. La racine carrée &radic; — ce que ça veut dire, concrètement</p>
+      <p><code>&radic;9 = 3</code> veut juste dire&nbsp;: «&nbsp;quel nombre, multiplié par lui-même, donne
+      9&nbsp;?&nbsp;» (3&times;3 = 9). Tu la trouveras dans les formules de vitesse d'orbite un peu plus loin.
+      Sur une calculatrice normale, c'est la touche <code>&radic;</code> ou <code>&#8730;x</code>&nbsp;: tu
+      tapes le nombre, tu appuies sur la touche, tu lis le résultat. Rien à calculer de tête.</p>
+    </div>
+
+    <div class="card note">
+      <p class="label">4. Un vecteur, c'est juste une flèche avec deux informations</p>
+      <p>Tu vas croiser le mot «&nbsp;vecteur&nbsp;» très vite (section 3). Pas de panique&nbsp;: un vecteur,
+      c'est une flèche qui porte <strong>deux informations en même temps</strong> — sa <strong>longueur</strong>
+      (est-ce que l'effet est fort ou faible&nbsp;?) et sa <strong>direction</strong> (vers où ça pousse ou ça
+      tire&nbsp;?). Un simple nombre comme <code>9,8</code> ne dit que «&nbsp;combien&nbsp;». Une flèche dit
+      «&nbsp;combien <em>et</em> vers où&nbsp;». C'est tout ce qu'il faut savoir pour la suite.</p>
+    </div>
+
+    <div class="card">
+      <p class="label">Comment lire ce pack si tu débutes vraiment</p>
+      <p style="margin:0">Lis chaque section dans l'ordre, une fois, sans t'arrêter sur les détails.
+      Manipule la simulation quand il y en a une — c'est souvent elle qui fait «&nbsp;déclic&nbsp;», pas le
+      texte. Coche «&nbsp;j'ai compris&nbsp;» seulement quand tu pourrais réexpliquer l'idée à quelqu'un
+      d'autre avec tes propres mots, pas seulement quand tu as fini de lire. Et si un exercice te bloque,
+      reviens ici avant d'abandonner&nbsp;: 9 fois sur 10, c'est une des quatre choses ci-dessus qui coince,
+      pas ton niveau en physique.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="grav_s-avant"><span>J'ai compris</span></div>
+  </section>
+
+  <section data-chap="1" id="grav_s-mensonge">
+    <h2>1. « La Terre attire les objets » est un raccourci</h2>
+    <p>Newton, 1687&nbsp;: deux masses <code>m</code> et <code>M</code> séparées d'une distance <code>r</code>
+    s'attirent avec une force</p>
+    <div class="formule"><math display="block"><mi>F</mi><mo>=</mo><mfrac><mrow><mi>G</mi><mo>&middot;</mo><mi>m</mi><mo>&middot;</mo><mi>M</mi></mrow><mrow><msup><mi>r</mi><mn>2</mn></msup></mrow></mfrac></math></div><div class="lettres"><p class="l-titre">🔎 Ce que veut dire chaque lettre</p><div class="l-row"><span class="l-sym">F</span><span class="l-def">la <b>force d'attraction</b> entre les deux objets. Unité : le newton (N).</span></div><div class="l-row"><span class="l-sym">G</span><span class="l-def">la <b>constante de gravitation universelle</b> : 6,67×10<sup>−11</sup>, la même partout dans l'univers. Unité : m³·kg<sup>−1</sup>·s<sup>−2</sup> (c'est ce que veut dire « S.I. » : le système international d'unités). Tu n'as pas à la retenir par cœur, l'énoncé te la donne.</span></div><div class="l-row"><span class="l-sym">m</span><span class="l-def">la <b>masse du premier objet</b> (par exemple toi, ou une pomme). Unité : le kilogramme (kg).</span></div><div class="l-row"><span class="l-sym">M</span><span class="l-def">la <b>masse du second objet</b> (par exemple la Terre). Unité : kg.</span></div><div class="l-row"><span class="l-sym">r</span><span class="l-def">la <b>distance entre les centres</b> des deux objets. Unité : le mètre (m). Si l'énoncé la donne en km, convertis-la d'abord (section 0).</span></div><div class="l-row"><span class="l-sym">r²</span><span class="l-def">r multiplié par lui-même : c'est ce carré qui fait baisser la force très vite quand on s'éloigne (section 4).</span></div></div>
+    <div class="schema">
+      <svg viewBox="0 0 600 160">
+        <circle cx="120" cy="80" r="26" fill="var(--terre-clair)" stroke="var(--terre)" stroke-width="2.5"/>
+        <text x="120" y="86" text-anchor="middle" fill="var(--terre)" font-size="17" font-weight="600">m</text>
+        <circle cx="470" cy="80" r="46" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2.5"/>
+        <text x="470" y="88" text-anchor="middle" fill="var(--nere)" font-size="20" font-weight="600">M</text>
+        <line x1="150" y1="80" x2="418" y2="80" stroke="var(--sauge)" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="284" y="68" text-anchor="middle" fill="var(--sauge)" font-size="14">r</text>
+        <line x1="150" y1="105" x2="185" y2="105" stroke="var(--ciel)" stroke-width="3"/>
+        <polygon points="185,105 174,100 174,110" fill="var(--ciel)"/>
+        <text x="167" y="124" text-anchor="middle" fill="var(--ciel)" font-size="12">F (sur m)</text>
+        <line x1="420" y1="115" x2="385" y2="115" stroke="var(--ciel)" stroke-width="3"/>
+        <polygon points="385,115 396,110 396,120" fill="var(--ciel)"/>
+        <text x="402" y="134" text-anchor="middle" fill="var(--ciel)" font-size="12">F (sur M)</text>
+      </svg>
+      <p class="cap">Deux masses s'attirent l'une l'autre, avec la même force F, le long de la droite qui les relie&nbsp;: plus <code>r</code> est grand, plus les cercles s'éloignent et plus F est petite.</p>
+    </div>
+    <p>Ça prédit la chute d'une pomme et l'orbite de la Lune avec la même équation. Mais Newton lui-même
+    trouvait ça absurde&nbsp;: comment la Terre «&nbsp;tire&nbsp;» sur la Lune à travers 380&nbsp;000&nbsp;km
+    de vide, sans rien entre les deux&nbsp;? Il l'a écrit&nbsp;: cette action à distance instantanée est pour lui
+    une «&nbsp;absurdité&nbsp;». Il te donne une formule qui marche et te dit qu'il ne comprend pas ce
+    qu'elle décrit.</p>
+    <div class="done-row"><input type="checkbox" data-done="grav_s-mensonge"><span>J'ai compris</span></div>
+  </section>
+
+  <section data-chap="1" id="grav_s-champ">
+    <h2>2. L'idée de champ&nbsp;: la Terre agit sur l'espace, pas sur l'objet</h2>
+    <p>La réponse arrive un siècle et demi plus tard. On arrête de dire que la Terre agit sur la Lune.
+    On dit&nbsp;: <strong>la Terre modifie l'espace autour d'elle</strong>, en chaque point, jusqu'à l'infini.
+    La Lune, elle, ne sent pas la Terre&nbsp;: elle sent uniquement l'espace là où elle se trouve. Cet
+    espace modifié lui dit «&nbsp;par ici&nbsp;», et elle tombe par ici. Plus d'action à distance&nbsp;:
+    chaque objet ne réagit qu'à ce qu'il y a exactement sous ses pieds.</p>
+    <p>Cette propriété que la Terre donne au vide, c'est le <strong>champ de gravitation</strong>.</p>
+    <div class="card note">
+      <p class="label">L'image qui reste</p>
+      <p style="margin:0">Une bougie allumée dans une pièce vide&nbsp;: la lumière remplit chaque recoin,
+      même s'il n'y a personne pour la voir. Le champ, c'est pareil — une carte invisible étalée sur
+      tout l'espace, prête à agir si quelque chose passe.</p>
+    </div>
+    <div class="schema">
+      <svg viewBox="0 0 600 180">
+        <circle cx="300" cy="90" r="10" fill="var(--mil)"/>
+        <line x1="300" y1="90" x2="300" y2="76" stroke="var(--mil)" stroke-width="3"/>
+        <text x="300" y="60" text-anchor="middle" fill="var(--mil)" font-size="12">bougie</text>
+        <circle cx="300" cy="90" r="50" fill="none" stroke="var(--mil)" stroke-width="1.3" opacity=".55"/>
+        <circle cx="300" cy="90" r="95" fill="none" stroke="var(--mil)" stroke-width="1.3" opacity=".35"/>
+        <circle cx="300" cy="90" r="145" fill="none" stroke="var(--mil)" stroke-width="1.3" opacity=".2"/>
+        <text x="300" y="176" text-anchor="middle" fill="var(--sauge)" font-size="12">la lumière remplit chaque recoin — même sans personne pour la voir</text>
+        <g>
+          <circle cx="90" cy="90" r="4" fill="var(--encre-doux)"/>
+          <circle cx="480" cy="140" r="4" fill="var(--encre-doux)"/>
+          <circle cx="440" cy="40" r="4" fill="var(--encre-doux)"/>
+        </g>
+      </svg>
+      <p class="cap">La Terre fait pareil avec l'espace&nbsp;: une propriété (le champ) posée partout autour d'elle, que quelque chose vienne la « sentir » ou non.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="grav_s-champ"><span>J'ai compris</span></div>
+  </section>
+
+  <section data-chap="1" id="grav_s-vecteur">
+    <h2>3. Le vecteur champ <span class="mono">&#x1D4A2;</span></h2>
+    <p>Prends un point dans l'espace. Pose une petite masse test. Elle subit une force. Divise cette force
+    par la masse de l'objet&nbsp;:</p>
+    <div class="formule"><math display="block"><mi mathvariant="script">G</mi><mo>=</mo><mfrac><mrow><mi>F</mi></mrow><mrow><mi>m</mi></mrow></mfrac></math></div><div class="lettres"><p class="l-titre">🔎 Ce que veut dire chaque lettre</p><div class="l-row"><span class="l-sym">𝒢</span><span class="l-def">le <b>champ de gravitation</b> au point où l'on se trouve (on lit « G ronde »). Unité : N/kg, ce qui revient au même que m·s<sup>−2</sup> (section 5).</span></div><div class="l-row"><span class="l-sym">F</span><span class="l-def">la <b>force</b> que subit l'objet posé à cet endroit. Unité : N.</span></div><div class="l-row"><span class="l-sym">m</span><span class="l-def">la <b>masse de cet objet</b> (la « masse test »). Unité : kg.</span></div></div><p style="margin:.2rem 0 .8rem">Le résultat <b>ne dépend plus de l'objet</b> : il ne dépend que de l'endroit.</p>
+    <p>Caillou, plume, brique&nbsp;: même résultat. Ce qui reste est une flèche — une direction (vers le
+    centre de la Terre), un sens, une valeur&nbsp;:</p>
+    <div class="formule"><math display="block"><mi mathvariant="script">G</mi><mo>(</mo><mi>M</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mi>G</mi><mo>&middot;</mo><msub><mi>M</mi><mi>T</mi></msub></mrow><mrow><msup><mi>r</mi><mn>2</mn></msup></mrow></mfrac></math></div><div class="lettres"><p class="l-titre">🔎 Ce que veut dire chaque lettre</p><div class="l-row"><span class="l-sym">𝒢(M)</span><span class="l-def">le <b>champ au point M</b>. Attention : ici M n'est <b>pas une masse</b>, c'est le nom du point de l'espace où tu calcules le champ. Unité du champ : m·s<sup>−2</sup>.</span></div><div class="l-row"><span class="l-sym">G</span><span class="l-def">la constante de gravitation, 6,67×10<sup>−11</sup> S.I. (voir section 1).</span></div><div class="l-row"><span class="l-sym">M<sub>T</sub></span><span class="l-def">la <b>masse de la Terre</b> : 5,97×10<sup>24</sup> kg. Le petit T veut dire « Terre ».</span></div><div class="l-row"><span class="l-sym">r</span><span class="l-def">la <b>distance entre le centre de la Terre et le point M</b>, en mètres. Pas l'altitude : on compte depuis le centre, pas depuis le sol.</span></div></div>
+    <div class="schema">
+      <svg viewBox="0 0 600 180">
+        <circle cx="90" cy="150" r="60" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2.5"/>
+        <text x="90" y="158" text-anchor="middle" fill="var(--nere)" font-size="18" font-weight="600">Terre</text>
+        <g>
+          <circle cx="230" cy="95" r="4" fill="var(--encre)"/>
+          <line x1="230" y1="95" x2="230" y2="135" stroke="var(--ciel)" stroke-width="3"/>
+          <polygon points="230,135 224,122 236,122" fill="var(--ciel)"/>
+          <text x="240" y="115" fill="var(--ciel)" font-size="13">𝒢</text>
+        </g>
+        <g>
+          <circle cx="360" cy="60" r="4" fill="var(--encre)"/>
+          <line x1="360" y1="60" x2="360" y2="86" stroke="var(--ciel)" stroke-width="2"/>
+          <polygon points="360,86 356,77 364,77" fill="var(--ciel)"/>
+        </g>
+        <g>
+          <circle cx="470" cy="130" r="4" fill="var(--encre)"/>
+          <line x1="470" y1="130" x2="470" y2="150" stroke="var(--ciel)" stroke-width="1.6"/>
+          <polygon points="470,150 467,143 473,143" fill="var(--ciel)"/>
+        </g>
+        <text x="360" y="35" text-anchor="middle" fill="var(--sauge)" font-size="12">plus loin = flèche plus courte</text>
+      </svg>
+      <p class="cap">À chaque point de l'espace autour de la Terre, une flèche <code>𝒢</code> pointe vers le centre&nbsp;: elle existe même sans objet posé là, et rétrécit quand on s'éloigne.</p>
+    </div>
+    <p>Cette flèche existe que tu aies posé une masse ou non&nbsp;; la masse test servait juste à la
+    révéler, comme la limaille de fer révèle un aimant.</p>
+    <div class="done-row"><input type="checkbox" data-done="grav_s-vecteur"><span>J'ai compris</span></div>
+  </section>
+
+  <section data-chap="1" id="grav_s-r2">
+    <h2>4. Pourquoi <span class="mono">1/r&sup2;</span> et pas autre chose</h2>
+    <p>Ce n'est pas un choix, c'est de la géométrie. L'influence de la Terre s'échappe en ligne droite
+    dans toutes les directions. À la distance <code>r</code>, elle est répartie sur une sphère dont la
+    surface vaut <code>4&pi;r&sup2;</code>. Deux fois plus loin&nbsp;: quatre fois plus de surface, donc
+    quatre fois moins d'influence à chaque endroit. Trois fois plus loin&nbsp;: neuf fois moins.</p>
+    <p>La gravité décroît comme <code>1/r&sup2;</code> <strong>parce que l'espace a trois dimensions</strong>.</p>
+    <div class="schema">
+      <svg viewBox="0 0 600 190">
+        <circle cx="90" cy="140" r="18" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2"/>
+        <circle cx="90" cy="140" r="60" fill="none" stroke="var(--ciel)" stroke-width="2" stroke-dasharray="5,4"/>
+        <circle cx="90" cy="140" r="120" fill="none" stroke="var(--terre)" stroke-width="2" stroke-dasharray="5,4"/>
+        <text x="90" y="146" text-anchor="middle" fill="var(--nere)" font-size="11">Terre</text>
+        <text x="90" y="72" text-anchor="middle" fill="var(--ciel)" font-size="12">r</text>
+        <text x="90" y="12" text-anchor="middle" fill="var(--terre)" font-size="12">2r</text>
+        <line x1="90" y1="140" x2="90" y2="20" stroke="var(--filet)" stroke-width="1"/>
+        <text x="280" y="60" fill="var(--ciel)" font-size="13" font-weight="600">à r&nbsp;: surface 4&pi;r&sup2;</text>
+        <text x="280" y="82" fill="var(--ciel)" font-size="12">influence répartie sur cette sphère</text>
+        <text x="280" y="150" fill="var(--terre)" font-size="13" font-weight="600">à 2r&nbsp;: surface 4&times;plus grande</text>
+        <text x="280" y="172" fill="var(--terre)" font-size="12">même influence, 4&times; plus étalée &rarr; 4&times; plus faible</text>
+      </svg>
+      <p class="cap">La même « quantité » de champ s'étale sur une sphère de plus en plus grande&nbsp;: doubler la distance multiplie la surface par 4, donc divise le champ par 4.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="grav_s-r2"><span>J'ai compris</span></div>
+  </section>
+
+  <section data-chap="1" id="grav_s-g0">
+    <h2>5. Le fameux <span class="mono">9,8</span></h2>
+    <p>Ce n'est pas une constante de l'univers. C'est la valeur du champ calculée à un endroit précis&nbsp;:
+    la surface de la Terre.</p>
+    <div class="formule" style="white-space:normal"><math display="block"><msub><mi>g</mi><mi>0</mi></msub><mo>=</mo><mfrac><mrow><mi>G</mi><mo>&middot;</mo><msub><mi>M</mi><mi>T</mi></msub></mrow><mrow><msup><msub><mi>R</mi><mi>T</mi></msub><mn>2</mn></msup></mrow></mfrac></math><math display="block"><mo>=</mo><mfrac><mrow><mn>6,67</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>11</mn></mrow></msup><mo>&middot;</mo><mn>5,97</mn><mo>×</mo><msup><mn>10</mn><mn>24</mn></msup></mrow><mrow><msup><mrow><mo>(</mo><mn>6,37</mn><mo>×</mo><msup><mn>10</mn><mn>6</mn></msup><mo>)</mo></mrow><mn>2</mn></msup></mrow></mfrac><mo>=</mo><mn class="res">9,81</mn><mtext>&nbsp;m·s</mtext><msup><mtext></mtext><mrow><mo>−</mo><mn>2</mn></mrow></msup></math></div><div class="lettres"><p class="l-titre">🔎 Ce que veut dire chaque lettre</p><div class="l-row"><span class="l-sym">g<sub>0</sub></span><span class="l-def">le <b>champ à la surface de la Terre</b> (le petit 0 veut dire « au sol, altitude zéro »). Unité : m·s<sup>−2</sup>.</span></div><div class="l-row"><span class="l-sym">G</span><span class="l-def">la constante de gravitation, 6,67×10<sup>−11</sup> S.I.</span></div><div class="l-row"><span class="l-sym">M<sub>T</sub></span><span class="l-def">la masse de la Terre, 5,97×10<sup>24</sup> kg.</span></div><div class="l-row"><span class="l-sym">R<sub>T</sub></span><span class="l-def">le <b>rayon de la Terre</b> : la distance entre son centre et sa surface, 6 370 km = 6,37×10<sup>6</sup> m. À la surface, la distance r de la section 3 vaut exactement R<sub>T</sub>.</span></div></div>
+    <div class="schema">
+      <svg viewBox="0 0 600 170">
+        <circle cx="150" cy="90" r="75" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2.5"/>
+        <text x="150" y="98" text-anchor="middle" fill="var(--nere)" font-size="18" font-weight="600">M_T</text>
+        <line x1="150" y1="90" x2="150" y2="15" stroke="var(--sauge)" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="162" y="45" fill="var(--sauge)" font-size="13">R_T</text>
+        <circle cx="150" cy="15" r="3.5" fill="var(--encre)"/>
+        <line x1="150" y1="15" x2="150" y2="48" stroke="var(--ciel)" stroke-width="3"/>
+        <polygon points="150,48 144,36 156,36" fill="var(--ciel)"/>
+        <text x="163" y="30" fill="var(--ciel)" font-size="13" font-weight="600">g&#8320;</text>
+        <text x="380" y="70" fill="var(--encre-doux)" font-size="13">g&#8320; est la valeur du champ</text>
+        <text x="380" y="90" fill="var(--encre-doux)" font-size="13">calculée exactement à la surface,</text>
+        <text x="380" y="110" fill="var(--encre-doux)" font-size="13">à r = R_T. Un point de la formule,</text>
+        <text x="380" y="130" fill="var(--encre-doux)" font-size="13">pas une constante universelle.</text>
+      </svg>
+      <p class="cap">g&#8320; est simplement la longueur de la flèche champ pile à la surface de la Terre (r&nbsp;=&nbsp;R_T).</p>
+    </div>
+    <p>Sur la Lune, la même formule donne <code>1,6</code>. Sur Jupiter, <code>25</code>. Le <code>9,8</code>
+    est une adresse, pas une loi. À la surface, ce champ de gravitation se confond presque parfaitement
+    avec le <strong>champ de pesanteur</strong> <code>g</code> (celui de <code>P&nbsp;=&nbsp;mg</code>)&nbsp;;
+    la rotation de la Terre introduit un petit écart qu'on néglige à ton niveau.</p>
+
+    <div class="card">
+      <p class="label">Poids et masse&nbsp;: la confusion la plus fréquente</p>
+      <p>Les deux mots se mélangent tout le temps, alors qu'ils décrivent deux choses complètement
+      différentes&nbsp;:</p>
+      <div class="formule" style="white-space:normal;margin:.4rem 0">
+        <span class="res">masse m</span>&nbsp;&nbsp; en kg &nbsp;&nbsp; une quantité de matière &nbsp;&nbsp;
+        <strong>ne change jamais</strong>, où que tu ailles
+      </div>
+      <div class="formule" style="white-space:normal;margin:.4rem 0">
+        <span class="res">poids P&nbsp;=&nbsp;m&middot;g</span>&nbsp;&nbsp; en newtons (N) &nbsp;&nbsp; une
+        force &nbsp;&nbsp; <strong>change avec l'endroit</strong>, car <code>g</code> en dépend
+      </div>
+      <p style="margin:0">Une personne de <code>m&nbsp;=&nbsp;70</code>&nbsp;kg pèse toujours
+      <code>70</code>&nbsp;kg de matière, sur Terre comme sur la Lune. Mais son poids change&nbsp;:
+      <code>P<sub>Terre</sub>&nbsp;=&nbsp;70&times;9,8&nbsp;=&nbsp;686</code>&nbsp;N, tandis que
+      <code>P<sub>Lune</sub>&nbsp;=&nbsp;70&times;1,6&nbsp;=&nbsp;112</code>&nbsp;N seulement — six fois moins,
+      alors que sa masse n'a pas bougé d'un gramme. C'est pour ça qu'un astronaute bondit si facilement sur
+      la Lune&nbsp;: son corps (sa masse, donc son inertie) est le même, mais la Lune le retient six fois
+      moins fort.</p>
+    </div>
+
+    <div class="card note">
+      <p class="label">Pourquoi g se mesure en m&middot;s&#8315;&sup2;</p>
+      <p>Ce n'est pas un hasard. Regarde les unités de chaque terme de <code>g&nbsp;=&nbsp;G&middot;M/r&sup2;</code>&nbsp;:
+      <code>M</code> se mesure en kilogrammes, <code>r&sup2;</code> en mètres carrés, et <code>G</code> a
+      sa propre unité — bizarre en apparence (<code>m&sup3;&middot;kg&#8315;&sup1;&middot;s&#8315;&sup2;</code>),
+      mais fixée exactement pour que tout s'arrange dans le calcul&nbsp;:</p>
+      <div class="formule" style="white-space:normal">
+        [G]&middot;[M] / [r&sup2;] =
+        (m&sup3;&middot;kg&#8315;&sup1;&middot;s&#8315;&sup2;)&middot;(kg) / (m&sup2;)
+        &nbsp;&rarr;&nbsp; les kg s'annulent, deux des trois m aussi
+        &nbsp;&rarr;&nbsp; <span class="res">m&middot;s&#8315;&sup2;</span>
+      </div>
+      <p style="margin:0">Il ne reste qu'une accélération. C'est pour ça que <code>g</code> fait
+      accélérer tout ce qui tombe — l'unité de <code>g</code> n'est pas arbitraire, elle sort du calcul.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="grav_s-g0"><span>J'ai compris</span></div>
+  </section>
+
+  <section data-chap="1" id="grav_s-altitude">
+    <h2>6. Le champ diminue avec l'altitude</h2>
+    <p>Remplace <code>r</code> par <code>R<sub>T</sub> + h</code>&nbsp;:</p>
+    <div class="formule"><math display="block"><mi>g</mi><mo>(</mo><mi>h</mi><mo>)</mo><mo>=</mo><mfrac><mrow><msub><mi>g</mi><mi>0</mi></msub><mo>&middot;</mo><msup><msub><mi>R</mi><mi>T</mi></msub><mn>2</mn></msup></mrow><mrow><msup><mrow><mo>(</mo><msub><mi>R</mi><mi>T</mi></msub><mo>+</mo><mi>h</mi><mo>)</mo></mrow><mn>2</mn></msup></mrow></mfrac></math></div><div class="lettres"><p class="l-titre">🔎 Ce que veut dire chaque lettre</p><div class="l-row"><span class="l-sym">g(h)</span><span class="l-def">le <b>champ à l'altitude h</b>. Unité : m·s<sup>−2</sup>.</span></div><div class="l-row"><span class="l-sym">g<sub>0</sub></span><span class="l-def">le champ au sol, 9,81 m·s<sup>−2</sup> (section 5).</span></div><div class="l-row"><span class="l-sym">R<sub>T</sub></span><span class="l-def">le rayon de la Terre, 6 370 km.</span></div><div class="l-row"><span class="l-sym">h</span><span class="l-def">l'<b>altitude</b> : la hauteur au-dessus du sol (un avion : 10 km, l'ISS : 400 km).</span></div><div class="l-row"><span class="l-sym">R<sub>T</sub> + h</span><span class="l-def">la distance entre le <b>centre</b> de la Terre et l'objet : c'est le r de la section 3. R<sub>T</sub> et h doivent être dans la même unité (tous les deux en km, ou tous les deux en m).</span></div></div>
+    <div class="schema">
+      <svg viewBox="0 0 600 190">
+        <circle cx="150" cy="140" r="70" fill="var(--nere-clair)" stroke="var(--nere)" stroke-width="2.5"/>
+        <text x="150" y="148" text-anchor="middle" fill="var(--nere)" font-size="16" font-weight="600">Terre</text>
+        <line x1="150" y1="140" x2="150" y2="70" stroke="var(--sauge)" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="122" y="108" fill="var(--sauge)" font-size="12">R_T</text>
+        <circle cx="150" cy="55" r="7" fill="var(--ciel-clair)" stroke="var(--ciel)" stroke-width="2"/>
+        <text x="150" y="59" text-anchor="middle" fill="var(--ciel)" font-size="9">ISS</text>
+        <line x1="150" y1="70" x2="150" y2="55" stroke="var(--terre)" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="168" y="65" fill="var(--terre)" font-size="12">h</text>
+        <line x1="150" y1="140" x2="150" y2="55" stroke="transparent"/>
+        <text x="330" y="50" fill="var(--encre-doux)" font-size="13">r = R_T + h</text>
+        <text x="330" y="90" fill="var(--encre-doux)" font-size="13">Plus h grandit, plus r grandit,</text>
+        <text x="330" y="110" fill="var(--encre-doux)" font-size="13">donc g(h) diminue — mais lentement&nbsp;:</text>
+        <text x="330" y="130" fill="var(--nere)" font-size="13" font-weight="600">à 400 km, g = 8,7 (presque 9,8)</text>
+      </svg>
+      <p class="cap">400&nbsp;km d'altitude semble énorme à l'échelle humaine, mais reste minuscule comparé au rayon terrestre (6&nbsp;371&nbsp;km) — d'où le champ presque inchangé.</p>
+    </div>
+    <p>Un immeuble&nbsp;: différence invisible. L'altitude de la Station Spatiale (400&nbsp;km)&nbsp;:
+    <code>g</code> vaut encore <strong>8,7</strong>. La phrase «&nbsp;il n'y a pas de gravité dans l'ISS&nbsp;»
+    est donc fausse&nbsp;: si les astronautes flottent, c'est qu'ils <strong>tombent en permanence</strong>,
+    la station et eux ensemble, en manquant la Terre. C'est de la chute libre — le sujet de la simulation
+    ci-dessous.</p>
+
+    <div class="card">
+      <p class="label">Le canon de Newton&nbsp;: pourquoi une orbite ne s'écrase jamais</p>
+      <p>Imagine un canon tirant à l'horizontale depuis une tour très haute. Le boulet tombe et touche
+      le sol. Tire plus fort&nbsp;: il va plus loin avant de toucher le sol. Tire encore plus fort — à un
+      moment, un détail change&nbsp;: <strong>le sol de la Terre est courbé, lui aussi</strong>. Si le
+      boulet avance assez vite, la Terre s'incurve vers le bas exactement à la vitesse où le boulet tombe.
+      Il ne touche jamais le sol&nbsp;: il tombe pour toujours, en ratant la Terre à chaque instant.</p>
+      <p style="margin:0">C'est exactement ce que fait l'ISS&nbsp;: elle tombe sans arrêt vers la Terre,
+      mais elle va si vite (environ 7,7&nbsp;km/s) qu'elle la rate en boucle. Une orbite, ce n'est pas
+      l'absence de gravité — c'est une chute qui rate sa cible indéfiniment.</p>
+    </div>
+
+    <div class="sim" id="grav_simOrbit">
+      <h3>Le canon de Newton, en vrai&nbsp;: règle la vitesse et regarde</h3>
+      <canvas id="grav_cvOrbit" width="900" height="560"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--sauge)"></i>trop lent&nbsp;: retombe sur Terre</span>
+        <span><i style="background:var(--nere)"></i>orbite stable</span>
+        <span><i style="background:var(--terre)"></i>échappe à la Terre</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl"><label>Altitude de la tour h <b><span id="grav_ohv">300</span> km</b></label>
+          <input type="range" id="grav_oh" min="0" max="1200" step="10" value="300"></div>
+        <div class="ctrl"><label>Vitesse initiale v<sub>0</sub> <b><span id="grav_ov0v">6.0</span> km/s</b></label>
+          <input type="range" id="grav_ov0" min="0" max="12" step="0.05" value="6.0"></div>
+      </div>
+      <div class="readout">
+        <div class="rd"><div class="k">v circulaire ici</div><div class="v"><span id="grav_ovc">0</span> km/s</div></div>
+        <div class="rd"><div class="k">v de libération ici</div><div class="v"><span id="grav_ove">0</span> km/s</div></div>
+        <div class="rd em" style="grid-column:1/-1"><div class="k">Résultat</div><div class="v" id="grav_ores">—</div></div>
+      </div>
+      <div class="simform" id="grav_oform"></div>
+      <p style="margin:1rem 0 0;font-size:.86rem;color:var(--encre-doux)"><b>v circulaire</b> : la vitesse exacte qu'il faut pour tourner en rond autour de la Terre à cette altitude. <b>v de libération</b> : la vitesse à partir de laquelle l'objet quitte la Terre pour toujours. Le simulateur les calcule pour toi, pas besoin de formule ici.</p><p style="font-size:.85rem">Le calcul est le vrai calcul à deux
+      corps (<code>a = G&middot;M<sub>T</sub>/r&sup2;</code>, dirigée vers le centre) intégré pas à pas —
+      pas une animation truquée. Augmente <code>v<sub>0</sub></code> doucement&nbsp;: sous la vitesse
+      circulaire, ça retombe&nbsp;; à la vitesse circulaire, cercle parfait&nbsp;; entre les deux vitesses,
+      ellipse stable&nbsp;; au-delà de la vitesse de libération, ça part pour de bon.</p>
+    </div>
+    <div class="done-row"><input type="checkbox" data-done="grav_s-altitude"><span>J'ai compris</span></div>
+  </section>
+
+  
+  <section data-chap="1" id="grav_s-exo">
+    <h2>7. Exercice type bac, corrigé</h2>
+    <p>Données : <code>R<sub>T</sub>&nbsp;=&nbsp;6&nbsp;370</code>&nbsp;km, <code>g<sub>0</sub>&nbsp;=&nbsp;9,81</code>&nbsp;m·s<sup>−2</sup>.
+    Tout ce qu'il faut a été vu plus haut. Cherche d'abord seul, puis ouvre la correction.</p>
+    <div class="exo">
+      <p class="exoNum">Exercice — série D</p>
+      <p><strong>Énoncé.</strong> Un avion de ligne vole à <code>h&nbsp;=&nbsp;10</code>&nbsp;km d'altitude.
+      Un passager a une masse <code>m&nbsp;=&nbsp;75</code>&nbsp;kg. On prend <code>g<sub>0</sub>&nbsp;=&nbsp;9,81</code>&nbsp;m&middot;s<sup>&minus;2</sup>
+      au sol.</p>
+      <p style="margin:0">1) Calculer <code>g(h)</code> à 10&nbsp;km d'altitude.<br>
+      2) Calculer le poids du passager à cette altitude, et le comparer à son poids au sol.</p>
+      
+      <button class="revealBtn" data-target="grav_c3">Voir la correction</button>
+      <div class="correction" id="grav_c3" hidden>
+        <p class="q">1) Champ à 10 km</p>
+        <p>Ici pas besoin de tout reconvertir en mètres&nbsp;: comme on va faire un <em>rapport</em>
+        (R<sub>T</sub>/r, un km divisé par un km), les kilomètres s'annulent entre eux. On garde donc les km
+        pour cette formule précise — mais réflexe habituel&nbsp;: vérifie toujours si la formule utilise une
+        distance seule (→ convertir en m) ou un rapport de deux distances (→ les unités s'annulent, pas
+        besoin).</p>
+        <p>r = R<sub>T</sub> + h = 6&nbsp;370 + 10 = 6&nbsp;380&nbsp;km</p>
+        <div class="formule" style="white-space:normal">g(h) = g<sub>0</sub>&middot;(R<sub>T</sub>/r)&sup2; <small>(la formule de la section 6, écrite autrement)</small>
+          = 9,81 &times; (6&nbsp;370/6&nbsp;380)&sup2; = <span class="res">9,78 m&middot;s<sup>&minus;2</sup></span></div>
+        <p class="q">2) Poids à 10 km et comparaison</p>
+        <p>Le poids, c'est juste <code>P&nbsp;=&nbsp;m&middot;g</code> (section 5)&nbsp;: on multiplie la
+        masse du passager par le champ à chaque altitude.</p>
+        <div class="formule" style="white-space:normal">P(h) = m&middot;g(h) = 75 &times; 9,78 = <span class="res">733,5 N</span></div>
+        <div class="formule" style="white-space:normal">P<sub>0</sub> = m&middot;g<sub>0</sub> = 75 &times; 9,81 = <span class="res">735,75 N</span></div>
+        <p style="margin:0">Écart&nbsp;: 735,75 &minus; 733,5 = environ 2,25&nbsp;N, soit
+        <code>0,3&nbsp;%</code> — totalement imperceptible. C'est exactement ce que dit la section 6&nbsp;:
+        à l'échelle d'un immeuble ou d'un avion, le champ ne bouge presque pas.</p>
+      </div>
+    </div>
+  
+    <div class="done-row"><input type="checkbox" data-done="grav_s-exo"><span>J'ai fait l'exercice</span></div>
+  </section>
+
+  <section id="grav_s-suite">
+    <h2>Tu as aimé ? Le pack complet est fait comme ça</h2>
+    <p>9 chapitres du programme de Terminale, des dizaines de simulations, des exercices corrigés type bac et des quiz.
+    La suite de ce chapitre : le tir dans le champ de pesanteur, le satellite géostationnaire, les lois de Kepler, la vitesse de libération.</p>
+    <p><a href="https://mesame20022007-code.github.io/prism-livrables/pack-physique-terminale/landing-page.html" style="display:inline-block;background:#f2c05c;color:#1a1030;font-weight:700;padding:12px 20px;border-radius:12px;text-decoration:none">Découvrir le pack complet →</a></p>
+    <p style="font-size:14px;opacity:.8">Une lettre, une étape pas claire ? Réponds dans la conversation WhatsApp, on t'explique.</p>
+  </section>
+  <div class="foot">Prism Éducation — Comprendre, pas seulement apprendre.</div>
+</article>
+</main>
+<script>
+
+(function(){
+  "use strict";
+  var LS=null; try{ LS=window.localStorage; }catch(e){}
+  var KEY="kitg_";
+  function get(k,d){ try{ var v=LS.getItem(KEY+k); return v===null?d:v; }catch(e){ return d; } }
+  function set(k,v){ try{ LS.setItem(KEY+k,v); }catch(e){} }
+
+  var root=document.documentElement;
+
+  /* thème */
+  var tb=document.getElementById('themeBtn');
+  var savedTheme=get('theme',null);
+  if(savedTheme) root.setAttribute('data-theme',savedTheme);
+  function tlbl(){ tb.innerHTML = root.getAttribute('data-theme')==='dark' ? '&#9788;' : '&#9789;'; }
+  tlbl();
+  tb.addEventListener('click',function(){
+    var d=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',d); set('theme',d); tlbl(); draw();
+  });
+
+  /* taille texte */
+  var fs=parseFloat(get('fs','1'))||1;
+  function applyFs(){ fs=Math.max(0.85,Math.min(1.35,fs)); root.style.setProperty('--fs',fs); set('fs',fs); }
+  applyFs();
+  document.querySelectorAll('.bar button[data-fs]').forEach(function(b){
+    b.addEventListener('click',function(){ fs+=(b.getAttribute('data-fs')==='+'?0.08:-0.08); applyFs(); });
+  });
+
+  /* barre qui s'efface au scroll + hauteur */
+  var barWrap=document.getElementById('barWrap');
+  function sizeBar(){ root.style.setProperty('--bar',(barWrap.offsetHeight+8)+'px'); }
+  sizeBar(); window.addEventListener('resize',sizeBar); window.addEventListener('load',sizeBar);
+  var lastY=0;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    barWrap.classList.toggle('hide', y>lastY && y>120);
+    lastY=y;
+    progress();
+    var cur=currentSection();
+    if(cur) set('pos',cur);
+  },{passive:true});
+
+  /* sommaire + progression + cases */
+  var sections=[].slice.call(document.querySelectorAll('main section'));
+  var tocList=document.getElementById('tocList');
+  var chapCourant=null;
+  sections.forEach(function(s){
+    var h=s.querySelector('h2'); if(!h) return;
+    var art=s.closest('article.chapitre');
+    if(art && art.getAttribute('data-chap')!==chapCourant){
+      chapCourant=art.getAttribute('data-chap');
+      var head=document.createElement('li');
+      head.className='toc-chap';
+      head.textContent=chapCourant+'. '+art.getAttribute('data-titre');
+      tocList.appendChild(head);
+    }
+    var li=document.createElement('li');
+    var a=document.createElement('a');
+    a.href='#'+s.id; a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+    a.dataset.for=s.id;
+    li.appendChild(a); tocList.appendChild(li);
+  });
+  var ov=document.getElementById('tocOverlay');
+  function tocOpen(o){ ov.classList.toggle('open',o); }
+  document.getElementById('tocBtn').addEventListener('click',function(){ syncToc(); tocOpen(true); });
+  document.getElementById('tocClose').addEventListener('click',function(){ tocOpen(false); });
+  ov.addEventListener('click',function(e){ if(e.target===ov) tocOpen(false); });
+  ov.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ tocOpen(false); }); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') tocOpen(false); });
+
+  document.querySelectorAll('.revealBtn[data-target]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=document.getElementById(b.getAttribute('data-target'));
+      var open=t.hasAttribute('hidden');
+      if(open){ t.removeAttribute('hidden'); b.textContent='Masquer la correction'; }
+      else{ t.setAttribute('hidden',''); b.textContent='Voir la correction'; }
+    });
+  });
+
+  var doneSet;
+  try{ doneSet=JSON.parse(get('done','[]')); }catch(e){ doneSet=[]; }
+  if(!Array.isArray(doneSet)) doneSet=[];
+  document.querySelectorAll('input[data-done]').forEach(function(c){
+    var id=c.getAttribute('data-done');
+    c.checked=doneSet.indexOf(id)>=0;
+    c.addEventListener('change',function(){
+      var i=doneSet.indexOf(id);
+      if(c.checked && i<0) doneSet.push(id);
+      if(!c.checked && i>=0) doneSet.splice(i,1);
+      set('done',JSON.stringify(doneSet));
+      syncToc(); progress();
+    });
+  });
+  function syncToc(){
+    tocList.querySelectorAll('a').forEach(function(a){
+      a.classList.toggle('done', doneSet.indexOf(a.dataset.for)>=0);
+    });
+  }
+  syncToc();
+
+  var fill=document.getElementById('fill'), pct=document.getElementById('pct');
+  function progress(){
+    var total=document.querySelectorAll('input[data-done]').length;
+    var r=total? doneSet.length/total : 0;
+    var docH=document.body.scrollHeight-window.innerHeight;
+    var scr=docH>0? Math.min(1,window.scrollY/docH) : 0;
+    var p=Math.max(r,scr*0.6+r*0.4);
+    fill.style.transform='scaleX('+p+')';
+    pct.textContent=Math.round(p*100)+' %';
+  }
+  progress();
+
+  function currentSection(){
+    var best=null,bd=1e9;
+    sections.forEach(function(s){
+      var d=Math.abs(s.getBoundingClientRect().top-80);
+      if(d<bd){ bd=d; best=s.id; }
+    });
+    return best;
+  }
+
+  /* reprise lecture */
+  var rb=document.getElementById('resumeBar');
+  var pos=get('pos',null);
+  if(pos && document.getElementById(pos) && window.scrollY<40){
+    rb.classList.add('show');
+    document.getElementById('resumeGo').addEventListener('click',function(){
+      document.getElementById(pos).scrollIntoView(); rb.classList.remove('show');
+    });
+    document.getElementById('resumeX').addEventListener('click',function(){ rb.classList.remove('show'); });
+    setTimeout(function(){ rb.classList.remove('show'); },9000);
+  }
+
+  function __cssHelper(v){ return getComputedStyle(root).getPropertyValue(v).trim(); }
+  window.__css=__cssHelper;
+})();
+
+/* ================= SIMULATION 2 : canon de Newton (orbite réelle) ================= */
+(function(){
+  "use strict";
+  var root=document.documentElement;
+  function css(v){ return getComputedStyle(root).getPropertyValue(v).trim(); }
+
+  var RE=6371, GM=398600;               /* rayon Terre (km), GM Terre (km^3/s^2) */
+  var cv=document.getElementById('grav_cvOrbit'); if(!cv) return;
+  var ctx=cv.getContext('2d');
+  cv.width=900; cv.height=560;
+  var els={ h:document.getElementById('grav_oh'), v0:document.getElementById('grav_ov0') };
+  var path=[], outcome='', impact=null;
+
+  function simulate(h,v0){
+    var r0=RE+h;
+    var vc=Math.sqrt(GM/r0), ve=Math.sqrt(2*GM/r0);
+    var x=0,y=r0, vx=v0,vy=0;
+    var pts=[[x,y]];
+    var period=2*Math.PI*r0/Math.max(vc,0.01);
+    var dt=Math.max(period/1600, 0.2);
+    var maxSteps=6000, ang0=Math.atan2(y,x), swept=0, lastAng=ang0;
+    var out='orbit', imp=null;
+
+    function accel(px,py){
+      var r=Math.sqrt(px*px+py*py), f=-GM/(r*r*r);
+      return [f*px, f*py];
+    }
+    for(var i=0;i<maxSteps;i++){
+      var a1=accel(x,y);
+      var x2=x+vx*dt*0.5, y2=y+vy*dt*0.5;
+      var vx2=vx+a1[0]*dt*0.5, vy2=vy+a1[1]*dt*0.5;
+      var a2=accel(x2,y2);
+      vx+=a2[0]*dt; vy+=a2[1]*dt;
+      x+=vx*dt; y+=vy*dt;
+      pts.push([x,y]);
+      var r=Math.sqrt(x*x+y*y);
+      if(r<=RE){ out='crash'; imp=[x,y]; break; }
+      var ang=Math.atan2(y,x);
+      var d=ang-lastAng; if(d>Math.PI) d-=2*Math.PI; if(d<-Math.PI) d+=2*Math.PI;
+      swept+=d; lastAng=ang;
+      if(Math.abs(swept)>=2*Math.PI+0.03){ out='orbit'; break; }
+      if(r>7*r0 && r>RE*1.02){
+        var rr=Math.sqrt((x-vx*dt)*(x-vx*dt)+(y-vy*dt)*(y-vy*dt));
+        if(r>rr){ out='escape'; break; }
+      }
+    }
+    return {pts:pts, out:out, imp:imp, vc:vc, ve:ve, r0:r0};
+  }
+
+  function draw(){
+    var h=+els.h.value, v0=+els.v0.value;
+    document.getElementById('grav_ohv').textContent=h;
+    document.getElementById('grav_ov0v').textContent=v0.toFixed(2);
+    var R=simulate(h,v0);
+    document.getElementById('grav_ovc').textContent=R.vc.toFixed(2);
+    document.getElementById('grav_ove').textContent=R.ve.toFixed(2);
+
+    var lbl, color;
+    if(R.out==='crash'){ lbl='Retombe sur Terre'; color=css('--sauge'); }
+    else if(R.out==='escape'){ lbl='Échappe à l\'attraction terrestre'; color=css('--terre'); }
+    else if(Math.abs(v0-R.vc)<0.05){ lbl='Orbite circulaire stable'; color=css('--nere'); }
+    else { lbl='Orbite elliptique stable'; color=css('--nere'); }
+    var resEl=document.getElementById('grav_ores');
+    resEl.textContent=lbl; resEl.style.color=color;
+
+    var W=cv.width,H=cv.height;
+    var maxR=0; R.pts.forEach(function(p){ var r=Math.sqrt(p[0]*p[0]+p[1]*p[1]); if(r>maxR) maxR=r; });
+    maxR=Math.min(maxR, R.r0*3.2);
+    var ppk=Math.min(W,H)*0.42/Math.max(maxR,RE*1.15);
+    function PX(x){ return W/2+x*ppk; }
+    function PY(y){ return H/2-y*ppk; }
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=css('--papier'); ctx.fillRect(0,0,W,H);
+
+    ctx.fillStyle=css('--nere-clair'); ctx.strokeStyle=css('--nere'); ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.arc(PX(0),PY(0),RE*ppk,0,7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=css('--nere'); ctx.font='bold 15px "IBM Plex Sans",sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Terre', PX(0), PY(0)+5);
+
+    var pathColor = R.out==='crash'?css('--sauge') : R.out==='escape'?css('--terre') : css('--nere');
+    ctx.strokeStyle=pathColor; ctx.lineWidth=3; ctx.beginPath();
+    R.pts.forEach(function(p,i){ var X=PX(p[0]),Y=PY(p[1]); (i?ctx.lineTo:ctx.moveTo).call(ctx,X,Y); });
+    ctx.stroke();
+
+    /* tour de lancement */
+    var lx=PX(0), ly=PY(R.r0);
+    ctx.fillStyle=css('--encre-doux');
+    ctx.fillRect(lx-5, ly-18, 10, 18);
+    ctx.font='12px "IBM Plex Sans",sans-serif'; ctx.fillText('tour', lx, ly-24);
+
+    var last=R.pts[R.pts.length-1];
+    if(R.out==='escape'){
+      var Lx=PX(last[0]), Ly=PY(last[1]);
+      var dxp=last[0]-R.pts[R.pts.length-4][0], dyp=last[1]-R.pts[R.pts.length-4][1];
+      var ang=Math.atan2(-dyp,dxp);
+      ctx.strokeStyle=pathColor; ctx.fillStyle=pathColor; ctx.lineWidth=3;
+      var ex=Lx+Math.cos(ang)*36, ey=Ly-Math.sin(ang)*36;
+      ctx.beginPath(); ctx.moveTo(Lx,Ly); ctx.lineTo(ex,ey); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ex,ey);
+      ctx.lineTo(ex-12*Math.cos(ang-0.4),ey+12*Math.sin(ang-0.4));
+      ctx.lineTo(ex-12*Math.cos(ang+0.4),ey+12*Math.sin(ang+0.4));
+      ctx.closePath(); ctx.fill();
+    }
+    if(R.out==='crash'){
+      ctx.fillStyle=pathColor;
+      ctx.beginPath(); ctx.arc(PX(last[0]),PY(last[1]),5,0,7); ctx.fill();
+    }
+    ctx.textAlign='left';
+
+    var F=
+      '<div><span class="sym">v_circulaire = &radic;(G&middot;M_T / r)</span> = <span class="res">'+R.vc.toFixed(2)+' km/s</span> &nbsp;<span class="sym">à r = R_T + h = '+R.r0.toFixed(0)+' km</span></div>'+
+      '<div><span class="sym">v_libération = &radic;(2&middot;G&middot;M_T / r)</span> = <span class="res">'+R.ve.toFixed(2)+' km/s</span></div>'+
+      '<div style="margin-top:.5rem"><span class="sym">v&#8320; choisie = '+v0.toFixed(2)+' km/s</span> &nbsp;&rarr;&nbsp; <span class="res" style="color:'+pathColor+'">'+lbl+'</span></div>';
+    document.getElementById('grav_oform').innerHTML=F;
+  }
+
+  els.h.addEventListener('input',draw);
+  els.v0.addEventListener('input',draw);
+  draw();
+  window.addEventListener('resize',draw);
+})();
+
+
+</script>
+</body>
+</html>
