@@ -653,7 +653,7 @@ code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
   tlbl();
   tb.addEventListener('click',function(){
     var d=root.getAttribute('data-theme')==='dark'?'light':'dark';
-    root.setAttribute('data-theme',d); set('theme',d); tlbl(); draw();
+    root.setAttribute('data-theme',d); set('theme',d); tlbl(); if(typeof draw==='function') draw();
   });
 
   /* taille texte */
