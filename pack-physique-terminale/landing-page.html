@@ -498,7 +498,7 @@ main code{white-space:normal;overflow-wrap:break-word}
   <header class="hero">
     <div class="badge">★ PRISM ÉDUCATION — PACK PHYSIQUE TERMINALE</div>
     <h1 class="title">Le programme de physique Terminale, mais enfin <em>visible</em></h1>
-    <p class="hook">Bouge les curseurs ci-dessous. Regarde la formule réagir en direct. C'est exactement ce que tu retrouves dans les 9 chapitres du pack.</p>
+    <p class="hook">Ton zem freine mais son accélération est positive&nbsp;? La réponse complète est juste en dessous, avec une simulation du pack.</p>
   </header>
 
   <section id="probleme">
@@ -526,62 +526,102 @@ main code{white-space:normal;overflow-wrap:break-word}
        + explication en bas) une fois fourni. Ne pas modifier l'id.
        ================================================================ -->
   <div id="zone-simulation-interactive">
-    <p class="zsi-kicker">Extrait du pack — le champ gravitationnel</p>
+    <p class="zsi-kicker">Extrait du pack — mécanique</p>
+    <h3 style="font-size:1.25rem">Ton zem freine… mais son accélération est positive&nbsp;?</h3>
+    <p>Un exercice qui bloque beaucoup d'élèves de Terminale. Voici l'explication complète, avec la simulation du pack.</p>
 
-    <div class="sim" id="simOrbit">
-      <h3>Le canon de Newton, en vrai&nbsp;: règle la vitesse et regarde</h3>
-      <p class="touch-hint">👉 Bouge les deux curseurs et regarde le boulet.</p>
-      <canvas id="cvOrbit" width="900" height="560"></canvas>
-      <div class="legend">
-        <span><i style="background:var(--sauge)"></i>trop lent&nbsp;: retombe sur Terre</span>
-        <span><i style="background:var(--nere)"></i>orbite stable</span>
-        <span><i style="background:var(--terre)"></i>échappe à la Terre</span>
-      </div>
-      <div class="controls">
-        <div class="ctrl"><label>Altitude de la tour h <b><span id="ohv">300</span> km</b></label>
-          <input type="range" id="oh" min="0" max="1200" step="10" value="300"></div>
-        <div class="ctrl"><label>Vitesse initiale v<sub>0</sub> <b><span id="ov0v">6.0</span> km/s</b></label>
-          <input type="range" id="ov0" min="0" max="12" step="0.05" value="6.0"></div>
-      </div>
-      <div class="readout">
-        <div class="rd"><div class="k">v circulaire ici</div><div class="v"><span id="ovc">0</span> km/s</div></div>
-        <div class="rd"><div class="k">v de libération ici</div><div class="v"><span id="ove">0</span> km/s</div></div>
-        <div class="rd em" style="grid-column:1/-1"><div class="k">Résultat</div><div class="v" id="ores">—</div></div>
-      </div>
-      <div class="simform" id="oform"></div>
-      <div class="plain" id="oplain"></div>
-      <p class="dans-le-pack">📘 Pourquoi le boulet retombe, tourne ou s'échappe&nbsp;: l'explication complète est dans le pack.</p>
+    <div class="card">
+      <p><strong>1. Le signe d'une vitesse dit seulement «&nbsp;dans quel sens&nbsp;».</strong><br>
+      Dans un exercice, on choisit un axe&nbsp;: une flèche. Si le zem roule dans le sens de la flèche, sa vitesse est
+      positive. S'il roule dans l'autre sens, elle est négative. Le signe ne dit pas s'il va vite ou lentement.</p>
+      <p style="margin:0"><strong>2. L'accélération, c'est le changement de la vitesse.</strong><br>
+      <code>a = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .15em;line-height:1.15"><span style="border-bottom:1.4px solid currentColor;padding:0 .2em">v<sub>fin</sub> − v<sub>début</sub></span><span style="padding:0 .2em">durée</span></span></code>. Son signe dépend donc aussi de l'axe.
+      Quand le zem freine, c'est comme s'il accélérait <em>vers l'arrière</em>&nbsp;: imagine quelqu'un qui le tire par derrière avec une corde. L'accélération pointe contre son mouvement.</p>
     </div>
 
-    <div class="zsi-divider">Deuxième simulation</div>
+    <div class="card">
+      <p><strong>3. Ton exercice, avec des chiffres.</strong><br>
+      L'axe pointe vers l'arrière (l'énoncé le choisit souvent pour toi). Le zem roule vers l'avant, donc contre
+      l'axe&nbsp;: sa vitesse est <b>négative</b>, par exemple <code>−8&nbsp;m/s</code>.
+      Il freine&nbsp;: une seconde plus tard, il ne roule plus qu'à 3&nbsp;m/s, donc <code>v = −3&nbsp;m/s</code>.</p>
+      <p style="margin:0"><code>a = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .15em;line-height:1.15"><span style="border-bottom:1.4px solid currentColor;padding:0 .2em">−3 − (−8)</span><span style="padding:0 .2em">1</span></span> = +5&nbsp;m/s²</code>. L'accélération est <b>positive</b>, et pourtant le
+      zem ralentit. Tout est normal&nbsp;: vitesse négative, accélération positive, signes contraires.<br>Et l'inverse est vrai aussi&nbsp;: une accélération négative ne veut pas dire qu'il freine. Si sa vitesse est négative elle aussi, il accélère.</p>
+    </div>
 
-    <div class="formule">(G&middot;M<sub>T</sub>&middot;m) / r&sup2; = (m&middot;4&pi;&sup2;&middot;r) / T&sup2;
-      &nbsp;&nbsp;&rArr;&nbsp;&nbsp; r&sup3; = (G&middot;M<sub>T</sub>&middot;T&sup2;) / (4&pi;&sup2;)</div>
+    <div class="formule" style="text-align:center;white-space:normal;overflow:visible"><b>Même signe → il accélère.&nbsp;&nbsp;Signes contraires → il freine.</b><br>
+      Le signe de <code>a</code> tout seul ne veut rien dire.</div>
 
-    <div class="sim" id="simGeo">
-      <h3>Trouve l'altitude où le satellite reste immobile</h3>
-      <p class="touch-hint">👉 Fais glisser l'altitude : quand le satellite reste-t-il immobile au-dessus de la Terre&nbsp;?</p>
-      <canvas id="cvGeo" width="900" height="560"></canvas>
+    <div class="sim" id="simZem">
+      <h3>Vérifie-le toi-même&nbsp;: retourne l'axe pendant que le zem freine</h3>
+      <p class="touch-hint">👉 Coche «&nbsp;axe vers l'arrière&nbsp;», puis bouge l'accélération.</p>
+      <canvas id="cvZem" width="560" height="340"></canvas>
       <div class="legend">
-        <span><i style="background:var(--terre)"></i>repère fixe sur Terre (méridien)</span>
-        <span><i style="background:var(--ciel)"></i>satellite</span>
-        <span><i style="background:var(--nere)"></i>trace de l'orbite</span>
+        <span><i style="background:#2e9e5b"></i>flèche vitesse v</span>
+        <span><i style="background:#d9534f"></i>flèche accélération a</span>
       </div>
       <div class="controls">
-        <div class="ctrl"><label>Altitude h <b><span id="ghv">2000</span> km</b></label>
-          <input type="range" id="gh" min="300" max="42000" step="50" value="2000"></div>
+        <div class="ctrl"><label>Accélération (vers l'avant si +) <b><span id="zAv">-5</span> m/s²</b></label>
+          <input type="range" id="zA" min="-6" max="6" step="1" value="-5"></div>
+        <div class="ctrl"><label style="justify-content:flex-start;gap:.5rem"><input type="checkbox" id="zAxe"> Axe orienté vers l'arrière</label></div>
       </div>
       <div class="readout">
-        <div class="rd"><div class="k">Période orbitale T</div><div class="v"><span id="gT">0</span> h</div></div>
-        <div class="rd"><div class="k">Période Terre</div><div class="v">23,93 h</div></div>
-        <div class="rd em" style="grid-column:1/-1"><div class="k">Vu du sol</div><div class="v" id="gres">—</div></div>
+        <div class="rd"><div class="k">v sur l'axe</div><div class="v"><span id="zV">0</span> m/s</div></div>
+        <div class="rd"><div class="k">a sur l'axe</div><div class="v"><span id="zAr">0</span> m/s²</div></div>
+        <div class="rd em"><div class="k">Le zem</div><div class="v" id="zRes">—</div></div>
       </div>
-      <div class="simform" id="gform"></div>
-      <div class="plain" id="gplain"></div>
-      <p class="dans-le-pack">📘 Pourquoi cette altitude précise&nbsp;: l'explication complète est dans le pack.</p>
+      <div class="simform" id="zForm"></div>
+      <p class="dans-le-pack">📘 Dans le pack, chaque chapitre est expliqué comme ça&nbsp;: pas à pas, avec des chiffres et une simulation.</p>
     </div>
   </div>
-  <p class="simu-caption">↑ 2 simulations sur 38. Les 9 chapitres du pack sont faits comme ça.</p>
+  <p class="simu-caption">↑ 1 simulation sur 38. Les 9 chapitres du pack sont faits comme ça.</p>
+  <script>
+  (function(){
+    var cv=document.getElementById('cvZem'); if(!cv) return;
+    var ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+    var sA=document.getElementById('zA'), cA=document.getElementById('zAxe');
+    var t0=performance.now(), V0=12, CYCLE=3;
+    function arrow(x0,y,x1,col,lab){ if(Math.abs(x1-x0)<4) return; var s=x1>x0?1:-1;
+      ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=7; ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1-s*14,y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x1-s*22,y-13); ctx.lineTo(x1-s*22,y+13); ctx.fill();
+      ctx.font='bold 26px IBM Plex Sans, sans-serif'; ctx.fillText(lab,(x0+x1)/2-8,y-16); }
+    function zem(x,y){ ctx.lineWidth=6; ctx.strokeStyle='#333';
+      ctx.beginPath(); ctx.arc(x-45,y+32,20,0,7); ctx.stroke(); ctx.beginPath(); ctx.arc(x+45,y+32,20,0,7); ctx.stroke();
+      ctx.fillStyle='#e0a93a'; ctx.beginPath(); ctx.moveTo(x-55,y+18); ctx.lineTo(x+55,y+18); ctx.lineTo(x+30,y-8); ctx.lineTo(x-35,y-8); ctx.fill();
+      ctx.strokeStyle='#333'; ctx.beginPath(); ctx.moveTo(x+30,y-8); ctx.lineTo(x+52,y-38); ctx.stroke();
+      ctx.fillStyle='#4f7fc4'; ctx.fillRect(x-28,y-52,24,46); ctx.fillStyle='#5a3b2a'; ctx.beginPath(); ctx.arc(x-16,y-66,14,0,7); ctx.fill(); }
+    function fmt(n){ return (n>0?'+':n<0?'−':'')+Math.abs(n).toFixed(1).replace('.',','); }
+    function frame(now){
+      var a=+sA.value, back=cA.checked, sg=back?-1:1;
+      document.getElementById('zAv').textContent=a;
+      var cyc=a<0? V0/-a+0.5 : CYCLE;
+      var t=((now-t0)/1000)%cyc, tm=a<0?Math.min(t,V0/-a):t;
+      var v=Math.max(0,V0+a*tm), x=V0*tm+0.5*a*tm*tm;
+      var xmax=a<0? V0*V0/(-2*a) : V0*CYCLE+0.5*a*CYCLE*CYCLE;
+      var px=80+x/xmax*(W-170);
+      ctx.clearRect(0,0,W,H);
+      var road=230; ctx.strokeStyle='#9aa7b8'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(20,road+55); ctx.lineTo(W-20,road+55); ctx.stroke();
+      /* axe */
+      var ay=road+95; ctx.strokeStyle='#55606e'; ctx.fillStyle='#55606e'; ctx.lineWidth=3;
+      var ax0=back?W-40:40, ax1=back?40:W-40, s=back?-1:1;
+      ctx.beginPath(); ctx.moveTo(ax0,ay); ctx.lineTo(ax1,ay); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ax1,ay); ctx.lineTo(ax1-s*18,ay-10); ctx.lineTo(ax1-s*18,ay+10); ctx.fill();
+      ctx.font='24px IBM Plex Sans, sans-serif'; ctx.fillText('axe x',back?50:W-100,ay-12);
+      zem(px,road);
+      if(v>0.05) arrow(px-20,road-110,px-20+v*12,'#2e9e5b','v');
+      if(v>0.05 && a!==0) arrow(px-20,road-165,px-20+a*22,'#d9534f','a');
+      var vr=sg*v, ar=(v>0.05?sg*a:0);
+      document.getElementById('zV').textContent=fmt(vr);
+      document.getElementById('zAr').textContent=fmt(ar);
+      var res= v<=0.05?'à l\'arrêt':(a===0?'vitesse constante':(vr*ar>0?'ACCÉLÈRE':'FREINE'));
+      var r=document.getElementById('zRes'); r.textContent=res; r.style.color=res==='FREINE'?'#d9534f':res==='ACCÉLÈRE'?'#2e9e5b':'';
+      document.getElementById('zForm').innerHTML= v<=0.05?'Le zem est arrêté&nbsp;: la simulation redémarre.' :
+        'v = <b>'+fmt(vr)+'</b> m/s &nbsp;·&nbsp; a = <b>'+fmt(ar)+'</b> m/s² &nbsp;→&nbsp; '+(a===0?'a = 0&nbsp;: rien ne change':(vr*ar>0?'même signe → il accélère':'signes contraires → il freine'));
+      requestAnimationFrame(frame);
+    }
+    sA.addEventListener('input',function(){t0=performance.now();}); cA.addEventListener('change',function(){});
+    requestAnimationFrame(frame);
+  })();
+  </script>
 
   <div class="cta-center">
     <a href="#offre" class="cta-btn">Profiter de l'offre →</a>
