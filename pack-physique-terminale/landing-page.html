@@ -364,6 +364,24 @@
   html{overflow-x:hidden;}
   #fonctionnalites .preuve-bloc > div[style*="grid"]{grid-template-columns:repeat(3,1fr)!important;gap:6px!important;}
   #fonctionnalites figcaption{font-size:11px!important;line-height:1.3;}
+  /* ---------- Bloc « simulation gratuite sur WhatsApp » (contact facultatif) ---------- */
+  #whatsapp{margin:36px 0;}
+  .wa-bloc{max-width:560px;margin:0 auto;padding:28px 22px;border-radius:22px;text-align:center;
+    background:linear-gradient(135deg,rgba(63,191,131,.12),rgba(255,255,255,.04));border:1px solid rgba(63,191,131,.35);}
+  .wa-sous{opacity:.9;margin:0 0 18px;line-height:1.5;}
+  #wa-form{display:flex;flex-direction:column;gap:12px;text-align:left;position:relative;}
+  #wa-form input[type=text],#wa-form input[type=tel]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.07);color:var(--blanc);font-size:16px;font-family:inherit;}
+  #wa-form input::placeholder{color:rgba(237,230,250,.6);}
+  #wa-form input:focus{outline:2px solid var(--dore);outline-offset:1px;}
+  .wa-accord{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;opacity:.9;cursor:pointer;}
+  .wa-accord input{margin-top:3px;flex:0 0 auto;width:18px;height:18px;}
+  .wa-bouton{width:100%;text-align:center;margin-top:4px;padding:16px 20px;}
+  .wa-bouton[disabled]{opacity:.6;cursor:wait;}
+  #wa-msg{min-height:20px;margin:6px 0 0;font-size:14.5px;line-height:1.45;text-align:center;}
+  #wa-msg.ok{color:var(--vert-ok);font-weight:600;}
+  #wa-msg.err{color:#ffb4a5;}
+  #wa-msg a{color:var(--dore);font-weight:700;}
 
   /* ---------- Guide, cases "J'ai compris", questions (captures réelles) ---------- */
   .shots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 4px;}
@@ -902,6 +920,21 @@ main code{white-space:normal;overflow-wrap:break-word}
     
   </section>
 
+  <section id="whatsapp">
+    <div class="wa-bloc">
+      <h2 class="section-title" style="margin-bottom:8px;">Pas encore prêt(e) ? Reçois la simulation gratuite sur WhatsApp</h2>
+      <p class="wa-sous">On t'envoie la simulation du zem et on répond à tes questions de physique, par message, sans engagement.</p>
+      <form id="wa-form" novalidate>
+        <input type="text" name="nom" placeholder="Ton prénom" autocomplete="given-name" maxlength="30" aria-label="Ton prénom">
+        <input type="tel" name="tel" placeholder="Ton numéro WhatsApp" autocomplete="tel" inputmode="tel" maxlength="22" aria-label="Ton numéro WhatsApp">
+        <input type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+        <label class="wa-accord"><input type="checkbox" name="accord"> J'accepte qu'on m'écrive sur WhatsApp à propos de la simulation et du pack. Je peux dire STOP à tout moment.</label>
+        <button type="submit" class="cta-btn wa-bouton">Recevoir la simulation sur WhatsApp</button>
+        <p id="wa-msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
   <section id="offre">
     <div class="cta-final">
       <h2 class="section-title" style="margin-bottom:6px;">Prêt(e) à enfin comprendre, pas juste apprendre ?</h2>
@@ -912,7 +945,7 @@ main code{white-space:normal;overflow-wrap:break-word}
       </div>
       <p style="font-size:14px;color:var(--dore-clair);margin:0 0 18px;" id="promo-code-line">✅ Le prix de lancement est déjà appliqué : <strong>aucun code à taper</strong>.</p>
       <a href="https://prism-france.mymaketou.shop/fr/products/comprendre-les-notions-de-physique-en-terminale/checkout" class="cta-btn" id="cta-final-btn">Profiter de l'offre →</a>
-      <p style="font-size:14px;margin:14px 0 0;">Accès immédiat après paiement, sur téléphone ou ordinateur. Un souci ? On t'aide sur WhatsApp.</p>
+      <p style="font-size:14px;margin:14px 0 0;">Accès immédiat après paiement, sur téléphone ou ordinateur. Ton pack t'arrive par email : si tu ne le vois pas, regarde dans Spam ou Promotions. Un souci ? On t'aide sur WhatsApp.</p>
       <p style="font-size:13px;opacity:.7;margin-top:16px;">Paiement sécurisé via Maketou — Mobile Money, carte bancaire</p>
       <p style="font-size:14px;margin-top:10px;"><a href="https://wa.me/2290193388631?text=Bonjour%2C%20j%27ai%20un%20souci%20pour%20payer%20le%20pack%20de%20physique%20Terminale.%20" target="_blank" rel="noopener" style="color:#25D366;font-weight:600;">💬 Un souci pour payer ? Écris-nous sur WhatsApp, on t'aide tout de suite</a></p>
     </div>
@@ -1318,6 +1351,49 @@ main code{white-space:normal;overflow-wrap:break-word}
   })();
 </script>
 
+<script>
+  // Bloc « simulation gratuite sur WhatsApp » : envoie prénom + numéro (avec accord) au Web App, qui prévient Elysée.
+  (function(){
+    var form = document.getElementById('wa-form');
+    if(!form) return;
+    var APP = 'https://script.google.com/macros/s/AKfycbzCCnm4FV2TYd1c00YKqoVrpRUEBRc-UteVQOtHefZNEyKeH8StrKlVSCdimESLNFaO2A/exec';
+    var WA_DIRECT = 'https://wa.me/2290193388631?text=' + encodeURIComponent('Bonjour, je veux la simulation gratuite du pack de physique Terminale.');
+    var msg = document.getElementById('wa-msg');
+    var bouton = form.querySelector('button[type=submit]');
+    function dire(html, classe){ msg.className = classe || ''; msg.innerHTML = html; }
+    function chiffres(s){ return String(s||'').replace(/\D/g,''); }
+    function source(){
+      try{
+        var q = new URLSearchParams(location.search);
+        return (q.get('utm_source') || 'direct') + (q.get('utm_medium') ? '|' + q.get('utm_medium') : '');
+      }catch(e){ return 'direct'; }
+    }
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var nom = form.nom.value.trim(), tel = form.tel.value.trim();
+      if(nom.length < 2){ dire('Écris ton prénom, s\'il te plaît.', 'err'); form.nom.focus(); return; }
+      var n = chiffres(tel);
+      if(n.length < 8){ dire('Vérifie ton numéro WhatsApp (au moins 8 chiffres).', 'err'); form.tel.focus(); return; }
+      if(!form.accord.checked){ dire('Coche la case pour qu\'on puisse t\'écrire sur WhatsApp.', 'err'); return; }
+      bouton.disabled = true; dire('Envoi en cours…', '');
+      var url = APP + '?action=lead&nom=' + encodeURIComponent(nom) + '&tel=' + encodeURIComponent(tel) +
+        '&accord=1&site=' + encodeURIComponent(form.site.value) + '&src=' + encodeURIComponent(source());
+      fetch(url).then(function(r){ return r.json(); }).then(function(d){
+        if(d && d.ok){
+          try{ window.clarity && clarity('event','lead_whatsapp'); }catch(e){}
+          form.querySelectorAll('input,button').forEach(function(x){ x.style.display='none'; });
+          dire('Merci ' + nom.split(' ')[0].replace(/[<>&"]/g,'') + ' ! On t\'écrit sur WhatsApp dans les prochaines heures. Pour aller plus vite : <a href="' + WA_DIRECT + '" target="_blank" rel="noopener">écris-nous directement</a>.', 'ok');
+        } else {
+          bouton.disabled = false;
+          dire('Ça n\'a pas marché. <a href="' + WA_DIRECT + '" target="_blank" rel="noopener">Écris-nous directement sur WhatsApp</a>, on te répond.', 'err');
+        }
+      }).catch(function(){
+        bouton.disabled = false;
+        dire('Pas de connexion. <a href="' + WA_DIRECT + '" target="_blank" rel="noopener">Écris-nous directement sur WhatsApp</a>.', 'err');
+      });
+    });
+  })();
+</script>
 
 <div id="lightbox" role="dialog" aria-label="Agrandissement de la capture"><img alt=""></div>
 <script>
