@@ -490,6 +490,13 @@
     10%{opacity:var(--o)}85%{opacity:var(--o)}100%{transform:translateY(-115vh) rotate(6deg);opacity:0}}
   @media (prefers-reduced-motion:reduce){#phys-float{display:none;}}
 </style>
+<!-- Meta Pixel : ensemble de données « Prism Éducation Event Data » (ID 1716387339476694) -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1716387339476694');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1716387339476694&ev=PageView&noscript=1"></noscript>
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -1381,6 +1388,7 @@ main code{white-space:normal;overflow-wrap:break-word}
       fetch(url).then(function(r){ return r.json(); }).then(function(d){
         if(d && d.ok){
           try{ window.clarity && clarity('event','lead_whatsapp'); }catch(e){}
+          try{ window.prismLead && window.prismLead(); }catch(e){}
           form.querySelectorAll('input,button').forEach(function(x){ x.style.display='none'; });
           dire('Merci ' + nom.split(' ')[0].replace(/[<>&"]/g,'') + ' ! On t\'écrit sur WhatsApp dans les prochaines heures. Pour aller plus vite : <a href="' + WA_DIRECT + '" target="_blank" rel="noopener">écris-nous directement</a>.', 'ok');
         } else {
@@ -1392,6 +1400,28 @@ main code{white-space:normal;overflow-wrap:break-word}
         dire('Pas de connexion. <a href="' + WA_DIRECT + '" target="_blank" rel="noopener">Écris-nous directement sur WhatsApp</a>.', 'err');
       });
     });
+  })();
+</script>
+<script>
+  // Événements Meta Pixel (retargeting) : ViewContent (lecture réelle), InitiateCheckout (clic achat), Lead (contact WhatsApp).
+  (function(){
+    function px(nom, params){ try{ window.fbq && fbq('track', nom, params || {}); }catch(e){} }
+    var contenu = { content_name:'Pack Physique Terminale', content_type:'product', content_ids:['pack-physique-terminale'], value:2500, currency:'XOF' };
+    var vu = false;
+    function lecture(){ if(vu) return; vu = true; px('ViewContent', contenu); }
+    // ViewContent = visiteur qui lit vraiment : 25 % de la page ou 20 secondes
+    addEventListener('scroll', function(){
+      var h = document.documentElement;
+      if((scrollY + innerHeight) / h.scrollHeight >= .25) lecture();
+    }, {passive:true});
+    setTimeout(lecture, 20000);
+    // InitiateCheckout = clic sur un bouton d'achat (une seule fois par page)
+    var clique = false;
+    document.querySelectorAll('a[href*="checkout"]').forEach(function(a){
+      a.addEventListener('click', function(){ if(clique) return; clique = true; px('InitiateCheckout', contenu); });
+    });
+    // Lead = contact WhatsApp envoyé (l'événement est déclenché par le bloc #whatsapp)
+    window.prismLead = function(){ px('Lead', { content_name:'Simulation gratuite WhatsApp' }); };
   })();
 </script>
 
