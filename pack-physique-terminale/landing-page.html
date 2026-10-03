@@ -1656,6 +1656,15 @@ main code{white-space:normal;overflow-wrap:break-word}
   }catch(e){}
 })();
 </script>
+<script>/* SIMS-SEULES */
+(function(){
+  if(!/[?&]a=parent/.test(location.search)) return;
+  var z=document.getElementById('zone-simulation-interactive'); if(!z) return;
+  Array.prototype.forEach.call(z.children,function(e){
+    if(e.matches('p:not(.zsi-kicker), .card, .formule')) e.style.display='none';
+  });
+})();
+</script>
 
 <div id="lightbox" role="dialog" aria-label="Agrandissement de la capture"><img alt=""></div>
 <script>
