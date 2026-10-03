@@ -523,7 +523,7 @@ main code{white-space:normal;overflow-wrap:break-word}
   <header class="hero">
     <div class="badge">★ PRISM ÉDUCATION — PACK PHYSIQUE TERMINALE</div>
     <h1 class="title">Le programme de physique Terminale, mais enfin <em>visible</em></h1>
-    <p class="hook">Ton zem freine mais son accélération est positive&nbsp;? La réponse complète est juste en dessous, avec une simulation du pack.</p>
+    <p class="hook">Teste le pack avant de décider&nbsp;: deux exercices du programme, avec leur simulation, juste en dessous.</p>
   </header>
 
   <section id="probleme">
@@ -551,9 +551,10 @@ main code{white-space:normal;overflow-wrap:break-word}
        + explication en bas) une fois fourni. Ne pas modifier l'id.
        ================================================================ -->
   <div id="zone-simulation-interactive">
-    <p class="zsi-kicker">Extrait du pack — mécanique</p>
+    <p style="margin:0 0 1.2rem">Voici deux exercices tirés de deux chapitres différents du pack. On les a choisis parce que beaucoup d'élèves de Terminale bloquent dessus. Pas besoin d'avoir vu nos vidéos&nbsp;: tout est expliqué ici.</p>
+    <p class="zsi-kicker" id="zem">Exercice 1 · Mécanique</p>
     <h3 style="font-size:1.25rem">Ton zem freine… mais son accélération est positive&nbsp;?</h3>
-    <p>Un exercice qui bloque beaucoup d'élèves de Terminale. Voici l'explication complète, avec la simulation du pack.</p>
+    <p><b>Le piège</b>&nbsp;: croire qu'une accélération positive veut dire que le zem accélère. Voici l'explication complète, avec la simulation du pack.</p>
 
     <div class="card">
       <p><strong>1. Le signe d'une vitesse dit seulement «&nbsp;dans quel sens&nbsp;».</strong><br>
@@ -597,8 +598,52 @@ main code{white-space:normal;overflow-wrap:break-word}
       <div class="simform" id="zForm"></div>
       <p class="dans-le-pack">📘 Dans le pack, chaque chapitre est expliqué comme ça&nbsp;: pas à pas, avec des chiffres et une simulation.</p>
     </div>
+
+    <hr style="border:0;border-top:1px solid rgba(0,0,0,.12);margin:2rem 0 1.4rem">
+    <p class="zsi-kicker" id="lentille">Exercice 2 · Optique</p>
+    <h3 style="font-size:1.25rem">Comment la position de la lentille et la distance focale changent l'image&nbsp;?</h3>
+    <p><b>Le piège</b>&nbsp;: ne pas voir que l'image se déplace, grossit et se renverse quand l'objet bouge. Voici l'explication complète, avec la simulation du pack.</p>
+
+    <div class="card">
+      <p><strong>1. Une lentille convergente fabrique une image de l'objet.</strong><br>
+      L'objet est à gauche, la lumière va de gauche à droite. On mesure les distances à partir de la lentille, dans le sens de la lumière&nbsp;: un objet placé à gauche a donc une distance <b>négative</b>.</p>
+      <p style="margin:0"><strong>2. Les lettres de la formule.</strong><br>
+      <code>OA</code>&nbsp;: position de l'objet par rapport à la lentille (négative ici). <code>OA'</code>&nbsp;: position de l'image. <code>f'</code>&nbsp;: la distance focale, c'est-à-dire la «&nbsp;puissance&nbsp;» de la lentille&nbsp;: plus elle est petite, plus la lentille dévie la lumière. <code>γ</code> (gamma)&nbsp;: le grandissement, taille de l'image divisée par taille de l'objet&nbsp;; un γ négatif veut dire image renversée.</p>
+    </div>
+
+    <div class="formule" style="text-align:center;white-space:normal;overflow:visible"><b>1/OA' − 1/OA = 1/f'</b>&nbsp;&nbsp;et&nbsp;&nbsp;<b>γ = OA'/OA</b></div>
+
+    <div class="card">
+      <p><strong>3. Ton exercice, avec des chiffres.</strong><br>
+      Prends <code>f' = 5&nbsp;cm</code> et un objet à 15&nbsp;cm devant la lentille&nbsp;: <code>OA = −15&nbsp;cm</code>.<br>
+      <code>1/OA' = 1/5 + 1/(−15) = 2/15</code>, donc <code>OA' = 7,5&nbsp;cm</code> et <code>γ = 7,5/(−15) = −0,5</code>&nbsp;: image à droite, <b>plus petite</b> et <b>renversée</b>.</p>
+      <p style="margin:0">Rapproche l'objet à 10&nbsp;cm&nbsp;: <code>OA' = 10&nbsp;cm</code>, <code>γ = −1</code> (même taille). À 7&nbsp;cm&nbsp;: <code>OA' = 17,5&nbsp;cm</code>, <code>γ = −2,5</code>&nbsp;: l'image est plus grande et plus loin. <b>Plus l'objet s'approche du foyer, plus l'image grossit et s'éloigne.</b> Quand l'objet est exactement à <code>f'</code>, l'image part à l'infini&nbsp;; plus près que <code>f'</code>, on obtient une image droite et agrandie (l'effet loupe).</p>
+    </div>
+
+    <div class="sim" id="simLentille">
+      <h3>Vérifie-le toi-même&nbsp;: rapproche l'objet de la lentille</h3>
+      <p class="touch-hint">👉 Bouge la distance de l'objet, puis change la focale.</p>
+      <canvas id="cvLent" width="560" height="340"></canvas>
+      <div class="legend">
+        <span><i style="background:#2e9e5b"></i>objet</span>
+        <span><i style="background:#d9534f"></i>image</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl"><label>Distance de l'objet à la lentille <b><span id="lD">15</span> cm</b></label>
+          <input type="range" id="lDs" min="2" max="20" step="0.5" value="15"></div>
+        <div class="ctrl"><label>Distance focale f' <b><span id="lF">5</span> cm</b></label>
+          <input type="range" id="lFs" min="3" max="8" step="0.5" value="5"></div>
+      </div>
+      <div class="readout">
+        <div class="rd"><div class="k">OA'</div><div class="v" id="lOAp">—</div></div>
+        <div class="rd"><div class="k">γ</div><div class="v" id="lG">—</div></div>
+        <div class="rd em"><div class="k">Image</div><div class="v" id="lRes">—</div></div>
+      </div>
+      <div class="simform" id="lForm"></div>
+      <p class="dans-le-pack">📘 Dans le pack, chaque chapitre est expliqué comme ça&nbsp;: pas à pas, avec des chiffres et une simulation.</p>
+    </div>
   </div>
-  <p class="simu-caption">↑ 1 simulation sur 38. Les 9 chapitres du pack sont faits comme ça.</p>
+  <p class="simu-caption">↑ 2 simulations sur 38. Les 9 chapitres du pack sont faits comme ça.</p>
   <script>
   (function(){
     var cv=document.getElementById('cvZem'); if(!cv) return;
@@ -645,6 +690,54 @@ main code{white-space:normal;overflow-wrap:break-word}
     }
     sA.addEventListener('input',function(){t0=performance.now();}); cA.addEventListener('change',function(){});
     requestAnimationFrame(frame);
+  })();
+  </script>
+
+  <script>
+  (function(){
+    var cv=document.getElementById('cvLent'); if(!cv) return;
+    var ctx=cv.getContext('2d'), W=cv.width, AY=175, LX=190, S=8, SH=14, HO=3.5, MAXH=130;
+    var sD=document.getElementById('lDs'), sF=document.getElementById('lFs');
+    function f1(n){ return n.toFixed(1).replace('.',','); }
+    function f0(n){ return f1(n).replace(',0',''); }
+    function line(x0,y0,x1,y1,col,dash){ ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.setLineDash(dash||[]); ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); ctx.setLineDash([]); }
+    function arrow(x,y0,y1,col,dash){ if(Math.abs(y1-y0)<4) return; var s=y1<y0?-1:1;
+      line(x,y0,x,y1-s*14*-1*-1,col,dash); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x,y1); ctx.lineTo(x-9,y1-s*16); ctx.lineTo(x+9,y1-s*16); ctx.fill(); }
+    function clampH(h){ return Math.max(-MAXH,Math.min(MAXH,h)); }
+    function draw(){
+      var d=+sD.value, f=+sF.value;
+      document.getElementById('lD').textContent=f0(d); document.getElementById('lF').textContent=f0(f);
+      ctx.clearRect(0,0,W,cv.height);
+      line(10,AY,W-10,AY,'#9aa7b8');
+      ctx.font='bold 20px IBM Plex Sans, sans-serif'; ctx.fillStyle='#b8860b';
+      [[-f,'F'],[f,"F'"]].forEach(function(p){ var x=LX+p[0]*S; line(x,AY-8,x,AY+8,'#b8860b'); ctx.fillText(p[1],x-8,AY+30); });
+      ctx.strokeStyle='#4f7fc4'; ctx.lineWidth=6; ctx.beginPath(); ctx.ellipse(LX,AY,12,120,0,0,7); ctx.stroke();
+      var xo=LX-d*S, ho=HO*SH, yo=AY-ho;
+      arrow(xo,AY,yo,'#2e9e5b');
+      var den=1/f-1/d, inf=Math.abs(den)<1e-6, oap=inf?0:1/den, g=inf?0:oap/(-d), res='';
+      var yF=function(x){ return yo+(AY-yo)/(f*S)*(x-LX); };            /* rayon parallèle réfracté vers F' */
+      var yC=function(x){ return AY+(AY-yo)/(LX-xo)*(x-LX); };          /* rayon central non dévié */
+      line(xo,yo,LX,yo,'#e0a93a'); line(xo,yo,LX,AY,'#e0a93a');
+      if(inf){ line(LX,yo,W-10,yF(W-10),'#e0a93a'); line(LX,AY,W-10,yC(W-10),'#e0a93a'); res="à l'infini"; }
+      else if(oap>0){
+        var xi=Math.min(LX+oap*S,W-22), yi=AY-clampH(g*ho);
+        line(LX,yo,xi,yi,'#e0a93a'); line(LX,AY,xi,yi,'#e0a93a');
+        arrow(xi,AY,yi,'#d9534f');
+        res=(Math.abs(g)<0.98?'plus petite':(Math.abs(g)>1.02?'plus grande':'même taille'))+', renversée'+(LX+oap*S>W-22?' (très loin)':'');
+      } else {
+        var xv=LX+oap*S, yv=AY-clampH(g*ho);
+        line(LX,yo,W-10,yF(W-10),'#e0a93a'); line(LX,AY,W-10,yC(W-10),'#e0a93a');
+        line(LX,yo,xv,yv,'#d9534f',[6,5]); line(LX,AY,xv,yv,'#d9534f',[6,5]);
+        arrow(xv,AY,yv,'#d9534f',[6,5]);
+        res='virtuelle, droite, agrandie';
+      }
+      document.getElementById('lOAp').textContent=inf?'∞':f1(oap)+' cm';
+      document.getElementById('lG').textContent=inf?'—':(g>0?'+':'−')+f1(Math.abs(g));
+      document.getElementById('lRes').textContent=res;
+      document.getElementById('lForm').innerHTML= inf ? "L'objet est sur le foyer&nbsp;: l'image part à l'infini." :
+        "1/OA' = 1/"+f0(f)+" − 1/"+f0(d)+" &nbsp;→&nbsp; OA' = <b>"+f1(oap)+"</b> cm &nbsp;·&nbsp; γ = <b>"+(g>0?'+':'−')+f1(Math.abs(g))+"</b>";
+    }
+    sD.addEventListener('input',draw); sF.addEventListener('input',draw); draw();
   })();
   </script>
 
