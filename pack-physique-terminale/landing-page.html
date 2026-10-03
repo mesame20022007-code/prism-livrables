@@ -1518,6 +1518,34 @@ main code{white-space:normal;overflow-wrap:break-word}
     window.prismLead = function(){ px('Lead', { content_name:'Simulation gratuite WhatsApp' }); };
   })();
 </script>
+<script>/* VARIANTE-PARENT */
+(function(){
+  var q=location.search+location.hash; if(!/[?&]a=parent/.test(q)) return;
+  function $(x){return document.querySelector(x);}
+  function T(x,t){var e=$(x); if(e) e.innerHTML=t;}
+  T('h1.title','Votre enfant en Terminale&nbsp;: la physique enfin <em>expliquée</em>, pas à pas');
+  T('.hero .hook','Voyez par vous-même ce que votre enfant aura&nbsp;: deux exercices du programme, avec leur simulation, juste en dessous.');
+  T('#probleme .section-title','Votre enfant se donne à fond, mais la physique lui résiste');
+  var pc=document.querySelectorAll('#probleme .courte');
+  if(pc[0]) pc[0].innerHTML="Un professeur particulier coûte cher et ne peut pas être là chaque soir. Quand une notion n'est pas comprise en classe, la lacune s'installe pendant que les autres avancent.";
+  if(pc[1]) pc[1].innerHTML="<strong>Votre enfant n'est pas moins capable que les autres.</strong> Il lui manque une explication pas à pas, à son rythme.";
+  T('#cible .section-title','Ce pack est fait pour votre enfant si…');
+  var li=document.querySelectorAll('#cible li');
+  var L=['Il est en <strong>Terminale C ou D</strong> et doit comprendre sa physique, pas seulement la mémoriser.',
+         "Un professeur particulier n'est pas dans votre budget.",
+         "Il n'ose pas poser ses questions en classe.",
+         'Il a des cours à rattraper, seul, à son rythme.'];
+  for(var i=0;i<li.length&&i<L.length;i++) li[i].innerHTML=L[i];
+  var z=$('#zone-simulation-interactive > p'); if(z) z.innerHTML="Voici deux exercices tirés de deux chapitres du pack, tels que votre enfant les verra (ils s'adressent à lui). Beaucoup d'élèves de Terminale bloquent dessus. Tout est expliqué ici, sans rien avoir à installer.";
+  var c=$('#cible'); if(c){var d=document.createElement('section'); d.innerHTML='<h2 class="section-title">Ce que vous devez savoir, en tant que parent</h2><ul class="courte"><li><strong>Un seul paiement</strong>, par Mobile Money ou carte (via Maketou), sans abonnement.</li><li><strong>Accès permanent</strong>&nbsp;: le pack arrive par email, et votre enfant le garde jusqu\'à l\'examen et après.</li><li>Il s\'utilise <strong>sur téléphone</strong>, sans installer de logiciel.</li><li>Un guide illustré l\'aide à l\'ouvrir, et nous répondons sur WhatsApp en cas de souci.</li></ul>'; c.parentNode.insertBefore(d,c.nextSibling);}
+  var n=$('#comparatif p[style*="opacity:.6"]'); if(n) n.style.display='none';
+  T('#whatsapp .section-title','Pas encore décidé&nbsp;? Recevez la simulation gratuite sur WhatsApp');
+  T('#whatsapp .wa-sous',"Nous vous envoyons la simulation du zem et répondons à vos questions, par message, sans engagement.");
+  var f=$('#wa-form input[name=nom]'); if(f) f.placeholder='Votre prénom';
+  var t=$('#wa-form input[name=tel]'); if(t) t.placeholder='Votre numéro WhatsApp';
+  try{ if(window.fbq) fbq('trackCustom','VueParent'); }catch(e){}
+})();
+</script>
 
 <div id="lightbox" role="dialog" aria-label="Agrandissement de la capture"><img alt=""></div>
 <script>
