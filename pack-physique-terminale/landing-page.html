@@ -1613,6 +1613,49 @@ main code{white-space:normal;overflow-wrap:break-word}
   maj(); setInterval(maj, 30000);
 })();
 </script>
+<script>/* PARENT-COURT */
+(function(){
+  /* 1) tous : connexion anticipée à la page de paiement + retour visuel au clic */
+  try{
+    var l=document.createElement('link'); l.rel='preconnect'; l.href='https://prism-france.mymaketou.shop'; l.crossOrigin='anonymous'; document.head.appendChild(l);
+    var d=document.createElement('link'); d.rel='dns-prefetch'; d.href='https://prism-france.mymaketou.shop'; document.head.appendChild(d);
+    document.addEventListener('click',function(e){
+      var a=e.target&&e.target.closest&&e.target.closest('a[href*="checkout"]'); if(!a||a.dataset.go)return;
+      a.dataset.go=1; a.dataset.txt=a.innerHTML; a.innerHTML='Ouverture du paiement…'; a.style.opacity='.85';
+      setTimeout(function(){ a.innerHTML=a.dataset.txt; a.style.opacity=''; delete a.dataset.go; },8000);
+    },true);
+  }catch(e){}
+  /* 2) parents : version courte */
+  if(!/[?&]a=parent/.test(location.search)) return;
+  function hide(sel){ document.querySelectorAll(sel).forEach(function(e){ e.style.display='none'; }); }
+  hide('.brand-banner'); hide('.hero .badge'); hide('#cible'); hide('#guide');
+  var hk=document.querySelector('.hero .hook');
+  if(hk){
+    hk.innerHTML="Moins d'un élève sur deux réussit le BAC&nbsp;D (47,78&nbsp;% en 2026). Voyez comment votre enfant peut enfin comprendre sa physique&nbsp;: un exercice avec simulation, gratuit, juste en dessous.";
+    var w=document.createElement('div'); w.style.cssText='display:flex;justify-content:center;margin:18px 0 6px';
+    w.innerHTML='<a class="cta-btn" id="cta-sim" href="#zem">Essayer la simulation gratuite ↓</a>';
+    hk.parentNode.insertBefore(w, hk.nextSibling);
+  }
+})();
+</script>
+<script>/* RESEAU-VISITEURS */
+(function(){
+  try{
+    var TRACK='https://script.google.com/macros/s/AKfycbzCCnm4FV2TYd1c00YKqoVrpRUEBRc-UteVQOtHefZNEyKeH8StrKlVSCdimESLNFaO2A/exec';
+    var visit=sessionStorage.getItem('prism_physique_visit'); if(!visit) return;
+    function env(n){ n=String(n).replace(/[^a-z0-9_-]/gi,'').slice(0,40); new Image().src=TRACK+'?action=track&v='+encodeURIComponent(visit)+'&s='+encodeURIComponent(n); try{ window.clarity&&clarity('event',n);}catch(e){} }
+    var c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+    if(c){ env('net_'+(c.effectiveType||'inconnu')); if(c.saveData) env('net_econo_donnees'); if(c.downlink!=null) env('net_dl_'+Math.round(c.downlink*10)); }
+    else env('net_inconnu');
+    addEventListener('load',function(){ setTimeout(function(){
+      var n=performance.getEntriesByType('navigation')[0]; if(!n) return;
+      env('load_dcl_'+Math.min(30,Math.round(n.domContentLoadedEventEnd/1000)));
+      env('load_total_'+Math.min(30,Math.round(n.loadEventEnd/1000)));
+      var f=performance.getEntriesByName('first-contentful-paint')[0]; if(f) env('load_fcp_'+Math.min(30,Math.round(f.startTime/1000)));
+    },300); });
+  }catch(e){}
+})();
+</script>
 
 <div id="lightbox" role="dialog" aria-label="Agrandissement de la capture"><img alt=""></div>
 <script>
