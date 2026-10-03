@@ -1683,15 +1683,15 @@ main code{white-space:normal;overflow-wrap:break-word}
 <script>/* PARENT-APERCU */
 (function(){
   if(!/[?&]a=parent/.test(location.search)) return;
-  var zone=document.getElementById('zone-simulation-interactive'); if(!zone) return;
-  var d=document.createElement('div');
-  d.style.cssText='margin:.2rem auto .5rem;max-width:760px;padding:.7rem .9rem;border-left:4px solid #e0a93a;background:rgba(224,169,58,.12);border-radius:8px;font-size:.93rem;line-height:1.4;text-align:left';
-  d.innerHTML="<b>Ceci n'est qu'un aperçu.</b> Dans le pack, chaque simulation est présente et expliquée en profondeur&nbsp;: les formules sont décortiquées, et les notions qui font que les élèves ne comprennent pas sont reprises une à une, avec de nombreuses images d'illustration.<br><b>Nous vous offrons cet échantillon gratuit&nbsp;: faites-le essayer à votre enfant, puis demandez-lui si les cours en classe sont aussi détaillés que ces explications.</b>";
-  zone.parentNode.insertBefore(d, zone);
-  var c=zone.nextElementSibling; if(c&&!c.classList.contains('simu-caption')) c=null;
-  var w=document.createElement('div'); w.style.cssText='text-align:center;margin:.6rem 0 1rem';
-  w.innerHTML='<p style="margin:0 0 .4rem;font-size:.95rem">Vous voulez en essayer d&#39;autres avec votre enfant&nbsp;?</p><a class="cta-btn" href="#whatsapp">Recevoir d&#39;autres simulations gratuites sur WhatsApp</a>';
-  (c||zone).parentNode.insertBefore(w,(c||zone).nextSibling);
+  var zone=document.getElementById('zone-simulation-interactive'), wa=document.getElementById('whatsapp'); if(!zone||!wa) return;
+  var cap=zone.nextElementSibling; if(cap&&!cap.classList.contains('simu-caption')) cap=null;
+  var after=cap||zone;
+  after.parentNode.insertBefore(wa, after.nextSibling);
+  var t=wa.querySelector('.section-title'); if(t) t.innerHTML="Écrivez-nous, même avant de payer";
+  var s=wa.querySelector('.wa-sous');
+  if(s){ s.className='wa-sous pm'; s.style.fontSize='1.02rem';
+    s.innerHTML="<mark>Ceci n&#39;est qu&#39;un aperçu.</mark> Dans le pack, chaque simulation est expliquée en profondeur, les formules sont décortiquées, et les notions qui bloquent les élèves sont reprises une à une, avec de nombreuses images.<br><br><mark>Laissez votre numéro&nbsp;: nous vous envoyons un extrait gratuit du pack.</mark> Faites-le essayer à votre enfant, et demandez-lui si les cours en classe sont aussi détaillés.<br><br><mark>Budget serré&nbsp;? On s&#39;arrange selon votre budget.</mark>"; }
+  var b=wa.querySelector('.wa-bouton'); if(b) b.textContent='Recevoir un extrait gratuit sur WhatsApp';
 })();
 </script>
 <script>/* PARENT-MIN */
@@ -1708,9 +1708,10 @@ main code{white-space:normal;overflow-wrap:break-word}
   var tem=$('#temoignages'); if(!tem) return;
   var h=tem.querySelector('h2'); if(h) h.innerHTML='Ce qu\'en disent les élèves';
   var sub=tem.querySelector('.section-title + p'); if(sub) sub.style.display='none';
-  /* un seul bloc contact : formulaire + mention avant paiement / budget */
-  var w=$('#whatsapp .wa-sous');
-  if(w){ w.className='wa-sous pm'; w.style.fontSize='1.02rem'; w.innerHTML='<mark>Écrivez-nous, même avant de payer.</mark> Budget serré&nbsp;? Dites-nous combien&nbsp;: <mark>on s&#39;arrange selon votre budget</mark>. Laissez votre numéro&nbsp;: nous vous envoyons d&#39;autres simulations gratuites.'; }
+  /* mini-réponses (FAQ diluée) */
+  var q=document.createElement('section'); q.className='pm';
+  q.innerHTML='<ul><li><mark>Un seul paiement</mark> par Mobile Money ou carte, sans abonnement, accès à vie</li><li><mark>Payé mais rien reçu&nbsp;?</mark> Envoyez-nous la confirmation sur WhatsApp, on vous envoie le pack</li></ul>';
+  tem.parentNode.insertBefore(q,tem.nextSibling);
 })();
 </script>
 
