@@ -1665,6 +1665,21 @@ main code{white-space:normal;overflow-wrap:break-word}
   });
 })();
 </script>
+<script>/* PARENT-ORDRE */
+(function(){
+  if(!/[?&]a=parent/.test(location.search)) return;
+  var hero=document.querySelector('header.hero'), zone=document.getElementById('zone-simulation-interactive');
+  if(!hero||!zone) return;
+  var cap=zone.nextElementSibling; if(cap&&!cap.classList.contains('simu-caption')) cap=null;
+  hero.parentNode.insertBefore(zone, hero.nextSibling);
+  if(cap) hero.parentNode.insertBefore(cap, zone.nextSibling);
+  var h1=hero.querySelector('h1'); if(h1) h1.style.cssText='font-size:1.55rem;line-height:1.2;margin:.3rem 0 .5rem';
+  var hk=hero.querySelector('.hook'); if(hk){ hk.style.cssText='font-size:.98rem;margin:0 0 .4rem'; hk.innerHTML="Moins d'un élève sur deux réussit le BAC&nbsp;D (47,78&nbsp;%). Essayez, c'est gratuit&nbsp;:"; }
+  var b=document.getElementById('cta-sim'); if(b&&b.parentNode) b.parentNode.style.display='none';
+  hero.style.paddingBottom='.4rem'; hero.style.marginBottom='0';
+  zone.style.marginTop='.6rem';
+})();
+</script>
 
 <div id="lightbox" role="dialog" aria-label="Agrandissement de la capture"><img alt=""></div>
 <script>
