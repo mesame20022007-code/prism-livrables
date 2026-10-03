@@ -1694,6 +1694,33 @@ main code{white-space:normal;overflow-wrap:break-word}
   (c||zone).parentNode.insertBefore(w,(c||zone).nextSibling);
 })();
 </script>
+<script>/* PARENT-MIN */
+(function(){
+  if(!/[?&]a=parent/.test(location.search)) return;
+  var $=function(q){return document.querySelector(q);};
+  var st=document.createElement('style');
+  st.textContent='.pm mark{background:linear-gradient(transparent 35%,rgba(242,192,92,.75) 35%);color:inherit;padding:0 .12em;font-weight:700}.pm ul{list-style:none;padding:0;margin:.4rem 0}.pm li{padding:.45rem 0;font-size:1.02rem;line-height:1.4}.pm li:before{content:"✓ ";font-weight:700;color:#2e9e5b}.pm-card{max-width:640px;margin:0 auto;padding:1.1rem 1rem;border-radius:14px;text-align:center}.pm-card h3{margin:0 0 .5rem;font-size:1.25rem}.pm-card p{margin:.4rem 0;font-size:1.02rem;line-height:1.4}';
+  document.head.appendChild(st);
+  var wa=document.querySelector('#livraison .whatsapp-card');
+  /* masquer le superflu */
+  ['#probleme','#cible','#fonctionnalites','#livraison','#faq','#comparatif'].forEach(function(q){var e=$(q); if(e) e.style.display='none';});
+  Array.prototype.forEach.call(document.querySelectorAll('section'),function(e){var h=e.querySelector('h2'); if(h&&/Ce que vous devez savoir/.test(h.textContent)) e.style.display='none';});
+  var tem=$('#temoignages'); if(!tem) return;
+  /* l'essentiel */
+  var es=document.createElement('section'); es.className='pm';
+  es.innerHTML='<h2 class="section-title">Dans le pack</h2><ul>'+
+    '<li><mark>38 simulations</mark> + 38 exercices corrigés type bac + 133 quiz, pour les <mark>9 chapitres</mark> du programme</li>'+
+    '<li>Les <mark>formules expliquées</mark> et les notions qui bloquent, une par une, avec des images</li>'+
+    '<li><mark>Un seul paiement</mark>, sans abonnement, <mark>accès permanent</mark></li>'+
+    '<li>Sur <mark>téléphone</mark>, rien à installer, <mark>accès immédiat</mark> après paiement</li></ul>';
+  tem.parentNode.insertBefore(es,tem);
+  var h=tem.querySelector('h2'); if(h) h.innerHTML='Ce qu\'en disent les élèves';
+  var sub=tem.querySelector('.section-title + p'); if(sub) sub.style.display='none';
+  /* un seul bloc contact : formulaire + mention avant paiement / budget */
+  var w=$('#whatsapp .wa-sous');
+  if(w){ w.className='wa-sous pm'; w.style.fontSize='1.02rem'; w.innerHTML='<mark>Écrivez-nous, même avant de payer.</mark> Budget serré&nbsp;? Dites-nous combien&nbsp;: <mark>on s'arrange selon votre budget</mark>. Laissez votre numéro&nbsp;: nous vous envoyons d'autres simulations gratuites.'; }
+})();
+</script>
 
 <div id="lightbox" role="dialog" aria-label="Agrandissement de la capture"><img alt=""></div>
 <script>
