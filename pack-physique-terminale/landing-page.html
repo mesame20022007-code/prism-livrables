@@ -1703,17 +1703,9 @@ main code{white-space:normal;overflow-wrap:break-word}
   document.head.appendChild(st);
   var wa=document.querySelector('#livraison .whatsapp-card');
   /* masquer le superflu */
-  ['#probleme','#cible','#fonctionnalites','#livraison','#faq','#comparatif','#comprendre','#questions'].forEach(function(q){var e=$(q); if(e) e.style.display='none';});
+  ['#probleme','#cible','#livraison','#faq','#comparatif'].forEach(function(q){var e=$(q); if(e) e.style.display='none';});
   Array.prototype.forEach.call(document.querySelectorAll('section'),function(e){var h=e.querySelector('h2'); if(h&&/Ce que vous devez savoir/.test(h.textContent)) e.style.display='none';});
   var tem=$('#temoignages'); if(!tem) return;
-  /* l'essentiel */
-  var es=document.createElement('section'); es.className='pm';
-  es.innerHTML='<h2 class="section-title">Dans le pack</h2><ul>'+
-    '<li><mark>38 simulations</mark> + 38 exercices corrigés type bac + 133 quiz, pour les <mark>9 chapitres</mark> du programme</li>'+
-    '<li>Les <mark>formules expliquées</mark> et les notions qui bloquent, une par une, avec des images</li>'+
-    '<li><mark>Un seul paiement</mark>, sans abonnement, <mark>accès permanent</mark></li>'+
-    '<li>Sur <mark>téléphone</mark>, rien à installer, <mark>accès immédiat</mark> après paiement</li></ul>';
-  tem.parentNode.insertBefore(es,tem);
   var h=tem.querySelector('h2'); if(h) h.innerHTML='Ce qu\'en disent les élèves';
   var sub=tem.querySelector('.section-title + p'); if(sub) sub.style.display='none';
   /* un seul bloc contact : formulaire + mention avant paiement / budget */
