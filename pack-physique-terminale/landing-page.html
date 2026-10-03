@@ -1546,6 +1546,65 @@ main code{white-space:normal;overflow-wrap:break-word}
   try{ if(window.fbq) fbq('trackCustom','VueParent'); }catch(e){}
 })();
 </script>
+<script>/* SUIVI-FUNNEL */
+(function(){
+  try{
+    var TRACK='https://script.google.com/macros/s/AKfycbzCCnm4FV2TYd1c00YKqoVrpRUEBRc-UteVQOtHefZNEyKeH8StrKlVSCdimESLNFaO2A/exec';
+    var P=new URLSearchParams(location.search);
+    var cln=function(x,n){return String(x||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,n||12);};
+    var aud=P.get('a')==='parent'?'parent':'eleve';
+    var camp=cln(P.get('c')||P.get('utm_campaign'),14);
+    var src=sessionStorage.getItem('prism_physique_src')||cln(P.get('src'))||'direct';
+    var visit=sessionStorage.getItem('prism_physique_visit')||('v'+Date.now().toString(36)+Math.random().toString(36).slice(2,8));
+    var vu={};
+    function cl(){try{window.clarity&&clarity.apply(null,arguments);}catch(e){}}
+    function ev(nom){
+      if(vu[nom])return; vu[nom]=1;
+      var n=String(nom).replace(/[^a-z0-9_-]/gi,'').slice(0,40);
+      try{ new Image().src=TRACK+'?action=track&v='+encodeURIComponent(visit)+'&s='+encodeURIComponent(n); }catch(e){}
+      cl('event',n);
+    }
+    // contexte de la visite
+    cl('set','src',src); cl('set','audience',aud); if(camp) cl('set','campagne',camp);
+    ev('aud_'+aud); if(camp) ev('camp_'+camp); if(P.get('fbclid')) ev('fbclid_oui');
+    // les liens vers le paiement portent la source (utm), pour la retrouver côté Maketou
+    document.querySelectorAll('a[href*="checkout"]').forEach(function(a){
+      try{ var u=new URL(a.href); u.searchParams.set('utm_source',src); u.searchParams.set('utm_medium','landing'); u.searchParams.set('utm_campaign',camp||aud); a.href=u.toString(); }catch(e){}
+    });
+    // clics
+    document.addEventListener('click',function(e){
+      var t=e.target; if(!t||!t.closest)return;
+      if(t.closest('a[href*="checkout"]'))ev('ev_checkout');
+      else if(t.closest('.cta-btn'))ev('ev_cta');
+      if(t.closest('.faq-q'))ev('ev_faq');
+      if(t.closest('a[href*="wa.me"]'))ev('ev_wa_lien');
+      if(t.closest('.btn-preuve'))ev('ev_preuve');
+    },true);
+    // simulations utilisées
+    ['input','change'].forEach(function(k){ document.addEventListener(k,function(e){
+      var t=e.target; if(!t||!t.closest)return;
+      if(t.closest('#simZem'))ev('ev_sim_zem'); if(t.closest('#simLentille'))ev('ev_sim_lent');
+    },true); });
+    // formulaire WhatsApp : début puis envoi
+    document.addEventListener('focusin',function(e){ if(e.target&&e.target.closest&&e.target.closest('#wa-form'))ev('ev_wa_debut'); });
+    var oldLead=window.prismLead; window.prismLead=function(){ ev('ev_wa_envoi'); if(oldLead)oldLead(); };
+    // profondeur de lecture et temps réellement visible
+    var maxS=0;
+    function prof(){ var h=document.documentElement; var r=(scrollY+innerHeight)/h.scrollHeight*100; if(r>maxS)maxS=r;
+      [25,50,75,90].forEach(function(k){ if(r>=k)ev('ev_scroll'+k); }); }
+    addEventListener('scroll',prof,{passive:true});
+    var sec=0; setInterval(function(){ if(document.visibilityState!=='visible')return; sec++;
+      if(sec===10&&maxS<35)ev('ev_inactif10');
+      [15,30,60,120].forEach(function(k){ if(sec===k)ev('ev_t'+k); }); },1000);
+    // sortie : où l'a-t-on perdu ?
+    addEventListener('pagehide',function(){
+      var b=maxS<25?0:maxS<50?25:maxS<75?50:maxS<90?75:90;
+      var n='ev_sortie_s'+b;
+      try{ fetch(TRACK+'?action=track&v='+encodeURIComponent(visit)+'&s='+n,{mode:'no-cors',keepalive:true}); }catch(e){}
+    });
+  }catch(e){}
+})();
+</script>
 
 <div id="lightbox" role="dialog" aria-label="Agrandissement de la capture"><img alt=""></div>
 <script>
