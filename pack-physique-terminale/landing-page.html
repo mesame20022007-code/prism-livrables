@@ -1743,10 +1743,11 @@ main code{white-space:normal;overflow-wrap:break-word}
 <script>/* PARENT-VIDEO */
 (function(){
   var P = new URLSearchParams(location.search);
-  var VV = P.get('v'); if(P.get('a') !== 'parent' || (VV !== '2' && VV !== '3')) return;
+  var VV = P.get('v'); if(P.get('a') !== 'parent' || VV === 'old') return;   /* nouvelle structure par défaut ; ?v=old = ancienne ; ?v=3 = vidéo d'abord */
   var $ = function(q){ return document.querySelector(q); };
   var hero = $('header.hero'); if(!hero) return;
   var main = hero.parentNode;
+  try{ window.prismEv && window.prismEv(VV === '3' ? 'struct_video1er' : 'struct_preuves1er'); }catch(e){}
   function hide(q){ document.querySelectorAll(q).forEach(function(e){ e.style.display = 'none'; }); }
   ['#zone-simulation-interactive', '.simu-caption', '#fonctionnalites', '#comprendre', '#probleme', '#cible', '#livraison', '#comparatif'].forEach(hide);
 
