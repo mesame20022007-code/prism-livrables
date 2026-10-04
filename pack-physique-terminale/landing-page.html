@@ -1564,6 +1564,7 @@ main code{white-space:normal;overflow-wrap:break-word}
       try{ new Image().src=TRACK+'?action=track&v='+encodeURIComponent(visit)+'&s='+encodeURIComponent(n); }catch(e){}
       cl('event',n);
     }
+    window.prismEv=function(n){ ev(n); };
     // contexte de la visite
     cl('set','src',src); cl('set','audience',aud); if(camp) cl('set','campagne',camp);
     ev('aud_'+aud); if(camp) ev('camp_'+camp); if(P.get('fbclid')) ev('fbclid_oui');
@@ -1737,6 +1738,58 @@ main code{white-space:normal;overflow-wrap:break-word}
     });
   }
   appliquer(); setInterval(appliquer, 30000);
+})();
+</script>
+<script>/* PARENT-VIDEO */
+(function(){
+  var P = new URLSearchParams(location.search);
+  var VV = P.get('v'); if(P.get('a') !== 'parent' || (VV !== '2' && VV !== '3')) return;
+  var $ = function(q){ return document.querySelector(q); };
+  var hero = $('header.hero'); if(!hero) return;
+  var main = hero.parentNode;
+  function hide(q){ document.querySelectorAll(q).forEach(function(e){ e.style.display = 'none'; }); }
+  ['#zone-simulation-interactive', '.simu-caption', '#fonctionnalites', '#comprendre', '#probleme', '#cible', '#livraison', '#comparatif'].forEach(hide);
+
+  /* accroche courte */
+  var hk = hero.querySelector('.hook');
+  if(hk){ hk.style.cssText = 'font-size:1rem;margin:0 0 .4rem'; hk.innerHTML = "Moins d'un élève sur deux réussit le BAC&nbsp;D (47,78&nbsp;%). " + (VV === '3' ? "Voyez le pack en 40 secondes&nbsp;:" : "Des élèves ont déjà adopté ce pack&nbsp;: voyez ce qu'ils en disent."); }
+
+  /* preuves : témoignages + mini-réponses */
+  var tem = $('#temoignages');
+  if(tem){ var h = tem.querySelector('h2'); if(h) h.innerHTML = "Des élèves l'ont déjà adopté"; }
+  var mini = null;
+  document.querySelectorAll('section.pm').forEach(function(e){ if(/Payé mais rien reçu/.test(e.textContent)) mini = e; });
+
+  /* bloc vidéo (aperçu fixe + lecture au toucher, rien n'est téléchargé avant) */
+  var vb = document.createElement('section'); vb.id = 'video-pack';
+  vb.innerHTML = '<h2 class="section-title" style="margin-bottom:10px">Le pack en 40 secondes</h2>' +
+    '<div style="max-width:420px;margin:0 auto;border-radius:18px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.35)">' +
+    '<video id="vidPack" controls playsinline preload="none" poster="landing-video/poster.jpg" style="width:100%;display:block;background:#241238" aria-label="Présentation du Pack Physique Terminale en 40 secondes">' +
+    '<source src="landing-video/landing_v2_720.mp4" type="video/mp4"></video></div>' +
+    '<p style="text-align:center;font-size:.9rem;opacity:.75;margin:.6rem 0 0">Touchez pour lancer, avec le son.</p>';
+  var v = null;
+  /* suivi de lecture */
+  function ev(n){ try{ window.prismEv && window.prismEv(n); }catch(e){} try{ window.fbq && fbq('trackCustom', n); }catch(e){} }
+  setTimeout(function(){
+    v = document.getElementById('vidPack'); if(!v) return;
+    v.addEventListener('play', function(){ ev('ev_video_play'); });
+    v.addEventListener('timeupdate', function(){
+      if(!v.duration) return; var r = v.currentTime / v.duration * 100;
+      [25, 50, 75].forEach(function(k){ if(r >= k) ev('ev_video_' + k); });
+    });
+    v.addEventListener('ended', function(){ ev('ev_video_fin'); });
+  }, 0);
+
+  /* contact (extrait gratuit, avant paiement, budget) : déjà préparé par PARENT-APERCU */
+  var wa = $('#whatsapp'), q = $('#questions'), faq = $('#faq'), offre = $('#offre');
+
+  /* nouvel ordre : hero -> preuves -> vidéo -> contact -> paiement/livraison -> FAQ -> offre */
+  var after = hero;
+  (VV === '3' ? [vb, tem, mini, wa, q, faq, offre] : [tem, mini, vb, wa, q, faq, offre]).forEach(function(el){
+    if(!el) return;
+    el.style.display = '';
+    main.insertBefore(el, after.nextSibling); after = el;
+  });
 })();
 </script>
 
