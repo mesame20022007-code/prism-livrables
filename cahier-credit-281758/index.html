@@ -303,7 +303,7 @@ function home(){
     return s!=='paid';
   });
   var h='<header><div class="row"><div><h1>Mon cahier de crédit</h1><small>Tes données restent sur ce téléphone</small></div><button class="ic" data-a="settings" aria-label="Réglages">⚙</button></div></header><div class="wrap">';
-  h+='<div class="acts" style="margin-top:14px"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois à mes fournisseurs'+((S.owed||[]).length?' ('+F((S.owed||[]).reduce(function(t,o){return t+owedRest(o);},0))+')':'')+'</button></div><div id="instslot"></div>';
+  h+='<div class="acts" style="margin-top:14px"><button class="btn gold" data-a="dash">📊 Mon tableau de bord</button></div><div class="acts"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois à mes fournisseurs'+((S.owed||[]).length?' ('+F((S.owed||[]).reduce(function(t,o){return t+owedRest(o);},0))+')':'')+'</button></div><div id="instslot"></div>';
   h+='<div class="cards"><div class="c big"><span>On me doit en tout</span><b>'+F(due)+'</b></div>'+
      '<div class="c"><span>En retard ('+lateN+')</span><b style="color:var(--rouge)">'+F(lateT)+'</b></div>'+
      '<div class="c"><span>Récupéré ce mois</span><b style="color:var(--vert)">'+F(monthRecovered())+'</b></div></div>';
@@ -381,7 +381,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.5 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.6 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -395,6 +395,7 @@ function render(){
   else if(UI.view==='recon' && find(UI.id)) h=reconForm(find(UI.id));
   else if(UI.view==='reconview' && find(UI.id) && RC) h=reconView(find(UI.id));
   else if(UI.view==='owed') h=owedView();
+  else if(UI.view==='dash') h=dashView();
   else if(UI.view==='settings') h=settings();
   else {UI.view='home'; h=home();}
   a.innerHTML=h;
@@ -744,6 +745,34 @@ function copyText(t){
   fallback();
 }
 
+/* ---------- TABLEAU DE BORD (centre de contrôle) ---------- */
+function dashView(){
+  S.owed=S.owed||[];
+  var act=S.debts.filter(function(d){return rest(d)>0;}), due=0, lateT=0, ages=[0,0,0,0], risk=[], tot=0, got=0, given=0, mo=today().slice(0,7);
+  act.forEach(function(d){var r=rest(d), l=late(d); due+=r; if(l>0) lateT+=r; ages[l<=0?0:(l<=7?1:(l<=30?2:3))]+=r;
+    if(l>7 && !d.gphone && !d.phone2 && !d.where) risk.push(d);});
+  S.debts.forEach(function(d){tot+=+d.amount||0; got+=paid(d); if(String(d.date).slice(0,7)===mo) given+=+d.amount||0;});
+  var owed=0, owedSoon=[]; S.owed.forEach(function(o){var r=owedRest(o); owed+=r; if(r>0 && diff(today(),o.due)>=-3) owedSoon.push(o);});
+  var rec=monthRecovered(), rate=tot>0? Math.round(got/tot*100) : 0, todo=S.debts.filter(toRelaunch).sort(function(a,b){return rest(b)-rest(a);});
+  var top=act.slice().sort(function(a,b){return rest(b)-rest(a);}).slice(0,3), mx=Math.max(1,ages[0],ages[1],ages[2],ages[3]);
+  var h='<header><div class="row"><div><h1>Tableau de bord</h1><small>Ton argent d’un coup d’œil</small></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="cards"><div class="c big"><span>Les clients me doivent</span><b>'+F(due)+'</b></div><div class="c"><span>Je dois (fournisseurs)</span><b style="color:var(--rouge)">'+F(owed)+'</b></div><div class="c"><span>Reste net</span><b style="color:'+(due-owed>=0?'var(--vert)':'var(--rouge)')+'">'+F(due-owed)+'</b></div></div>';
+  h+='<h3>À faire aujourd’hui</h3>';
+  if(!todo.length && !owedSoon.length) h+='<div class="ok2">Rien d’urgent aujourd’hui. 👍</div>';
+  todo.slice(0,5).forEach(function(d){h+='<div class="debt '+status(d)+'"><div class="top"><div><div class="nm">'+esc(d.name)+'</div><div class="ob">'+chipText(d)+'</div></div><div class="am">'+F(rest(d))+'</div></div><div class="acts"><button class="btn wa" data-a="relance" data-id="'+d.id+'">Relancer</button><button class="btn sec" data-a="pay" data-id="'+d.id+'">Il a payé</button></div></div>';});
+  if(todo.length>5) h+='<p class="sub">+ '+(todo.length-5)+' autres à relancer (voir « À relancer » sur l’accueil).</p>';
+  owedSoon.forEach(function(o){h+='<div class="note warn">📦 À payer à <b>'+esc(o.name)+'</b> : '+F(owedRest(o))+' ('+(diff(today(),o.due)>0?'en retard':'avant le '+fr(o.due))+'). <button class="btn sec" style="margin-top:8px;width:100%" data-a="owed">Voir mes dettes fournisseurs</button></div>';});
+  h+='<h3>Ce mois-ci</h3><div class="cards"><div class="c"><span>Récupéré</span><b style="color:var(--vert)">'+F(rec)+'</b></div><div class="c"><span>Donné à crédit</span><b>'+F(given)+'</b></div><div class="c"><span>Déjà récupéré en tout</span><b>'+rate+' %</b></div></div>';
+  h+='<h3>Mon argent dehors : depuis quand ?</h3>';
+  [['Pas encore en retard',0,'var(--vert)'],['1 à 7 jours',1,'#d8a31a'],['8 à 30 jours',2,'#e0702a'],['Plus de 30 jours',3,'var(--rouge)']].forEach(function(x){
+    h+='<div style="margin:8px 0"><div class="row" style="font-size:14px"><span>'+x[0]+'</span><b>'+F(ages[x[1]])+'</b></div><div class="bar"><i style="width:'+Math.round(ages[x[1]]/mx*100)+'%;background:'+x[2]+'"></i></div></div>';});
+  if(ages[3]>0) h+='<div class="note warn">Plus l’argent reste dehors, moins il revient. Relance d’abord les plus grosses sommes en retard.</div>';
+  if(top.length){ h+='<h3>Les 3 plus grosses dettes</h3>'; top.forEach(function(d){h+='<div class="debt '+status(d)+'" data-a="open" data-id="'+d.id+'"><div class="top"><div><div class="nm">'+esc(d.name)+'</div><div class="ob">'+chipText(d)+'</div></div><div class="am">'+F(rest(d))+'</div></div></div>';}); }
+  if(risk.length) h+='<h3>⚠ Difficiles à retrouver</h3><p class="sub">En retard de plus de 7 jours, sans autre numéro, quartier ni garant : '+risk.map(function(d){return esc(d.name);}).join(', ')+'. Complète leurs infos (Modifier) tant que tu peux encore les joindre.</p>';
+  h+='<h3>Aller plus loin</h3><div class="acts"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois</button></div></div>';
+  return h;
+}
+
 /* ---------- CE QUE JE DOIS (mes dettes envers mes fournisseurs) ---------- */
 var OW=[
  {k:'delai',l:'Demander un délai',
@@ -935,6 +964,7 @@ var ACT={
     }catch(e){toast("Ce texte n'est pas une sauvegarde valide.");}
   },
   owed:function(){UI.view='owed';render();},
+  dash:function(){UI.view='dash';render();},
   owednew:function(){
     openSheet('<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Je dois à quelqu’un</h2><label for="w_name">Fournisseur *</label><input id="w_name" autocomplete="off"><label for="w_phone">Son numéro WhatsApp</label><input id="w_phone" type="tel" inputmode="tel"><label for="w_amount">Montant que je dois (F) *</label><input id="w_amount" type="number" inputmode="numeric"><label for="w_obj">Pour quoi ?</label><input id="w_obj" placeholder="ex : marchandise de la semaine"><label for="w_due">Je dois payer avant le *</label><input id="w_due" type="date" value="'+addDays(today(),7)+'"><div class="acts" style="margin-top:14px"><button class="btn" data-a="owedsave">Enregistrer</button></div>');
   },
