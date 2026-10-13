@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#4C2A75">
+<meta name="robots" content="noindex,nofollow">
+<title>Marre des clients qui ne paient pas ? Mon cahier de crédit</title>
+<meta name="description" content="Un cahier de crédit sur ton téléphone : il te dit qui relancer, écrit le message WhatsApp et garde la preuve.">
+<style>
+  :root{--vio:#4C2A75;--vio2:#6a3fa0;--or:#E8B84A;--bg:#faf7ff;--card:#fff;--ink:#1c1530;--mut:#6d6585;--line:#e4dcf3;--vert:#1f8a55;--rouge:#c62828}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:84px}
+  .w{max-width:560px;margin:0 auto;padding:0 18px}
+  section{padding:30px 0}
+  h1{font-size:30px;line-height:1.15;margin:0 0 12px}
+  h2{font-size:24px;line-height:1.2;margin:0 0 14px}
+  p{margin:0 0 12px}
+  .top{background:var(--vio);color:#fff;padding:12px 0;font-weight:800;letter-spacing:.3px}
+  .hero{background:linear-gradient(180deg,var(--vio) 0%,#3a1f5c 100%);color:#fff;padding:26px 0 34px}
+  .hero p{color:#e8dcf8;font-size:19px}
+  .btn{display:block;width:100%;text-align:center;text-decoration:none;border:0;border-radius:14px;min-height:56px;line-height:56px;font-size:19px;font-weight:800;background:var(--or);color:#2b1c00;padding:0 16px;cursor:pointer}
+  .btn.sec{background:#fff;color:var(--vio);border:2px solid var(--line);line-height:52px}
+  .btn.wa{background:#1fa855;color:#fff}
+  .btn.s{min-height:44px;line-height:44px;font-size:15px;width:auto;display:inline-block;padding:0 16px;margin-top:8px}
+  .demo{margin:22px auto 4px;width:100%;max-width:300px}
+  .demo iframe{width:100%;aspect-ratio:9/16;border:0;border-radius:18px;background:#2b1747;display:block}
+  .cap{text-align:center;font-size:13px;color:#cdbbea;margin:6px 0 0}
+  ul.p{list-style:none;padding:0;margin:0}
+  ul.p li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .ico{font-size:22px;margin-right:6px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .msg{background:#f3eefb;border-left:5px solid var(--vio);border-radius:10px;padding:12px;margin:8px 0;font-size:16px}
+  .msg b{display:block;font-size:13px;color:var(--vio);margin-bottom:4px}
+  .chk li{padding:10px 0 10px 0;border-bottom:1px solid var(--line)}
+  .chk li:last-child{border:0}
+  .chk b{display:block}
+  .chk span{color:var(--mut);font-size:16px}
+  .step{display:flex;gap:12px;margin-bottom:14px}
+  .step i{flex:none;width:38px;height:38px;border-radius:50%;background:var(--vio);color:#fff;font:800 19px/38px system-ui,sans-serif;text-align:center;font-style:normal}
+  .calc input[type=number]{width:100%;font:inherit;font-size:22px;padding:12px;border:2px solid var(--line);border-radius:12px;min-height:54px}
+  .calc input[type=range]{width:100%;margin:10px 0}
+  .res{background:var(--vio);color:#fff;border-radius:14px;padding:14px;margin-top:10px}
+  .res b{font-size:26px;color:var(--or)}
+  .price{background:linear-gradient(180deg,#fff,#f3eefb);border:2px solid var(--or);border-radius:20px;padding:20px;text-align:center}
+  .price .old{color:var(--mut);text-decoration:line-through;font-size:20px}
+  .price .now{font-size:44px;font-weight:900;color:var(--vio);line-height:1.1}
+  .count{display:inline-block;background:#fff0d9;color:#8a5200;border-radius:99px;padding:6px 14px;font-weight:700;font-size:16px;margin:8px 0}
+  details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 16px;margin-bottom:10px}
+  summary{cursor:pointer;font-weight:700;min-height:54px;line-height:1.3;padding:14px 0;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary:after{content:"+";float:right;font-size:24px;color:var(--vio)}
+  details[open] summary:after{content:"\2212"}
+  details p{color:#3b3252;font-size:17px}
+  .note{font-size:14px;color:var(--mut)}
+  .sticky{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:none;z-index:20}
+  .sticky .in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px}
+  .sticky .pr{font-weight:900;color:var(--vio);font-size:20px;white-space:nowrap}
+  .sticky .btn{min-height:50px;line-height:50px;font-size:17px}
+  .voice{position:fixed;right:12px;top:10px;z-index:30;background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;min-height:44px;padding:0 14px;font-size:15px;font-weight:700;display:none}
+  footer{background:#1c1530;color:#bdb0d6;padding:26px 0;font-size:14px}
+  footer a{color:#E8B84A}
+  #avisS{display:none}
+  .av{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+  .av b{display:block;margin-top:6px;font-size:15px;color:var(--vio)}
+</style>
+</head>
+<body>
+<div class="top"><div class="w">PRISM Pratique</div></div>
+<button class="voice" id="voiceBtn" type="button">&#128266; Écouter</button>
+
+<section class="hero" data-voice="v1"><div class="w">
+  <h1>Marre de perdre de l'argent à cause des clients qui ne paient pas ?</h1>
+  <p>Tu veux garder tes clients <b>sans te ruiner</b>. Ce cahier sur ton téléphone fait quatre choses pour ton argent :</p>
+  <ul class="p chk" style="margin:10px 0 14px">
+    <li><b>Avant de donner</b><span>un test feu vert / orange / rouge et un écrit signé.</span></li>
+    <li><b>Qui te doit quoi</b><span>avec la preuve et chaque paiement noté.</span></li>
+    <li><b>Relancer sans te fâcher</b><span>66 messages WhatsApp prêts, pour chaque situation.</span></li>
+    <li><b>Retrouver celui qui disparaît</b><span>autre numéro, quartier, garant.</span></li>
+  </ul>
+  <a class="btn" href="#offre" data-t="cta_hero">Je veux mon cahier</a>
+  <div class="demo"><iframe src="demo-landing.html" title="Démonstration de 10 secondes" loading="lazy"></iframe></div>
+  <p class="cap">Démo de 10 secondes (exemple avec de faux clients)</p>
+</div></section>
+
+<section id="avisS"><div class="w"><h2>Elles l'utilisent déjà</h2><div id="avisL"></div></div></section>
+
+<section data-voice="v2"><div class="w">
+  <h2>Ça te dit quelque chose ?</h2>
+  <ul class="p">
+    <li><span class="ico">&#128211;</span> Tu notes les dettes dans un cahier… et tu <b>oublies qui doit quoi</b>.</li>
+    <li><span class="ico">&#128556;</span> Tu n'oses pas relancer par peur de <b>perdre le client</b>.</li>
+    <li><span class="ico">&#129327;</span> Tu relances, et il répond « <b>je t'ai déjà payé</b> » : tu n'as aucune preuve.</li>
+    <li><span class="ico">&#128245;</span> Il <b>te bloque</b>, ou il change de numéro, et tu ne sais plus où le trouver.</li>
+  </ul>
+  <p style="margin-top:14px">Une dette non payée, c'est de l'argent que <b>tu as déjà sorti de ta poche</b>.</p>
+</div></section>
+
+<section style="background:#f3eefb" data-voice="v3"><div class="w">
+  <h2>3 messages à copier tout de suite (gratuits)</h2>
+  <p class="note">Remplace les mots entre crochets, puis envoie sur WhatsApp.</p>
+  <div class="msg"><b>Rappel doux</b>Bonjour [Nom], j'espère que vous allez bien. Petit rappel amical : votre paiement de [montant] est prévu le [date]. Merci d'avance !<br><button class="btn s sec" data-copy="0" type="button">Copier</button></div>
+  <div class="msg"><b>Il promet encore « demain »</b>Bonjour [Nom]. D'accord, je note votre promesse de me payer [montant] le [date]. C'est la date finale : sans paiement ce jour-là, je ne pourrai plus vous faire crédit. Merci.<br><button class="btn s sec" data-copy="1" type="button">Copier</button></div>
+  <div class="msg"><b>Il dit avoir déjà payé</b>Bonjour [Nom], merci pour votre message. Je ne retrouve pas ce paiement de mon côté. Pouvez-vous m'envoyer la preuve (capture Mobile Money ou date et montant) ? Je vérifie tout de suite.<br><button class="btn s sec" data-copy="2" type="button">Copier</button></div>
+  <p class="note" id="copied" style="min-height:22px"></p>
+  <p>Dans le cahier, ces messages sont <b>déjà remplis avec le nom, le montant et la date</b>. Tu appuies, WhatsApp s'ouvre, tu envoies.</p>
+</div></section>
+
+<section data-voice="v4"><div class="w">
+  <h2>Ce que tu reçois</h2>
+  <ul class="p chk">
+    <li><b>&#128210; Le cahier de crédit sur ton téléphone</b><span>Qui te doit quoi, depuis quand, et qui relancer aujourd'hui.</span></li>
+    <li><b>&#128202; Un tableau de bord</b><span>Combien on te doit, combien tu dois, qui relancer aujourd'hui, depuis quand ton argent est dehors.</span></li>
+    <li><b>&#128172; 66 messages prêts, pour chaque situation</b><span>22 situations × 3 tons : avant le crédit, rappels, retard, « il m'a bloqué(e) », arrangement, remerciement. Envoyés sur WhatsApp en un clic.</span></li>
+    <li><b>&#128269; De quoi retrouver celui qui disparaît</b><span>Autre numéro, quartier et personne de confiance (garant), avec le message déjà écrit pour le garant ou un médiateur.</span></li>
+    <li><b>&#128230; « Ce que je dois »</b><span>Tes dettes envers tes fournisseurs, et le message honnête pour demander un délai.</span></li>
+    <li><b>&#9997;&#65039; La reconnaissance de dette en 1 minute</b><span>Somme écrite en toutes lettres, prête à imprimer et à faire signer.</span></li>
+    <li><b>&#9989; Le test « avant de donner à crédit »</b><span>Feu vert, orange ou rouge, et combien tu peux risquer.</span></li>
+    <li><b>&#128232; La lettre de mise en demeure</b><span>Avec date limite et décharge de réception.</span></li>
+    <li><b>&#128246; Marche sans internet</b><span>Tes données restent sur ton téléphone, pas chez nous.</span></li>
+  </ul>
+</div></section>
+
+<section style="background:#f3eefb" data-voice="v5"><div class="w">
+  <h2>Comment ça marche</h2>
+  <div class="step"><i>1</i><div><b>Tu notes la dette</b> (30 secondes) : nom, montant, date limite.</div></div>
+  <div class="step"><i>2</i><div><b>Le cahier te dit qui relancer</b> et prépare le message. Tu envoies sur WhatsApp.</div></div>
+  <div class="step"><i>3</i><div><b>Tu notes le paiement.</b> En fin de mois, tu vois combien tu as récupéré.</div></div>
+</div></section>
+
+<section data-voice="v6"><div class="w">
+  <h2>Combien te doit-on en ce moment ?</h2>
+  <div class="card calc">
+    <label for="owed" class="note">Total que tes clients te doivent (F)</label>
+    <input id="owed" type="number" inputmode="numeric" value="50000">
+    <label for="pct" class="note" style="display:block;margin-top:10px">Part que tu récupères grâce aux relances : <b id="pctV">20</b> %</label>
+    <input id="pct" type="range" min="10" max="50" step="5" value="20">
+    <div class="res" id="calcRes"></div>
+    <p class="note" style="margin-top:10px">Exemple de calcul avec tes propres chiffres, pas une promesse de résultat.</p>
+  </div>
+</div></section>
+
+<section id="offre" style="background:#f3eefb" data-voice="v7"><div class="w">
+  <h2>Prends ton cahier</h2>
+  <div class="price">
+    <div class="old" id="old"></div>
+    <div class="now" id="now"></div>
+    <div id="cd" class="count" style="display:none"></div>
+    <p class="note" style="margin:8px 0 14px">Paiement unique. Tu reçois le lien juste après le paiement, avec les étapes pour l'installer.</p>
+    <a class="btn" id="buy" href="#offre" data-t="cta_offre">Je prends mon cahier</a>
+    <p class="note" id="garantie" style="margin-top:12px;display:none"></p>
+  </div>
+  <p style="margin-top:16px"><a class="btn wa" id="wa" href="#" data-t="clic_whatsapp">Une question ? Écris-nous avant de payer</a></p>
+</div></section>
+
+<section data-voice="v8"><div class="w">
+  <h2>Questions fréquentes</h2>
+  <details><summary>Ça marche sur mon téléphone ?</summary><p>Oui, sur presque tous les smartphones avec Chrome ou Safari. Tu l'installes sur ton écran d'accueil comme une application, et il marche ensuite même sans internet.</p></details>
+  <details><summary>Où sont mes données ?</summary><p>Uniquement sur ton téléphone. Nous n'avons pas accès à tes clients ni à tes montants. Fais une sauvegarde chaque semaine (un bouton te le rappelle) : c'est utile si tu changes de téléphone.</p></details>
+  <details><summary>Mes clients reçoivent quoi ?</summary><p>Rien tant que tu ne les relances pas. Quand tu appuies sur « Relancer », WhatsApp s'ouvre avec le message prêt. C'est toi qui envoies.</p></details>
+  <details><summary>Est-ce que ça remplace un avocat ?</summary><p>Non. Ce sont des modèles pratiques à adapter, pas un conseil juridique. Pour une grosse somme, fais relire par un huissier, un notaire ou un avocat.</p></details>
+  <details><summary>Pour qui c'est fait ?</summary><p>Commerçantes, couturières, coiffeuses, artisans, prestataires : toute personne qui donne à crédit et veut être payée sans se fâcher.</p></details>
+</div></section>
+
+<section style="padding-top:0"><div class="w">
+  <div class="card" style="text-align:center"><h2 style="margin-bottom:8px">Ton argent est dans la poche de tes clients</h2><p>Chaque jour qui passe, une dette devient plus difficile à récupérer.</p><a class="btn" href="#offre" data-t="cta_final">Je prends mon cahier</a></div>
+</div></section>
+
+<footer><div class="w">PRISM Pratique · Outil d'organisation : les messages et documents sont des modèles à adapter, ce n'est pas un conseil juridique.<br>Les résultats dépendent de chaque situation ; aucun résultat n'est garanti.</div></footer>
+
+<div class="sticky" id="sticky"><div class="in"><div class="pr" id="spr"></div><a class="btn" href="#offre" data-t="cta_sticky">Je prends mon cahier</a></div></div>
+
+<script>
+/* ============ CONFIGURATION (à remplir au lancement) ============ */
+var CFG={
+  prix:2500,                 /* prix affiché maintenant, en F */
+  prixBarre:6000,             /* ancien prix barré : seulement si promoFin est renseignée */
+  promoFin:'',               /* ex : '2026-10-25T21:00:00+01:00' = vraie fin de la promo ; vide = pas de promo */
+  prixApres:6000,            /* prix une fois la promo terminée */
+  checkout:'',               /* lien de la page de paiement Chariow (vide = bouton vers l'offre) */
+  whatsapp:'2290193388631',  /* numéro WhatsApp pour les questions avant paiement */
+  pixel:'',                  /* identifiant du pixel Meta (vide = aucun) */
+  garantie:'',               /* ex : 'Satisfait ou remboursé pendant 7 jours' (vide = rien d'affiché) */
+  voix:true,                 /* true : bouton « Écouter » (fichiers voix/v1.mp3 ... v8.mp3, voix Vivienne) */
+  avis:[]                    /* vrais avis seulement : [{nom:'Esther',ville:'Cotonou',texte:'...'}] */
+};
+/* =============================================================== */
+(function(){
+var $=function(id){return document.getElementById(id);};
+function F(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' F';}
+var q=new URLSearchParams(location.search);
+function track(n,p){try{ if(window.fbq) window.fbq('trackCustom',n,p||{}); }catch(e){}}
+/* Pixel Meta (chargé en différé, seulement si un identifiant est renseigné) */
+if(CFG.pixel){ window.addEventListener('load',function(){
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  window.fbq('init',CFG.pixel); window.fbq('track','PageView'); window.fbq('track','ViewContent');
+});}
+/* Prix, promo, compte à rebours (réel seulement) */
+var fin=CFG.promoFin?new Date(CFG.promoFin).getTime():0, timer=null;
+function paintPrice(){
+  var promo=fin>Date.now(), prix=promo?CFG.prix:(fin?CFG.prixApres:CFG.prix);
+  $('now').textContent=F(prix); $('spr').textContent=F(prix);
+  $('old').textContent=(promo&&CFG.prixBarre)?F(CFG.prixBarre):''; $('old').style.display=(promo&&CFG.prixBarre)?'block':'none';
+  var c=$('cd');
+  if(promo){var s=Math.floor((fin-Date.now())/1000), h=Math.floor(s/3600), m=Math.floor(s%3600/60); c.style.display='inline-block'; c.textContent='Prix de lancement : encore '+h+' h '+(m<10?'0':'')+m+' min';}
+  else c.style.display='none';
+  calc();
+}
+/* Lien d'achat avec l'origine de la visite */
+var buy=$('buy');
+if(CFG.checkout){ var u=CFG.checkout+(CFG.checkout.indexOf('?')>-1?'&':'?')+'src='+encodeURIComponent(q.get('src')||'direct')+'&c='+encodeURIComponent(q.get('c')||''); buy.href=u; buy.addEventListener('click',function(){track('clic_achat');if(window.fbq)window.fbq('track','InitiateCheckout');}); }
+$('wa').href='https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent('Bonjour, j’ai une question sur le cahier de crédit avant de payer.');
+if(CFG.garantie){$('garantie').textContent='✔ '+CFG.garantie; $('garantie').style.display='block';}
+/* Avis réels (la section reste cachée tant qu'il n'y en a pas) */
+if(CFG.avis&&CFG.avis.length){ $('avisS').style.display='block'; $('avisL').innerHTML=CFG.avis.map(function(a){return '<div class="av">“'+String(a.texte).replace(/</g,'&lt;')+'”<b>'+String(a.nom).replace(/</g,'&lt;')+(a.ville?', '+String(a.ville).replace(/</g,'&lt;'):'')+'</b></div>';}).join(''); }
+/* Calculateur */
+function calc(){
+  var o=Math.max(0,+$('owed').value||0), p=+$('pct').value, prix=(fin>Date.now())?CFG.prix:(fin?CFG.prixApres:CFG.prix), g=o*p/100;
+  $('pctV').textContent=p;
+  $('calcRes').innerHTML='Tu récupères <b>'+F(g)+'</b><br>Le cahier coûte '+F(prix)+(g>=prix&&prix>0?' : soit <b>'+(Math.floor(g/prix*10)/10).toString().replace('.',',')+' fois</b> son prix.':'.');
+}
+$('owed').addEventListener('input',function(){calc();}); $('pct').addEventListener('input',function(){calc();});
+/* Messages gratuits à copier */
+var MSG=["Bonjour [Nom], j'espère que vous allez bien. Petit rappel amical : votre paiement de [montant] est prévu le [date]. Merci d'avance !",
+"Bonjour [Nom]. D'accord, je note votre promesse de me payer [montant] le [date]. C'est la date finale : sans paiement ce jour-là, je ne pourrai plus vous faire crédit. Merci.",
+"Bonjour [Nom], merci pour votre message. Je ne retrouve pas ce paiement de mon côté. Pouvez-vous m'envoyer la preuve (capture Mobile Money ou date et montant) ? Je vérifie tout de suite."];
+function copy(t){
+  function fb(){var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(a);}
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).catch(fb); return; } }catch(e){}
+  fb();
+}
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest&&ev.target.closest('[data-copy]');
+  if(b){ copy(MSG[+b.getAttribute('data-copy')]); $('copied').textContent='✔ Message copié. Colle-le dans WhatsApp.'; track('message_copie'); return; }
+  var t=ev.target.closest&&ev.target.closest('[data-t]'); if(t) track(t.getAttribute('data-t'));
+});
+/* Barre d'achat collante après le premier écran */
+var hero=document.querySelector('.hero'), off=$('offre'), st=$('sticky'), seenHero=true, seenOff=false;
+if('IntersectionObserver' in window){
+  new IntersectionObserver(function(e){seenHero=e[0].isIntersecting; upd();},{threshold:.15}).observe(hero);
+  new IntersectionObserver(function(e){seenOff=e[0].isIntersecting; upd();},{threshold:.2}).observe(off);
+} else { st.style.display='block'; }
+function upd(){ st.style.display=(!seenHero&&!seenOff)?'block':'none'; }
+/* Profondeur de défilement */
+var depth={25:0,50:0,75:0,100:0};
+window.addEventListener('scroll',function(){var h=document.documentElement,p=(h.scrollTop+window.innerHeight)/h.scrollHeight*100; [25,50,75,100].forEach(function(k){ if(!depth[k]&&p>=k-1){depth[k]=1; track('scroll_'+k);} });},{passive:true});
+/* Voix au défilement : un seul lecteur audio (débloqué par le toucher du bouton), un fichier à la fois, chargé seulement quand on en a besoin */
+if(CFG.voix){
+  var vb=$('voiceBtn'), on=false, cur=null, au=new Audio(), secs=[].slice.call(document.querySelectorAll('[data-voice]'));
+  au.preload='none'; vb.style.display='block';
+  function atMid(){ var mid=window.innerHeight*.45, best=null; secs.forEach(function(s){var r=s.getBoundingClientRect(); if(r.top<=mid&&r.bottom>=mid) best=s;}); return best; }
+  function playFor(s){ var id=s.getAttribute('data-voice'); cur=s; au.src='voix/'+id+'.mp3'; var pr=au.play(); if(pr&&pr.catch) pr.catch(function(){}); track('voix_'+id); }
+  vb.addEventListener('click',function(){
+    on=!on; vb.innerHTML=on?'&#128263; Couper la voix':'&#128266; Écouter';
+    if(on){ cur=null; playFor(atMid()||secs[0]); } else { au.pause(); cur=null; }
+  });
+  var tmr=null; window.addEventListener('scroll',function(){ if(!on) return; clearTimeout(tmr); tmr=setTimeout(function(){ var s=atMid(); if(s&&s!==cur) playFor(s); },450); },{passive:true});
+}
+paintPrice(); timer=setInterval(paintPrice,30000);
+})();
+</script>
+</body>
+</html>
