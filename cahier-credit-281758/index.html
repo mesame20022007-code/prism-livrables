@@ -63,6 +63,8 @@
   .tones{display:flex;gap:8px}
   .tones button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;min-height:46px;font-size:15px;font-weight:700}
   .tones button.on{background:var(--vio);color:#fff;border-color:var(--vio)}
+  details.more{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+  details.more summary{font-weight:700;cursor:pointer;min-height:36px;display:flex;align-items:center}
   .note{font-size:14px;color:var(--mut);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:10px}
   .note.warn{background:#fff0d9;border-color:#f3c98a;color:#7a4a00}
   .bar{height:10px;background:#e9e1f7;border-radius:999px;overflow:hidden;margin:8px 0}
@@ -184,8 +186,73 @@ var SIT=[
  {k:'dernier',l:'Dernier avertissement',
   doux:"Bonjour {nom}. Je ne veux pas en arriver là, mais la dette de {reste} ({objet}) dure depuis {jours} jours. Je vous demande de la régler avant le {promesse}. Parlons-en, je suis prêt(e) à trouver une solution. — {moi}",
   normal:"Bonjour {nom}. Dernier rappel : {reste} ({objet}), {jours} jours de retard. Sans paiement avant le {promesse}, je serai obligé(e) de passer par une procédure officielle de recouvrement. — {moi}",
-  ferme:"Bonjour {nom}. Dernier avertissement avant procédure : {reste} dus pour {objet}. Si le paiement n'est pas reçu avant le {promesse}, je passerai par la voie légale (mise en demeure puis procédure de recouvrement). — {moi}"}
+  ferme:"Bonjour {nom}. Dernier avertissement avant procédure : {reste} dus pour {objet}. Si le paiement n'est pas reçu avant le {promesse}, je passerai par la voie légale (mise en demeure puis procédure de recouvrement). — {moi}"},
+ /* --- v1.5 : plus de situations --- */
+ {k:'avant',l:'Avant de donner : mes conditions',
+  doux:"Bonjour {nom}, avec plaisir pour {objet} ({total}). Pour que tout soit clair entre nous : paiement de {total} avant le {echeance}. Si ça vous convient, je vous prépare ça. — {moi}",
+  normal:"Bonjour {nom}. Pour {objet} à crédit ({total}) : paiement complet le {echeance}, pas de nouveau crédit tant que ce n'est pas payé. Vous êtes d'accord ? Je note tout dans mon cahier. — {moi}",
+  ferme:"Bonjour {nom}. Je peux vous donner {objet} ({total}) à crédit seulement si : 1) paiement avant le {echeance}, 2) vous confirmez ici par écrit. Sans votre accord écrit, pas de crédit. — {moi}"},
+ {k:'refus',l:'Refuser un crédit poliment',
+  doux:"Bonjour {nom}, merci de votre confiance. En ce moment je ne peux pas donner à crédit, mon stock est payé comptant. Si vous payez une partie maintenant, je vous sers volontiers. — {moi}",
+  normal:"Bonjour {nom}. Je ne fais plus de crédit tant que les anciens paiements ne sont pas réglés. Dès que c'est fait, nous en reparlons avec plaisir. — {moi}",
+  ferme:"Bonjour {nom}. Ma décision est prise : pas de nouveau crédit pour le moment. Je vends au comptant, et je serai content(e) de vous servir ainsi. — {moi}"},
+ {k:'jourj',l:'Le jour de l’échéance',
+  doux:"Bonjour {nom}, bonne journée ! C'est aujourd'hui le jour prévu pour {reste} ({objet}). Merci de me dire à quelle heure vous passez ou envoyez. — {moi}",
+  normal:"Bonjour {nom}. Aujourd'hui {echeance}, c'est le paiement de {reste} ({objet}). Je compte sur vous ce jour. Mobile Money ou main à main, dites-moi. — {moi}",
+  ferme:"Bonjour {nom}. Nous sommes le {echeance} : {reste} doivent m'être payés aujourd'hui, comme convenu. Confirmez-moi le paiement avant ce soir. — {moi}"},
+ {k:'momo',l:'Où envoyer le paiement (Mobile Money)',
+  doux:"Bonjour {nom}, pour faciliter le paiement de {reste}, vous pouvez envoyer par Mobile Money au {monnum}. Envoyez-moi ensuite la capture, merci beaucoup. — {moi}",
+  normal:"Bonjour {nom}. Pour régler {reste} ({objet}) : Mobile Money au {monnum}, puis envoyez-moi la capture avec la date. Je note votre paiement tout de suite. — {moi}",
+  ferme:"Bonjour {nom}. Plus d'excuse possible : envoyez {reste} maintenant par Mobile Money au {monnum} et envoyez-moi la capture. Je note dès réception. — {moi}"},
+ {k:'faux',l:'Faux paiement / capture suspecte',
+  doux:"Bonjour {nom}, merci pour la capture. De mon côté je ne vois pas encore l'argent arriver. Pouvez-vous vérifier avec votre opérateur et me donner le numéro de transaction ? — {moi}",
+  normal:"Bonjour {nom}. Le paiement annoncé n'est pas arrivé sur mon compte. Envoyez-moi l'identifiant de transaction et l'heure exacte, je vérifie auprès de l'opérateur. — {moi}",
+  ferme:"Bonjour {nom}. Votre capture ne correspond à aucun paiement reçu chez moi. Tant que l'argent n'est pas sur mon compte, la dette de {reste} reste due. Merci de régler vraiment. — {moi}"},
+ {k:'partiel',l:'Paiement partiel reçu : merci et suite',
+  doux:"Bonjour {nom}, merci pour votre paiement de {paye}, je l'ai noté. Il reste {reste}. Pour quand pouvez-vous me donner la suite ? — {moi}",
+  normal:"Bonjour {nom}. J'ai bien reçu {paye} : merci. Il reste {reste} sur {total}. Je note le solde pour le {promesse}. Confirmez-moi cette date. — {moi}",
+  ferme:"Bonjour {nom}. Paiement de {paye} reçu. Le solde de {reste} doit arriver le {promesse}, sans autre retard. Aucun nouveau crédit avant le règlement complet. — {moi}"},
+ {k:'solde',l:'Dette payée : merci (et garder le client)',
+  doux:"Bonjour {nom}, merci beaucoup, votre dette est entièrement payée ! C'était un plaisir. Vous êtes toujours le/la bienvenu(e) chez moi. — {moi}",
+  normal:"Bonjour {nom}. Bien reçu, tout est réglé : merci d'avoir respecté votre parole. On peut continuer à travailler ensemble, avec un petit montant à crédit au début. — {moi}",
+  ferme:"Bonjour {nom}. Tout est réglé, merci. Pour un prochain crédit, je demande d'abord un paiement d'avance et un délai court. Passez me voir pour en parler. — {moi}"},
+ {k:'bloque',l:'Il m’a bloqué(e) : message à son garant',
+  to:'garant',
+  doux:"Bonjour {garant}, j'espère que vous allez bien. {nom} vous a donné comme personne de confiance. Je n'arrive plus à le/la joindre au sujet de {reste} ({objet}). Pouvez-vous lui demander de me contacter ? Merci beaucoup. — {moi}",
+  normal:"Bonjour {garant}. {nom} me doit {reste} ({objet}) depuis {jours} jours et ne répond plus. Vous êtes sa personne de référence : pouvez-vous l'aider à me contacter cette semaine ? Merci. — {moi}",
+  ferme:"Bonjour {garant}. {nom} doit {reste} depuis {jours} jours et ne répond plus à mes messages. Vous étiez sa référence. Merci de lui dire de me payer ou de m'appeler avant le {promesse}. — {moi}"},
+ {k:'garant',l:'Demander au garant de s’engager',
+  to:'garant',
+  doux:"Bonjour {garant}, vous avez accepté d'être la personne de confiance de {nom}. Il/elle me doit {reste} ({objet}). Pouvez-vous m'aider à trouver un arrangement avec lui/elle ? Merci. — {moi}",
+  normal:"Bonjour {garant}. {nom} me doit {reste} pour {objet} et le délai est dépassé. Pouvez-vous confirmer que vous vous engagez à ce que ce soit payé avant le {promesse} ? Merci de me répondre. — {moi}",
+  ferme:"Bonjour {garant}. Comme garant de {nom}, je vous demande de confirmer par écrit comment {reste} seront payés avant le {promesse}. Sans réponse, je devrai agir autrement. — {moi}"},
+ {k:'mediation',l:'Demander l’aide d’un médiateur',
+  to:'mediateur',
+  doux:"Bonjour, je vous contacte avec respect. {nom} me doit {reste} ({objet}) et nous n'arrivons pas à nous entendre. Pouvez-vous nous aider à trouver un arrangement à l'amiable ? Merci pour votre temps. — {moi}",
+  normal:"Bonjour. Je souhaite votre médiation dans une affaire de dette : {nom} me doit {reste} pour {objet} depuis {jours} jours. Pouvez-vous nous réunir cette semaine pour un arrangement ? Merci. — {moi}",
+  ferme:"Bonjour. {nom} ne respecte pas ses engagements : {reste} dus depuis {jours} jours. Je vous demande de nous convoquer pour régler cela. Je viens avec mes preuves (cahier, messages). Merci. — {moi}"},
+ {k:'demenage',l:'Il a déménagé / je ne sais plus où il est',
+  doux:"Bonjour {nom}, j'espère que vous allez bien. Il paraît que vous avez changé d'adresse. Pouvez-vous me donner votre nouvelle localisation et un numéro pour vous joindre ? Il reste {reste} à régler. — {moi}",
+  normal:"Bonjour {nom}. Je ne vous trouve plus au quartier {quartier}. Merci de me donner votre nouvelle adresse et un numéro joignable pour régler {reste} ({objet}). — {moi}",
+  ferme:"Bonjour {nom}. Changer d'adresse n'efface pas la dette : {reste} ({objet}). Donnez-moi votre nouvelle adresse et votre date de paiement avant le {promesse}. — {moi}"},
+ {k:'proche',l:'Entre proches / amis (ton doux)',
+  doux:"Salut {nom}, comment tu vas ? Je ne veux pas gâcher notre amitié, mais j'ai besoin des {reste} ({objet}) pour mon commerce. Dis-moi ce qui est possible pour toi, on trouve un arrangement. — {moi}",
+  normal:"Salut {nom}. Tu sais que je t'ai aidé(e) pour {objet}. Mon commerce a besoin de cet argent : {reste}. Dis-moi la date où tu peux me payer, qu'on reste en bons termes. — {moi}",
+  ferme:"Salut {nom}. Même entre nous, je dois être clair(e) : {reste} sont dus et mon commerce en souffre. Je compte sur toi avant le {promesse}. Après, je ne pourrai plus donner à crédit. — {moi}"},
+ {k:'geste',l:'Offrir un petit geste s’il paie vite',
+  doux:"Bonjour {nom}, une proposition : si vous réglez {reste} avant le {promesse}, je vous fais un petit geste sur un prochain achat. Dites-moi si ça vous aide. — {moi}",
+  normal:"Bonjour {nom}. Si vous payez les {reste} en une fois avant le {promesse}, nous clôturons le dossier et je garde votre place comme bon client. Qu'en dites-vous ? — {moi}",
+  ferme:"Bonjour {nom}. Offre valable jusqu'au {promesse} seulement : paiement complet de {reste} et le dossier est clos. Après cette date, je reprends toutes les mesures prévues. — {moi}"},
+ {k:'confiance',l:'Reprendre le crédit après un retard',
+  doux:"Bonjour {nom}, merci d'avoir réglé. Pour continuer à travailler ensemble, nous recommençons avec un petit montant et un délai court. Ça vous va ? — {moi}",
+  normal:"Bonjour {nom}. Après le retard de la dernière fois, je reprends le crédit avec un montant plus petit et un paiement d'avance. Si tout est bien payé, nous augmenterons ensuite. — {moi}",
+  ferme:"Bonjour {nom}. Nouveau crédit possible seulement avec : acompte, délai court et accord écrit. Un nouveau retard = arrêt complet du crédit. Si vous êtes d'accord, écrivez « OK ». — {moi}"}
 ];
+var GRP={rappel:'Avant l’échéance',avant:'Avant l’échéance',refus:'Avant l’échéance',jourj:'Avant l’échéance',momo:'Pour être payé(e)',
+  retard:'Après l’échéance',promet:'Après l’échéance',silence:'Après l’échéance',dejapaye:'Après l’échéance',conteste:'Après l’échéance',faux:'Après l’échéance',
+  delai:'Arrangements',partiel:'Arrangements',geste:'Arrangements',confiance:'Arrangements',solde:'Arrangements',
+  bloque:'Quand ça se complique',garant:'Quand ça se complique',mediation:'Quand ça se complique',demenage:'Quand ça se complique',proche:'Quand ça se complique',dernier:'Quand ça se complique'};
+var GORD=['Avant l’échéance','Pour être payé(e)','Après l’échéance','Arrangements','Quand ça se complique'];
 function sitOf(k){for(var i=0;i<SIT.length;i++) if(SIT[i].k===k) return SIT[i]; return SIT[1];}
 function suggest(d){
   var l=late(d), n=(d.rel||[]).length;
@@ -198,7 +265,8 @@ function build(d,k,tone,promesse){
   var tpl=sitOf(k)[tone]||sitOf(k).normal;
   var r=rest(d), t3=Math.ceil(r/3/100)*100;
   var vals={nom:d.name,reste:F(r),total:F(d.amount),paye:F(paid(d)),objet:d.obj||'votre achat',echeance:fr(d.due),
-    jours:Math.max(1,late(d)),promesse:fr(promesse),datedette:fr(d.date),tranche3:F(t3)};
+    jours:Math.max(1,late(d)),promesse:fr(promesse),datedette:fr(d.date),tranche3:F(t3),
+    garant:d.gname||'Monsieur/Madame',quartier:d.where||'habituel',monnum:S.myphone||'[mon numéro]'};
   var out=tpl.replace(' — {moi}', S.me? ' — '+S.me : '');
   out=out.replace(/\{(\w+)\}/g,function(m,k2){return vals.hasOwnProperty(k2)? vals[k2] : m;});
   return out;
@@ -235,7 +303,7 @@ function home(){
     return s!=='paid';
   });
   var h='<header><div class="row"><div><h1>Mon cahier de crédit</h1><small>Tes données restent sur ce téléphone</small></div><button class="ic" data-a="settings" aria-label="Réglages">⚙</button></div></header><div class="wrap">';
-  h+='<div class="acts" style="margin-top:14px"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div id="instslot"></div>';
+  h+='<div class="acts" style="margin-top:14px"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois à mes fournisseurs'+((S.owed||[]).length?' ('+F((S.owed||[]).reduce(function(t,o){return t+owedRest(o);},0))+')':'')+'</button></div><div id="instslot"></div>';
   h+='<div class="cards"><div class="c big"><span>On me doit en tout</span><b>'+F(due)+'</b></div>'+
      '<div class="c"><span>En retard ('+lateN+')</span><b style="color:var(--rouge)">'+F(lateT)+'</b></div>'+
      '<div class="c"><span>Récupéré ce mois</span><b style="color:var(--vert)">'+F(monthRecovered())+'</b></div></div>';
@@ -264,6 +332,7 @@ function formView(d){
   h+='<label for="f_phone">Numéro WhatsApp (pour envoyer les relances)</label><input id="f_phone" type="tel" inputmode="tel" placeholder="ex : 01 97 00 00 00" value="'+esc(e.phone)+'">';
   h+='<label for="f_amount">Montant dû (F) *</label><input id="f_amount" type="number" inputmode="numeric" value="'+esc(e.amount)+'">';
   h+='<label for="f_obj">Pour quoi ? (ce que tu lui as vendu)</label><input id="f_obj" placeholder="ex : 3 sacs de riz" value="'+esc(e.obj)+'">';
+  h+='<details class="more"'+((e.gname||e.gphone||e.phone2||e.where)?' open':'')+'><summary>🔎 Pour le retrouver s’il disparaît (conseillé)</summary><label for="f_phone2">Autre numéro (ou celui d’un proche)</label><input id="f_phone2" type="tel" inputmode="tel" value="'+esc(e.phone2||'')+'"><label for="f_where">Quartier / où il habite ou travaille</label><input id="f_where" placeholder="ex : Dantokpa, près du marché" value="'+esc(e.where||'')+'"><label for="f_gname">Personne de confiance (garant)</label><input id="f_gname" placeholder="nom d’un proche ou d’un voisin qui le connaît" value="'+esc(e.gname||'')+'"><label for="f_gphone">Numéro du garant</label><input id="f_gphone" type="tel" inputmode="tel" value="'+esc(e.gphone||'')+'"></details>';
   h+='<label for="f_date">Date où tu as donné à crédit</label><input id="f_date" type="date" value="'+esc(e.date)+'">';
   h+='<label for="f_due">Il doit payer avant le *</label><input id="f_due" type="date" value="'+esc(e.due)+'"><div class="quick"><button data-a="due" data-v="3">3 jours</button><button data-a="due" data-v="7">7 jours</button><button data-a="due" data-v="15">15 jours</button><button data-a="due" data-v="30">1 mois</button></div>';
   h+='<div class="acts" style="margin-top:18px"><button class="btn" data-a="saveform" data-id="'+(d?d.id:'')+'">Enregistrer</button></div></div>';
@@ -275,6 +344,8 @@ function detail(d){
   h+='<div class="cards"><div class="c big"><span>Reste à payer</span><b>'+F(r)+'</b></div><div class="c"><span>Total donné</span><b>'+F(d.amount)+'</b></div><div class="c"><span>Déjà payé</span><b style="color:var(--vert)">'+F(p)+'</b></div></div>';
   h+='<div class="bar"><i style="width:'+pct+'%"></i></div><span class="tag '+s+'">'+chipText(d)+'</span> <span class="sub">échéance '+fr(d.due)+'</span>';
   if(d.phone) h+='<p class="sub">WhatsApp : '+esc(d.phone)+' — <a href="tel:'+esc(d.phone)+'">appeler</a></p>'; else h+='<p class="sub">Pas de numéro : tu pourras copier le message.</p>';
+  if(d.phone2||d.where||d.gname) h+='<p class="sub">'+(d.phone2?'Autre numéro : '+esc(d.phone2)+'<br>':'')+(d.where?'Quartier : '+esc(d.where)+'<br>':'')+(d.gname?'Garant : '+esc(d.gname)+(d.gphone?' ('+esc(d.gphone)+')':''):'')+'</p>';
+  else if(s!=='paid') h+='<p class="sub">💡 Ajoute un autre numéro, son quartier et un garant (bouton Modifier) : si le client te bloque, tu pourras le retrouver.</p>';
   if(s!=='paid') h+='<div class="acts"><button class="btn wa" data-a="relance" data-id="'+d.id+'">Relancer sur WhatsApp</button></div><div class="acts"><button class="btn sec" data-a="pay" data-id="'+d.id+'">Enregistrer un paiement</button><button class="btn sec" data-a="extend" data-id="'+d.id+'">Nouveau délai</button></div>';
   if(d.test) h+='<p class="sub">Test avant crédit : feu <b>'+esc(d.test.v)+'</b> ('+d.test.s+'/24) le '+fr(iso(new Date(d.test.t)))+'</p>';
   h+='<h3>Preuve écrite</h3>';
@@ -310,7 +381,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.4 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.5 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -323,6 +394,7 @@ function render(){
   else if(UI.view==='testres' && TR) h=testResult();
   else if(UI.view==='recon' && find(UI.id)) h=reconForm(find(UI.id));
   else if(UI.view==='reconview' && find(UI.id) && RC) h=reconView(find(UI.id));
+  else if(UI.view==='owed') h=owedView();
   else if(UI.view==='settings') h=settings();
   else {UI.view='home'; h=home();}
   a.innerHTML=h;
@@ -355,6 +427,7 @@ function openSheet(html){
   document.body.className='noscroll';
 }
 function closeSheet(){document.getElementById('modal').innerHTML=''; document.body.className='';}
+function recipient(d,k){var to=sitOf(k).to; if(to==='garant') return d.gphone||''; if(to==='mediateur') return ''; return d.phone||d.phone2||'';}
 function relanceSheet(id){
   var d=find(id); if(!d) return;
   var k=suggest(d), tone=((d.rel||[]).length? 'normal':'doux');
@@ -364,13 +437,16 @@ function relanceSheet(id){
 function paintRelance(){
   var d=find(relDraft.id), t=build(d,relDraft.k,relDraft.tone,relDraft.promesse), ds=daysSinceRel(d);
   var h='<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Relancer '+esc(d.name)+'</h2><p class="sub">Choisis la situation et le ton. Tu peux modifier le message avant de l’envoyer.</p>';
-  h+='<label for="r_sit">Situation</label><select id="r_sit">'+SIT.map(function(s){return '<option value="'+s.k+'"'+(s.k===relDraft.k?' selected':'')+'>'+esc(s.l)+'</option>';}).join('')+'</select>';
+  h+='<label for="r_sit">Situation ('+SIT.length*3+' messages)</label><select id="r_sit">'+GORD.map(function(g){return '<optgroup label="'+g+'">'+SIT.filter(function(s){return GRP[s.k]===g;}).map(function(s){return '<option value="'+s.k+'"'+(s.k===relDraft.k?' selected':'')+'>'+esc(s.l)+'</option>';}).join('')+'</optgroup>';}).join('')+'</select>';
+  var to=sitOf(relDraft.k).to;
+  if(to==='garant') h+='<div class="note">'+(d.gphone?'Ce message est pour le <b>garant</b> ('+esc(d.gname||'')+'), pas pour le client.':'Message pour le <b>garant</b>. Ajoute son numéro dans « Modifier » pour l’envoyer directement, sinon copie-le.')+'</div>';
+  if(to==='mediateur') h+='<div class="note">Message pour un <b>médiateur</b> (chef de quartier, pasteur, imam, aîné de la famille…). Copie-le et envoie-le à la personne choisie.</div>';
   h+='<label>Ton</label><div class="tones">'+[['doux','Doux'],['normal','Normal'],['ferme','Ferme']].map(function(x){return '<button data-a="tone" data-v="'+x[0]+'" class="'+(relDraft.tone===x[0]?'on':'')+'">'+x[1]+'</button>';}).join('')+'</div>';
-  if(['promet','delai','dernier'].indexOf(relDraft.k)>-1) h+='<label for="r_prom">Date limite que tu fixes</label><input id="r_prom" type="date" value="'+relDraft.promesse+'">';
+  if(['promet','delai','dernier','partiel','geste','bloque','garant','demenage'].indexOf(relDraft.k)>-1) h+='<label for="r_prom">Date limite que tu fixes</label><input id="r_prom" type="date" value="'+relDraft.promesse+'">';
   h+='<label for="r_msg">Message</label><textarea id="r_msg">'+esc(t)+'</textarea>';
   if(ds<2) h+='<div class="note warn">Tu l’as déjà relancé '+(ds===0?'aujourd’hui':'hier')+'. Mieux vaut attendre 2 jours : trop de messages fâchent le client et WhatsApp peut bloquer ton compte.</div>';
   h+='<div class="note">Reste poli(e) : ne menace jamais, n’affiche pas son nom ailleurs.</div>';
-  h+='<div class="acts" style="margin-top:12px">'+(d.phone?'<button class="btn wa" data-a="sendwa">Ouvrir WhatsApp</button>':'')+'<button class="btn sec" data-a="copymsg">Copier</button></div>';
+  h+='<div class="acts" style="margin-top:12px">'+(recipient(d,relDraft.k)?'<button class="btn wa" data-a="sendwa">Ouvrir WhatsApp</button>':'')+'<button class="btn sec" data-a="copymsg">Copier</button></div>';
   openSheet(h);
 }
 function paySheet(id){
@@ -645,7 +721,7 @@ function demo(){
   S.debts[0].pay.push({a:10000,d:addDays(t,-6)});
   save();
 }
-function backupText(){return JSON.stringify({app:'cahier-credit',v:1,exportedAt:new Date().toISOString(),data:{me:S.me,debts:S.debts}});}
+function backupText(){return JSON.stringify({app:'cahier-credit',v:1,exportedAt:new Date().toISOString(),data:{me:S.me,myfull:S.myfull||'',city:S.city||'',myphone:S.myphone||'',debts:S.debts,owed:S.owed||[]}});}
 function downloadBackup(){
   var txt=backupText(), name='cahier-credit-'+today()+'.json';
   try{
@@ -668,6 +744,57 @@ function copyText(t){
   fallback();
 }
 
+/* ---------- CE QUE JE DOIS (mes dettes envers mes fournisseurs) ---------- */
+var OW=[
+ {k:'delai',l:'Demander un délai',
+  doux:"Bonjour {nom}, j'espère que vous allez bien. Je rencontre une petite difficulté pour régler {reste} à la date prévue ({echeance}). Pouvez-vous m'accorder jusqu'au {promesse} ? Je vous remercie pour votre compréhension et votre confiance. — {moi}",
+  normal:"Bonjour {nom}. Je vous écris avant l'échéance du {echeance} pour être honnête : je ne pourrai pas payer {reste} ce jour-là. Je propose de le faire le {promesse}. Merci de me confirmer. — {moi}",
+  ferme:"Bonjour {nom}. Je vous informe que le paiement de {reste} sera fait le {promesse}, au plus tard. Je reste fidèle à mes engagements et je demande votre accord pour cette date. — {moi}"},
+ {k:'tranches',l:'Payer en plusieurs fois',
+  doux:"Bonjour {nom}, pour régler {reste}, pouvons-nous faire en 3 paiements de {tranche3} ? Le premier le {promesse}. Cela m'aide à continuer à travailler avec vous. Merci. — {moi}",
+  normal:"Bonjour {nom}. Je propose de payer {reste} en 3 fois : {tranche3} le {promesse}, puis chaque semaine. Je confirme par message chaque paiement. Êtes-vous d'accord ? — {moi}",
+  ferme:"Bonjour {nom}. Voici mon plan de paiement pour {reste} : 3 paiements de {tranche3}, le premier le {promesse}. Merci de confirmer par écrit pour que nous soyons tous les deux clairs. — {moi}"},
+ {k:'confirme',l:'Confirmer que j’ai payé',
+  doux:"Bonjour {nom}, j'ai envoyé le paiement de {paye}. Merci de me confirmer la réception. Merci pour votre patience. — {moi}",
+  normal:"Bonjour {nom}. Paiement envoyé : {paye}. Il reste {reste}, que je règle le {promesse}. Merci de noter et de me confirmer. — {moi}",
+  ferme:"Bonjour {nom}. J'ai payé {paye}. Merci d'enregistrer ce paiement et de m'envoyer un reçu ou une confirmation écrite. — {moi}"}
+];
+var OD=null;
+function owedRest(o){var p=0; (o.pay||[]).forEach(function(x){p+=+x.a||0;}); return Math.max(0,(+o.amount||0)-p);}
+function owedPaid(o){return (+o.amount||0)-owedRest(o);}
+function owedView(){
+  S.owed=S.owed||[]; var tot=0; S.owed.forEach(function(o){tot+=owedRest(o);});
+  var h='<header><div class="row"><div><h1>Ce que je dois</h1><small>Mes fournisseurs : ce que je dois payer</small></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="cards"><div class="c big"><span>Je dois en tout</span><b>'+F(tot)+'</b></div></div>';
+  h+='<p class="sub">Beaucoup de commerçants doivent de l’argent à leurs fournisseurs <b>et</b> attendent l’argent de leurs clients. Note ici ce que tu dois : tu vois tes dates et tu prépares un message honnête pour demander un délai.</p>';
+  if(!S.owed.length) h+='<div class="empty">Rien noté pour l’instant.</div>';
+  else h+=S.owed.slice().sort(function(a,b){return parse(a.due)-parse(b.due);}).map(function(o){
+    var r=owedRest(o), l=diff(today(),o.due), tag=r<=0?'paid':(l>0?'late':(l>=-3?'soon':'ok')), txt=r<=0?'Payé':(l>0?'En retard de '+l+' j':(l===0?'À payer aujourd’hui':'À payer le '+fr(o.due)));
+    return '<div class="debt '+tag+'"><div class="top"><div><div class="nm">'+esc(o.name)+'</div><div class="ob">'+esc(o.obj||'')+'</div></div><div class="am">'+F(r)+'</div></div><span class="tag '+tag+'">'+txt+'</span>'+
+      (r>0?'<div class="acts"><button class="btn wa" data-a="owedmsg" data-id="'+o.id+'">Écrire au fournisseur</button><button class="btn sec" data-a="owedpay" data-id="'+o.id+'">J’ai payé</button></div>':'')+
+      '<div class="acts"><button class="btn red" data-a="oweddel" data-id="'+o.id+'">Supprimer</button></div></div>';
+  }).join('');
+  h+='</div><button class="fab" data-a="owednew">+ Je dois à quelqu’un</button>';
+  return h;
+}
+function owedFind(id){S.owed=S.owed||[]; for(var i=0;i<S.owed.length;i++) if(S.owed[i].id===id) return S.owed[i]; return null;}
+function owedBuild(o,k,tone,prom){
+  var tpl=null; OW.forEach(function(x){if(x.k===k) tpl=x;}); tpl=(tpl||OW[0])[tone]||OW[0].normal;
+  var r=owedRest(o), t3=Math.ceil(r/3/100)*100;
+  var vals={nom:o.name,reste:F(r),paye:F(owedPaid(o)),echeance:fr(o.due),promesse:fr(prom),tranche3:F(t3)};
+  return tpl.replace(' — {moi}',S.me?' — '+S.me:'').replace(/\{(\w+)\}/g,function(m,k2){return vals.hasOwnProperty(k2)?vals[k2]:m;});
+}
+function paintOwedMsg(){
+  var o=owedFind(OD.id);
+  var h='<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Écrire à '+esc(o.name)+'</h2><p class="sub">Un message honnête et poli garde la confiance de ton fournisseur.</p>';
+  h+='<label for="o_sit">Situation</label><select id="o_sit">'+OW.map(function(s){return '<option value="'+s.k+'"'+(s.k===OD.k?' selected':'')+'>'+esc(s.l)+'</option>';}).join('')+'</select>';
+  h+='<label>Ton</label><div class="tones">'+[['doux','Doux'],['normal','Normal'],['ferme','Ferme']].map(function(x){return '<button data-a="owedtone" data-v="'+x[0]+'" class="'+(OD.tone===x[0]?'on':'')+'">'+x[1]+'</button>';}).join('')+'</div>';
+  h+='<label for="o_prom">Je paie à partir du</label><input id="o_prom" type="date" value="'+OD.prom+'">';
+  h+='<label for="o_msg">Message</label><textarea id="o_msg">'+esc(owedBuild(o,OD.k,OD.tone,OD.prom))+'</textarea>';
+  h+='<div class="acts" style="margin-top:12px">'+(o.phone?'<button class="btn wa" data-a="owedsend">Ouvrir WhatsApp</button>':'')+'<button class="btn sec" data-a="owedcopy">Copier</button></div>';
+  openSheet(h);
+}
+
 /* ---------- ACTIONS ---------- */
 function val(id){var e=document.getElementById(id); return e? e.value : '';}
 var ACT={
@@ -683,7 +810,8 @@ var ACT={
     if(!name){toast('Écris le nom du client.');return;}
     if(!(amount>0)){toast('Écris le montant dû.');return;}
     if(!due){toast("Choisis la date limite de paiement.");return;}
-    var rec={name:name,phone:val('f_phone'),amount:amount,obj:val('f_obj'),date:val('f_date')||today(),due:due};
+    var rec={name:name,phone:val('f_phone'),amount:amount,obj:val('f_obj'),date:val('f_date')||today(),due:due,
+      phone2:val('f_phone2'),where:val('f_where').replace(/^\s+|\s+$/g,''),gname:val('f_gname').replace(/^\s+|\s+$/g,''),gphone:val('f_gphone')};
     if(id){var d=find(id); for(var k in rec) d[k]=rec[k]; d.demo=false;} else { rec.id=uid(); rec.pay=[]; rec.rel=[]; if(PRE&&PRE.test) rec.test=PRE.test; PRE=null; S.debts.push(rec); }
     save(); UI.view='home'; render(); toast('Enregistré.');
   },
@@ -691,7 +819,7 @@ var ACT={
   relance:function(el){relanceSheet(el.getAttribute('data-id'));},
   tone:function(el){relDraft.tone=el.getAttribute('data-v'); paintRelance();},
   sendwa:function(){
-    var d=find(relDraft.id), msg=val('r_msg'), num=waNumber(d.phone);
+    var d=find(relDraft.id), msg=val('r_msg'), num=waNumber(recipient(d,relDraft.k));
     d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone}); save();
     window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
     closeSheet(); render(); toast('Relance enregistrée dans l’historique.');
@@ -803,9 +931,31 @@ var ACT={
       var o=JSON.parse(val('s_restore')); var d=o.data||o;
       if(!d||!d.debts) throw new Error('x');
       if(!confirm('Remplacer le cahier actuel par cette sauvegarde ?')) return;
-      S.me=d.me||''; S.debts=d.debts; save(); UI.view='home'; render(); toast('Cahier restauré.');
+      S.me=d.me||''; S.debts=d.debts; S.owed=d.owed||[]; if(d.myfull!=null){S.myfull=d.myfull;S.city=d.city||'';S.myphone=d.myphone||'';} save(); UI.view='home'; render(); toast('Cahier restauré.');
     }catch(e){toast("Ce texte n'est pas une sauvegarde valide.");}
   },
+  owed:function(){UI.view='owed';render();},
+  owednew:function(){
+    openSheet('<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Je dois à quelqu’un</h2><label for="w_name">Fournisseur *</label><input id="w_name" autocomplete="off"><label for="w_phone">Son numéro WhatsApp</label><input id="w_phone" type="tel" inputmode="tel"><label for="w_amount">Montant que je dois (F) *</label><input id="w_amount" type="number" inputmode="numeric"><label for="w_obj">Pour quoi ?</label><input id="w_obj" placeholder="ex : marchandise de la semaine"><label for="w_due">Je dois payer avant le *</label><input id="w_due" type="date" value="'+addDays(today(),7)+'"><div class="acts" style="margin-top:14px"><button class="btn" data-a="owedsave">Enregistrer</button></div>');
+  },
+  owedsave:function(){
+    var n=val('w_name').replace(/^\s+|\s+$/g,''), a=+val('w_amount'), d=val('w_due');
+    if(!n){toast('Écris le nom du fournisseur.');return;} if(!(a>0)){toast('Écris le montant.');return;} if(!d){toast('Choisis la date.');return;}
+    S.owed=S.owed||[]; S.owed.push({id:uid(),name:n,phone:val('w_phone'),amount:a,obj:val('w_obj'),due:d,pay:[]}); save(); closeSheet(); render(); toast('Enregistré.');
+  },
+  owedpay:function(el){
+    var o=owedFind(el.getAttribute('data-id'));
+    openSheet('<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>J’ai payé '+esc(o.name)+'</h2><p class="sub">Reste : <b>'+F(owedRest(o))+'</b></p><label for="wp_a">Montant payé (F)</label><input id="wp_a" type="number" inputmode="numeric" value="'+owedRest(o)+'"><div class="acts" style="margin-top:14px"><button class="btn" data-a="owedpaysave" data-id="'+o.id+'">Enregistrer</button></div>');
+  },
+  owedpaysave:function(el){
+    var o=owedFind(el.getAttribute('data-id')), a=+val('wp_a'); if(!(a>0)){toast('Écris le montant.');return;}
+    o.pay=o.pay||[]; o.pay.push({a:a,d:today()}); save(); closeSheet(); render(); toast(owedRest(o)<=0?'Payé en entier !':'Enregistré. Reste : '+F(owedRest(o)));
+  },
+  oweddel:function(el){ if(confirm('Supprimer cette ligne ?')){ S.owed=(S.owed||[]).filter(function(o){return o.id!==el.getAttribute('data-id');}); save(); render(); } },
+  owedmsg:function(el){ OD={id:el.getAttribute('data-id'),k:'delai',tone:'doux',prom:addDays(parse(owedFind(el.getAttribute('data-id')).due)>new Date()?owedFind(el.getAttribute('data-id')).due:today(),7)}; paintOwedMsg(); },
+  owedtone:function(el){OD.tone=el.getAttribute('data-v'); paintOwedMsg();},
+  owedcopy:function(){copyText(val('o_msg')); toast('Message copié.');},
+  owedsend:function(){var o=owedFind(OD.id); window.open('https://wa.me/'+waNumber(o.phone)+'?text='+encodeURIComponent(val('o_msg')),'_blank'); closeSheet();},
   demo:function(){demo(); UI.view='home'; render(); toast('Exemples ajoutés (marqués « exemple »).');},
   undemo:function(){S.debts=S.debts.filter(function(d){return !d.demo;}); save(); UI.view='home'; render(); toast('Exemples supprimés.');},
   wipe:function(){ if(confirm('Tout effacer ? Fais d’abord une sauvegarde.') && confirm('Vraiment tout effacer ?')){ S={v:1,me:'',debts:[],lastBackup:0}; save(); UI.view='home'; render(); } }
@@ -821,6 +971,8 @@ document.addEventListener('click',function(ev){
 document.addEventListener('change',function(ev){
   var t=ev.target;
   if(t.id==='r_sit'){relDraft.k=t.value; paintRelance();}
+  if(t.id==='o_sit'){OD.k=t.value; paintOwedMsg();}
+  if(t.id==='o_prom'){OD.prom=t.value||OD.prom; document.getElementById('o_msg').value=owedBuild(owedFind(OD.id),OD.k,OD.tone,OD.prom);}
   if(t.id==='r_prom'){relDraft.promesse=t.value||relDraft.promesse; var d=find(relDraft.id); document.getElementById('r_msg').value=build(d,relDraft.k,relDraft.tone,relDraft.promesse);}
 });
 window.__cc={S:function(){return S;},evalTest:evalTest,toWords:toWords,plan:plan,build:build,waNumber:waNumber,rest:rest,status:status,late:late,suggest:suggest,F:F};
