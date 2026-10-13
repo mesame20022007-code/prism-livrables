@@ -138,15 +138,24 @@ function status(d){
 function lastRel(d){var r=d.rel||[]; return r.length? r[r.length-1].t : 0;}
 function daysSinceRel(d){var t=lastRel(d); return t? Math.floor((Date.now()-t)/DAY) : 999;}
 function toRelaunch(d){var s=status(d); return (s==='late'||(s==='soon'&&diff(today(),d.due)>=0)) && daysSinceRel(d)>=2;}
+var PAYS=[['229','Bénin',1],['225','Côte d’Ivoire',1],['228','Togo',0],['221','Sénégal',0],['226','Burkina Faso',0],['223','Mali',0],['227','Niger',0],['224','Guinée',0],['241','Gabon',0],['237','Cameroun',0]];
+function paysOf(){var c=S.cc||'229'; for(var i=0;i<PAYS.length;i++) if(PAYS[i][0]===c) return PAYS[i]; return PAYS[0];}
 function waNumber(p){
   if(!p) return '';
-  var s=String(p).replace(/[^\d+]/g,'');
+  var raw=String(p), s=raw.replace(/[^\d+]/g,'');
   if(s.charAt(0)==='+') return s.slice(1);
   s=s.replace(/^00/,'');
-  if(s.indexOf('229')===0){ if(s.length===11) return '229'+'01'+s.slice(3); return s; }
-  if(s.length===10 && s.indexOf('01')===0) return '229'+s;
-  if(s.length===8) return '22901'+s;
-  return s;
+  var pa=paysOf(), cc=pa[0];
+  if(raw.replace(/\s/g,'').indexOf('00')===0) return s;
+  if(cc==='229'){
+    if(s.indexOf('229')===0){ if(s.length===11) return '229'+'01'+s.slice(3); return s; }
+    if(s.length===10 && s.indexOf('01')===0) return '229'+s;
+    if(s.length===8) return '22901'+s;
+    return s;
+  }
+  if(s.indexOf(cc)===0 && s.length>=cc.length+8) return s;
+  if(pa[2]) return cc+s;
+  return cc+s.replace(/^0+/,'');
 }
 function toast(t){
   var e=document.createElement('div'); e.className='toast'; e.textContent=t; document.body.appendChild(e);
@@ -329,7 +338,7 @@ function formView(d){
   var e=d||PRE||{name:'',phone:'',amount:'',obj:'',date:today(),due:addDays(today(),7)};
   var h='<header><div class="row"><div><h1>'+(d?'Modifier la dette':'Nouvelle dette')+'</h1></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
   h+='<label for="f_name">Nom du client *</label><input id="f_name" value="'+esc(e.name)+'" autocomplete="off">';
-  h+='<label for="f_phone">Numéro WhatsApp (pour envoyer les relances)</label><input id="f_phone" type="tel" inputmode="tel" placeholder="ex : 01 97 00 00 00" value="'+esc(e.phone)+'">';
+  h+='<label for="f_phone">Numéro WhatsApp (pays : '+esc(paysOf()[1])+', à changer dans Réglages)</label><input id="f_phone" type="tel" inputmode="tel" placeholder="le numéro, comme tu l’appelles" value="'+esc(e.phone)+'">';
   h+='<label for="f_amount">Montant dû (F) *</label><input id="f_amount" type="number" inputmode="numeric" value="'+esc(e.amount)+'">';
   h+='<label for="f_obj">Pour quoi ? (ce que tu lui as vendu)</label><input id="f_obj" placeholder="ex : 3 sacs de riz" value="'+esc(e.obj)+'">';
   h+='<details class="more"'+((e.gname||e.gphone||e.phone2||e.where)?' open':'')+'><summary>🔎 Pour le retrouver s’il disparaît (conseillé)</summary><label for="f_phone2">Autre numéro (ou celui d’un proche)</label><input id="f_phone2" type="tel" inputmode="tel" value="'+esc(e.phone2||'')+'"><label for="f_where">Quartier / où il habite ou travaille</label><input id="f_where" placeholder="ex : Dantokpa, près du marché" value="'+esc(e.where||'')+'"><label for="f_gname">Personne de confiance (garant)</label><input id="f_gname" placeholder="nom d’un proche ou d’un voisin qui le connaît" value="'+esc(e.gname||'')+'"><label for="f_gphone">Numéro du garant</label><input id="f_gphone" type="tel" inputmode="tel" value="'+esc(e.gphone||'')+'"></details>';
@@ -358,7 +367,7 @@ function detail(d){
     if(d.med&&d.med.sent){
       var left=diff(d.med.limit,today()), modeTxt=MODES[d.med.mode]||'';
       if(left>=0) h+='<div class="ok2">Lettre envoyée le '+fr(iso(new Date(d.med.sent)))+' ('+esc(modeTxt)+'). Date limite : <b>'+fr(d.med.limit)+'</b> (dans '+left+' jour'+(left>1?'s':'')+').</div>';
-      else h+='<div class="note warn"><b>Délai dépassé depuis '+(-left)+' jour'+(-left>1?'s':'')+'</b> (limite : '+fr(d.med.limit)+').<ol class="hist" style="padding-left:20px;margin:6px 0 0"><li>Écris ou appelle une dernière fois pour proposer un arrangement <b>par écrit</b>.</li><li>Sans réponse : va voir un <b>huissier de justice</b> ou un avocat avec tes pièces (reconnaissance de dette, lettre et décharge, relevé, rappels).</li><li>La procédure simplifiée d’injonction de payer existe pour une créance certaine, liquide et exigible : demande les frais exacts avant de commencer.</li><li>Ne te fais jamais justice toi-même.</li></ol></div>';
+      else h+='<div class="note warn"><b>Délai dépassé depuis '+(-left)+' jour'+(-left>1?'s':'')+'</b> (limite : '+fr(d.med.limit)+').<ol class="hist" style="padding-left:20px;margin:6px 0 0"><li>Écris ou appelle une dernière fois pour proposer un arrangement <b>par écrit</b>.</li><li>Sans réponse : va voir un <b>huissier de justice</b> ou un avocat avec tes pièces (reconnaissance de dette, lettre et décharge, relevé, rappels).</li><li>La procédure simplifiée d’injonction de payer existe dans les pays de l’OHADA (Bénin, Côte d’Ivoire, Togo, Sénégal, Burkina, Mali, Niger, Guinée, Cameroun, Gabon…) pour une créance certaine, liquide et exigible : demande à un huissier ou un avocat de ton pays les frais exacts avant de commencer.</li><li>Ne te fais jamais justice toi-même.</li></ol></div>';
     } else if(d.med&&d.med.made) h+='<p class="sub">Lettre préparée le '+fr(iso(new Date(d.med.made)))+' : pas encore envoyée.</p>';
     else h+='<p class="sub">Dernière étape avant une procédure officielle : une lettre formelle avec une date limite.</p>';
     h+='<div class="acts"><button class="btn sec" data-a="medform" data-id="'+d.id+'">'+(d.med&&d.med.made?'Revoir / refaire la lettre':'Faire une mise en demeure')+'</button></div>';
@@ -373,6 +382,7 @@ function settings(){
   var h='<header><div class="row"><div><h1>Réglages</h1></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap"><div id="instslot"></div>';
   h+='<label for="s_me">Mon nom ou le nom de ma boutique (signé sous chaque message)</label><input id="s_me" value="'+esc(S.me)+'" placeholder="ex : Boutique Mama Ola">';
   h+='<label for="s_full">Mon nom complet (pour les reconnaissances de dette)</label><input id="s_full" value="'+esc(S.myfull||'')+'" placeholder="ex : Esther Dossou">';
+  h+='<label for="s_cc">Mon pays (pour envoyer sur WhatsApp)</label><select id="s_cc">'+PAYS.map(function(x){return '<option value="'+x[0]+'"'+(x[0]===(S.cc||'229')?' selected':'')+'>'+x[1]+' (+'+x[0]+')</option>';}).join('')+'</select>';
   h+='<label for="s_city">Ma ville</label><input id="s_city" value="'+esc(S.city||'')+'" placeholder="ex : Cotonou">';
   h+='<label for="s_phone">Mon numéro (pour les lettres et les paiements)</label><input id="s_phone" type="tel" value="'+esc(S.myphone||'')+'">';
   h+='<div class="acts" style="margin-top:12px"><button class="btn" data-a="saveme">Enregistrer</button></div>';
@@ -381,7 +391,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.6 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.7 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -722,7 +732,7 @@ function demo(){
   S.debts[0].pay.push({a:10000,d:addDays(t,-6)});
   save();
 }
-function backupText(){return JSON.stringify({app:'cahier-credit',v:1,exportedAt:new Date().toISOString(),data:{me:S.me,myfull:S.myfull||'',city:S.city||'',myphone:S.myphone||'',debts:S.debts,owed:S.owed||[]}});}
+function backupText(){return JSON.stringify({app:'cahier-credit',v:1,exportedAt:new Date().toISOString(),data:{me:S.me,myfull:S.myfull||'',city:S.city||'',cc:S.cc||'229',myphone:S.myphone||'',debts:S.debts,owed:S.owed||[]}});}
 function downloadBackup(){
   var txt=backupText(), name='cahier-credit-'+today()+'.json';
   try{
@@ -871,7 +881,7 @@ var ACT={
   },
   closesheet:function(){closeSheet();},
   sheetbg:function(el,ev){ if(ev.target===el) closeSheet(); },
-  saveme:function(){S.me=val('s_me').replace(/^\s+|\s+$/g,''); S.myfull=val('s_full').replace(/^\s+|\s+$/g,''); S.city=val('s_city').replace(/^\s+|\s+$/g,''); S.myphone=val('s_phone').replace(/^\s+|\s+$/g,''); save(); toast('Enregistré.');},
+  saveme:function(){S.me=val('s_me').replace(/^\s+|\s+$/g,''); S.myfull=val('s_full').replace(/^\s+|\s+$/g,''); S.cc=val('s_cc')||'229'; S.city=val('s_city').replace(/^\s+|\s+$/g,''); S.myphone=val('s_phone').replace(/^\s+|\s+$/g,''); save(); toast('Enregistré.');},
   medform:function(el){UI.id=el.getAttribute('data-id'); UI.view='med'; render();
     var d=find(UI.id), m=d.med||{}, sv=m.data||{}; if(sv.delay){document.getElementById('md_de').value=sv.delay; document.getElementById('md_to').value=sv.tone; document.getElementById('md_mo').value=sv.mode;}},
   medmake:function(el){
@@ -960,7 +970,7 @@ var ACT={
       var o=JSON.parse(val('s_restore')); var d=o.data||o;
       if(!d||!d.debts) throw new Error('x');
       if(!confirm('Remplacer le cahier actuel par cette sauvegarde ?')) return;
-      S.me=d.me||''; S.debts=d.debts; S.owed=d.owed||[]; if(d.myfull!=null){S.myfull=d.myfull;S.city=d.city||'';S.myphone=d.myphone||'';} save(); UI.view='home'; render(); toast('Cahier restauré.');
+      S.me=d.me||''; S.debts=d.debts; S.owed=d.owed||[]; if(d.myfull!=null){S.myfull=d.myfull;S.cc=d.cc||'229';S.city=d.city||'';S.myphone=d.myphone||'';} save(); UI.view='home'; render(); toast('Cahier restauré.');
     }catch(e){toast("Ce texte n'est pas une sauvegarde valide.");}
   },
   owed:function(){UI.view='owed';render();},
