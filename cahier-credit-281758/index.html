@@ -248,14 +248,14 @@ var SIT=[
   ferme:"Bonjour {nom}. Tout est réglé, merci. Pour un prochain crédit, je demande d'abord un paiement d'avance et un délai court. Passez me voir pour en parler. — {moi}"},
  {k:'bloque',l:'Il m’a bloqué(e) : message à son garant',
   to:'garant',
-  doux:"Bonjour {garant}, j'espère que vous allez bien. {nom} vous a donné comme personne de confiance. Je n'arrive plus à le/la joindre au sujet de {reste} ({objet}). Pouvez-vous lui demander de me contacter ? Merci beaucoup. — {moi}",
-  normal:"Bonjour {garant}. {nom} me doit {reste} ({objet}) depuis {jours} jours et ne répond plus. Vous êtes sa personne de référence : pouvez-vous l'aider à me contacter cette semaine ? Merci. — {moi}",
-  ferme:"Bonjour {garant}. {nom} doit {reste} depuis {jours} jours et ne répond plus à mes messages. Vous étiez sa référence. Merci de lui dire de me payer ou de m'appeler avant le {promesse}. — {moi}"},
+  doux:"Bonjour {garant}, j'espère que vous allez bien. {nom} vous a donné comme personne de confiance. Je n'arrive plus à le/la joindre au sujet d'un paiement en attente. Pouvez-vous lui demander de me contacter ? Merci beaucoup. — {moi}",
+  normal:"Bonjour {garant}. {nom} vous a donné comme référence. Je n'arrive plus à le/la joindre depuis {jours} jours au sujet d'un paiement en attente. Pouvez-vous l'aider à me contacter cette semaine ? Merci. — {moi}",
+  ferme:"Bonjour {garant}. Je n'arrive plus à joindre {nom}, dont vous êtes la référence, au sujet d'un paiement en attente depuis {jours} jours. Merci de lui demander de m'appeler avant le {promesse}. — {moi}"},
  {k:'garant',l:'Demander au garant de s’engager',
   to:'garant',
-  doux:"Bonjour {garant}, vous avez accepté d'être la personne de confiance de {nom}. Il/elle me doit {reste} ({objet}). Pouvez-vous m'aider à trouver un arrangement avec lui/elle ? Merci. — {moi}",
-  normal:"Bonjour {garant}. {nom} me doit {reste} pour {objet} et le délai est dépassé. Pouvez-vous confirmer que vous vous engagez à ce que ce soit payé avant le {promesse} ? Merci de me répondre. — {moi}",
-  ferme:"Bonjour {garant}. Comme garant de {nom}, je vous demande de confirmer par écrit comment {reste} seront payés avant le {promesse}. Sans réponse, je devrai agir autrement. — {moi}"},
+  doux:"Bonjour {garant}, vous avez accepté d'être la personne de confiance de {nom}. Un paiement est en attente. Pouvez-vous m'aider à trouver un arrangement avec lui/elle ? Merci. — {moi}",
+  normal:"Bonjour {garant}. Un paiement de {nom} est en retard. Pouvez-vous confirmer que vous l'aidez à régler avant le {promesse} ? Merci de me répondre. — {moi}",
+  ferme:"Bonjour {garant}. Comme garant de {nom}, je vous demande de m'indiquer comment le paiement en attente sera réglé avant le {promesse}. Sans réponse, je devrai agir autrement. — {moi}"},
  {k:'mediation',l:'Demander l’aide d’un médiateur',
   to:'mediateur',
   doux:"Bonjour, je vous contacte avec respect. {nom} me doit {reste} ({objet}) et nous n'arrivons pas à nous entendre. Pouvez-vous nous aider à trouver un arrangement à l'amiable ? Merci pour votre temps. — {moi}",
@@ -425,7 +425,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.8 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.9 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -482,14 +482,16 @@ function relanceSheet(id){
 }
 function paintRelance(){
   var d=find(relDraft.id), t=build(d,relDraft.k,relDraft.tone,relDraft.promesse), ds=daysSinceRel(d);
+  if(relDraft.pay && S.myphone && !sitOf(relDraft.k).to) t+=String.fromCharCode(10)+'Paiement Mobile Money : '+S.myphone;
   var h='<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Relancer '+esc(d.name)+'</h2><p class="sub">'+(relDraft.p>-1?'<b>Étape '+(relDraft.p+1)+' sur '+PLAN.length+' de ton plan</b> ('+esc(PLAN[relDraft.p].l)+'). ':'')+'Tu peux changer la situation et le ton, et modifier le message avant de l’envoyer.</p>';
   h+='<label for="r_sit">Situation ('+SIT.length*3+' messages)</label><select id="r_sit">'+GORD.map(function(g){return '<optgroup label="'+g+'">'+SIT.filter(function(s){return GRP[s.k]===g;}).map(function(s){return '<option value="'+s.k+'"'+(s.k===relDraft.k?' selected':'')+'>'+esc(s.l)+'</option>';}).join('')+'</optgroup>';}).join('')+'</select>';
   var to=sitOf(relDraft.k).to;
-  if(to==='garant') h+='<div class="note">'+(d.gphone?'Ce message est pour le <b>garant</b> ('+esc(d.gname||'')+'), pas pour le client.':'Message pour le <b>garant</b>. Ajoute son numéro dans « Modifier » pour l’envoyer directement, sinon copie-le.')+'</div>';
+  if(to==='garant') h+='<div class="note">'+(d.gphone?'Ce message est pour le <b>garant</b> ('+esc(d.gname||'')+'), pas pour le client.':'Message pour le <b>garant</b>. Ajoute son numéro dans « Modifier » pour l’envoyer directement, sinon copie-le.')+' Le montant n’y est pas écrit, pour respecter la vie privée du client. <b>Prévins toujours le client</b> que tu pourras contacter son garant.</div>';
   if(to==='mediateur') h+='<div class="note">Message pour un <b>médiateur</b> (chef de quartier, pasteur, imam, aîné de la famille…). Copie-le et envoie-le à la personne choisie.</div>';
   h+='<label>Ton</label><div class="tones">'+[['doux','Doux'],['normal','Normal'],['ferme','Ferme']].map(function(x){return '<button data-a="tone" data-v="'+x[0]+'" class="'+(relDraft.tone===x[0]?'on':'')+'">'+x[1]+'</button>';}).join('')+'</div>';
   if(['promet','delai','dernier','partiel','geste','bloque','garant','demenage'].indexOf(relDraft.k)>-1) h+='<label for="r_prom">Date limite que tu fixes</label><input id="r_prom" type="date" value="'+relDraft.promesse+'">';
   h+='<label for="r_msg">Message</label><textarea id="r_msg">'+esc(t)+'</textarea>';
+  if(S.myphone && !to) h+='<label class="chk" style="display:flex;gap:10px;align-items:center;margin-top:8px;font-weight:600"><input type="checkbox" id="r_pay" style="width:22px;height:22px"'+(relDraft.pay?' checked':'')+'> Ajouter mon numéro Mobile Money pour faciliter le paiement</label>';
   if(ds<2) h+='<div class="note warn">Tu l’as déjà relancé '+(ds===0?'aujourd’hui':'hier')+'. Mieux vaut attendre 2 jours : trop de messages fâchent le client et WhatsApp peut bloquer ton compte.</div>';
   h+='<div class="note">Reste poli(e) : ne menace jamais, n’affiche pas son nom ailleurs.</div>';
   h+='<div class="acts" style="margin-top:12px">'+(recipient(d,relDraft.k)?'<button class="btn wa" data-a="sendwa">Ouvrir WhatsApp</button>':'')+'<button class="btn sec" data-a="copymsg">Copier</button></div>';
@@ -893,6 +895,7 @@ var ACT={
   relance:function(el){relanceSheet(el.getAttribute('data-id'));},
   tone:function(el){relDraft.tone=el.getAttribute('data-v'); paintRelance();},
   sendwa:function(){
+    if(relDraft.k==='conteste'){ find(relDraft.id).auto=false; }
     var d=find(relDraft.id), msg=val('r_msg'), num=waNumber(recipient(d,relDraft.k));
     d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone,p:relDraft.p>-1?relDraft.p:undefined}); save();
     window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
@@ -1047,10 +1050,11 @@ document.addEventListener('click',function(ev){
 });
 document.addEventListener('change',function(ev){
   var t=ev.target;
+  if(t.id==='r_pay'){relDraft.pay=t.checked; var dd=find(relDraft.id), m0=build(dd,relDraft.k,relDraft.tone,relDraft.promesse); document.getElementById('r_msg').value=m0+(t.checked?'\nPaiement Mobile Money : '+S.myphone:'');}
   if(t.id==='r_sit'){relDraft.k=t.value; paintRelance();}
   if(t.id==='o_sit'){OD.k=t.value; paintOwedMsg();}
   if(t.id==='o_prom'){OD.prom=t.value||OD.prom; document.getElementById('o_msg').value=owedBuild(owedFind(OD.id),OD.k,OD.tone,OD.prom);}
-  if(t.id==='r_prom'){relDraft.promesse=t.value||relDraft.promesse; var d=find(relDraft.id); document.getElementById('r_msg').value=build(d,relDraft.k,relDraft.tone,relDraft.promesse);}
+  if(t.id==='r_prom'){relDraft.promesse=t.value||relDraft.promesse; var d=find(relDraft.id); document.getElementById('r_msg').value=build(d,relDraft.k,relDraft.tone,relDraft.promesse)+((relDraft.pay&&S.myphone&&!sitOf(relDraft.k).to)?String.fromCharCode(10)+'Paiement Mobile Money : '+S.myphone:'');}
 });
 window.__cc={S:function(){return S;},evalTest:evalTest,toWords:toWords,plan:plan,build:build,waNumber:waNumber,rest:rest,status:status,late:late,suggest:suggest,F:F};
 render();
