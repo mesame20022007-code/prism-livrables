@@ -16,10 +16,10 @@
   section{padding:42px 0;position:relative}
   h1{font-size:31px;line-height:1.1;margin:0 0 12px;font-weight:900;letter-spacing:-.3px}
   h2{font-size:27px;line-height:1.15;margin:0 0 16px;font-weight:900}
-  h1 em,h2 em{color:var(--or);font-style:normal}
+  h1 em,h2 em{color:var(--or);font-style:italic}
   p{margin:0 0 12px}
   .note{color:var(--mut);font-size:15px}
-  .btn{display:block;text-align:center;background:var(--or);color:#241606;font-weight:900;font-size:19px;border:0;border-radius:16px;padding:16px 18px;text-decoration:none;min-height:54px;box-shadow:0 10px 26px rgba(232,184,74,.28)}
+  .btn{font-style:italic;letter-spacing:.2px;display:block;text-align:center;background:var(--or);color:#241606;font-weight:900;font-size:19px;border:0;border-radius:16px;padding:16px 18px;text-decoration:none;min-height:54px;box-shadow:0 10px 26px rgba(232,184,74,.28)}
   .btn.sec{background:transparent;color:var(--or);border:2px solid var(--or);box-shadow:none}
   .btn.wa{background:#25D366;color:#06210f;box-shadow:none}
   .btn.s{display:inline-block;font-size:15px;padding:9px 16px;min-height:42px;margin-top:8px;border-radius:12px;box-shadow:none}
@@ -29,10 +29,11 @@
   .voice{position:fixed;right:12px;top:10px;z-index:30;background:rgba(0,0,0,.45);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:99px;min-height:44px;padding:0 14px;font-size:15px;font-weight:700;display:none;backdrop-filter:blur(6px)}
 
   /* HERO bannière */
-  .hero{padding:0;min-height:100vh;min-height:100svh;display:flex;align-items:flex-end;background:#120d1c url(img/hero.webp) center 0%/cover no-repeat;overflow:hidden}
+  .hero{padding:0;min-height:100vh;min-height:100svh;display:flex;align-items:flex-end;background:#120d1c url(img/hero1x.webp) center 0%/cover no-repeat;background-image:-webkit-image-set(url(img/hero1x.webp) 1x,url(img/hero2x.webp) 2x);background-image:image-set(url(img/hero1x.webp) 1x,url(img/hero2x.webp) 2x);overflow:hidden}
   .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,13,28,.92) 0%,rgba(18,13,28,.55) 28%,rgba(18,13,28,.1) 45%,rgba(18,13,28,.72) 72%,rgba(18,13,28,.98) 100%)}
   .hero .w{position:relative;padding-bottom:30px;padding-top:70px}
   .hero h1{text-shadow:0 3px 16px rgba(0,0,0,.6)}
+  .hero .sub b{font-style:italic;color:var(--or2)}
   .hero .sub{font-size:18px;color:#efe6d2;text-shadow:0 2px 10px rgba(0,0,0,.6);margin-bottom:16px}
   .chips{position:absolute;inset:0;pointer-events:none}
   .chip{position:absolute;display:flex;gap:10px;align-items:center;padding:8px 13px;border-radius:14px;font-weight:900;font-size:18px;color:#fff;box-shadow:0 10px 24px rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.3);opacity:0;animation:chipin .7s cubic-bezier(.2,.9,.3,1.3) forwards, bob 4s ease-in-out infinite}
@@ -42,10 +43,12 @@
   .chip.r{background:linear-gradient(135deg,#b3261e,#e65a4f)}
   @keyframes chipin{from{opacity:0;transform:translateY(24px) scale(.8)}to{opacity:1;transform:none}}
   @keyframes bob{0%,100%{margin-top:0}50%{margin-top:-7px}}
-  .peek{margin-top:18px;color:var(--or2);font-weight:800;font-size:16px;display:flex;gap:8px;align-items:center}
+  .peek{font-style:italic;margin-top:18px;color:var(--or2);font-weight:800;font-size:16px;display:flex;gap:8px;align-items:center}
   .peek i{display:inline-block;width:10px;height:10px;border-right:3px solid var(--or);border-bottom:3px solid var(--or);transform:rotate(45deg);animation:nudge 1.6s ease-in-out infinite}
   @keyframes nudge{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(4px,4px)}}
 
+  .enc{margin-top:14px;display:inline-block;background:rgba(246,198,60,.14);border:1px solid rgba(246,198,60,.55);color:var(--jaune);border-radius:12px;padding:8px 14px;font-weight:800;font-style:italic;font-size:17px;backdrop-filter:blur(2px);transition:opacity .6s,transform .6s}
+  .enc.fin{color:#7fe0a1;border-color:rgba(47,191,98,.6);background:rgba(47,191,98,.14)}
   /* révélations au défilement */
   .rv{opacity:0;transform:translateY(22px);transition:opacity .5s ease,transform .5s ease}
   .rv.in{opacity:1;transform:none}
@@ -63,13 +66,25 @@
   .tg{background:var(--vert);color:#04210f}.ty{background:var(--jaune);color:#2b1b05}
 
   /* VOIX */
-  .quote{border-left:4px solid var(--or);padding:6px 0 6px 14px;margin:0 0 14px;font-size:20px;font-weight:700;line-height:1.3}
+  .quote{font-style:italic;border-left:4px solid var(--or);padding:6px 0 6px 14px;margin:0 0 14px;font-size:20px;font-weight:700;line-height:1.3}
   /* SOLUTIONS */
   .grid{display:grid;gap:12px}
   .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
   .box b{display:block;font-size:19px;margin-bottom:4px}
   .box span{color:var(--mut);font-size:16px}
   .box .ic{font-size:30px;display:block;margin-bottom:6px}
+  /* TÉLÉPHONES (défilement horizontal) */
+  .phones{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 18px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .phones::-webkit-scrollbar{display:none}
+  .ph{flex:0 0 66vw;max-width:250px;margin:0;scroll-snap-align:center}
+  .ph .scr{border:7px solid #0b0813;border-radius:32px;background:#0b0813;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 0 1px #3a2f52;position:relative;aspect-ratio:1/2}
+  .ph .scr:before{content:"";position:absolute;top:6px;left:50%;width:54px;height:12px;margin-left:-27px;background:#0b0813;border-radius:99px;z-index:2}
+  .ph img{display:block;width:100%;height:100%;object-fit:cover}
+  .ph figcaption{margin-top:10px;font-size:15px;color:var(--mut);line-height:1.35}
+  .ph figcaption b{display:block;color:var(--ink);font-size:17px;font-style:italic}
+  .dots{display:flex;gap:8px;justify-content:center;margin:2px 0 8px}
+  .dots i{width:8px;height:8px;border-radius:50%;background:var(--line);transition:all .3s}
+  .dots i.on{background:var(--or);width:22px;border-radius:99px}
   /* PLAN */
   .plan{margin:14px 0 0;padding:0;list-style:none}
   .plan li{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);opacity:.35;transition:opacity .4s}
@@ -121,13 +136,13 @@
 
 <section class="hero" data-voice="v1" data-s="hero">
   <div class="chips" aria-hidden="true">
-    <div class="chip g" style="left:12px;top:214px;animation-delay:.5s,1.2s"><span>&#10004;</span><div><span id="cnt">+ 0 F</span><small>récupérés (exemple)</small></div></div>
-    <div class="chip y" style="right:12px;top:240px;animation-delay:1.1s,1.8s"><span>&#9203;</span><div>35 000 F<small>en cours</small></div></div>
+    <div class="chip g" style="left:12px;top:96px;animation-delay:.5s,1.2s"><span>&#10004;</span><div><span id="cnt">+ 0 F</span><small>récupérés (exemple)</small></div></div>
   </div>
   <div class="w">
     <h1>Marre de perdre de l'argent à cause des clients <em>qui ne paient pas</em> ?</h1>
     <p class="sub">Garde tes clients, <b>sans te ruiner</b>. Ton cahier de crédit sur téléphone : il te dit qui relancer, écrit le message et garde la preuve.</p>
     <a class="btn pulse" href="#offre" data-t="cta_hero" data-ev="cta_hero">Je veux mon cahier</a>
+    <div class="enc" id="enc" aria-hidden="true">&#9203; <b id="encv">35 000 F</b> en cours</div>
     <div class="peek"><i></i> Une commerçante a été bloquée par un client. Voici ce qu'elle a fait.</div>
   </div>
 </section>
@@ -157,15 +172,21 @@
   <p class="rv">Une dette non payée, c'est de l'argent que <b>tu as déjà sorti de ta poche</b>. Et ça empêche de racheter de la marchandise.</p>
 </div></section>
 
-<section data-voice="v4" data-s="solutions"><div class="w">
-  <h2 class="rv">Quatre choses pour <em>ton argent</em></h2>
-  <div class="grid">
-    <div class="box rv"><span class="ic">&#128678;</span><b>Avant de donner</b><span>Un test feu vert, orange ou rouge, et un écrit signé : reconnaissance de dette en 1 minute.</span></div>
-    <div class="box rv"><span class="ic">&#128210;</span><b>Qui te doit quoi</b><span>Chaque dette, chaque paiement, avec la date. Plus de « je t'ai déjà payé » sans preuve.</span></div>
-    <div class="box rv"><span class="ic">&#128172;</span><b>Relancer sans te fâcher</b><span>66 messages WhatsApp prêts : doux, normal ou ferme, pour 22 situations.</span></div>
-    <div class="box rv"><span class="ic">&#128269;</span><b>Retrouver celui qui disparaît</b><span>Autre numéro, quartier, garant, et le message déjà écrit pour le garant.</span></div>
-  </div>
-</div></section>
+<section data-voice="v4" data-s="telephone"><div class="w">
+  <h2 class="rv">Dans ton téléphone, <em>voilà ce que tu vois</em></h2>
+  <p class="note rv">Vraies captures de l'application, avec des clients d'exemple.</p>
+</div>
+<div class="phones" id="phones">
+  <figure class="ph"><div class="scr"><img src="img/ph_dash.webp" width="360" height="720" loading="lazy" decoding="async" alt="Tableau de bord"></div><figcaption><b>Ton argent d'un coup d'œil</b>Ce qu'on te doit, ce que tu dois, qui relancer aujourd'hui.</figcaption></figure>
+  <figure class="ph"><div class="scr"><img src="img/ph_liste.webp" width="360" height="720" loading="lazy" decoding="async" alt="Liste des dettes"></div><figcaption><b>Qui te doit quoi</b>Chaque dette, chaque paiement, avec la date et la preuve.</figcaption></figure>
+  <figure class="ph"><div class="scr"><img src="img/ph_garant.webp" width="360" height="720" loading="lazy" decoding="async" alt="Message au garant"></div><figcaption><b>Il t'a bloquée ?</b>Le message pour son garant est déjà écrit.</figcaption></figure>
+  <figure class="ph"><div class="scr"><img src="img/ph_plan.webp" width="360" height="720" loading="lazy" decoding="async" alt="Plan de relance"></div><figcaption><b>Le plan de relance</b>De plus en plus ferme, étape par étape.</figcaption></figure>
+  <figure class="ph"><div class="scr"><img src="img/ph_retrouver.webp" width="360" height="720" loading="lazy" decoding="async" alt="Retrouver un client"></div><figcaption><b>Retrouver celui qui disparaît</b>Autre numéro, quartier, personne de confiance.</figcaption></figure>
+  <figure class="ph"><div class="scr"><img src="img/ph_devoir.webp" width="360" height="720" loading="lazy" decoding="async" alt="Ce que je dois"></div><figcaption><b>Ce que tu dois aussi</b>Tes fournisseurs, et le message pour demander un délai.</figcaption></figure>
+</div>
+<div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="w"><p class="rv" style="margin-top:6px"><b>Et avant de donner à crédit</b> : un test feu vert, orange ou rouge, et une reconnaissance de dette en une minute.</p></div>
+</section>
 
 <section style="background:var(--bg2)" data-voice="v5" data-s="plan"><div class="w">
   <h2 class="rv">Chaque jour, <em>la bonne relance</em></h2>
@@ -206,12 +227,10 @@
 </div></section>
 
 <section data-voice="v6" data-s="calcul"><div class="w">
-  <h2 class="rv">Combien te doit-on <em>en ce moment</em> ?</h2>
+  <h2 class="rv">Et si la moitié de cet argent <em>revenait</em> ?</h2>
   <div class="calc rv">
-    <label for="owed" class="note">Total que tes clients te doivent (F)</label>
+    <label for="owed" class="note">Combien tes clients te doivent-ils ? (F)</label>
     <input id="owed" type="number" inputmode="numeric" value="50000">
-    <label for="pct" class="note" style="display:block;margin-top:10px">Part que tu récupères grâce aux relances : <b id="pctV">20</b> %</label>
-    <input id="pct" type="range" min="10" max="50" step="5" value="20">
     <div class="res" id="calcRes"></div>
     <p class="note" style="margin-top:10px">Exemple de calcul avec tes propres chiffres, pas une promesse de résultat.</p>
   </div>
@@ -308,13 +327,12 @@ if(CFG.garantie){$('garantie').textContent='✔ '+CFG.garantie; $('garantie').st
 if(CFG.avis&&CFG.avis.length){ $('avisS').style.display='block'; $('avisL').innerHTML=CFG.avis.map(function(a){return '<div class="avis">“'+String(a.texte).replace(/</g,'&lt;')+'”<b>'+String(a.nom).replace(/</g,'&lt;')+(a.ville?', '+String(a.ville).replace(/</g,'&lt;'):'')+'</b></div>';}).join(''); }
 /* Calculateur */
 function calc(){
-  var o=Math.max(0,+$('owed').value||0), p=+$('pct').value, prix=(fin>Date.now())?CFG.prix:(fin?CFG.prixApres:CFG.prix), g=o*p/100;
-  $('pctV').textContent=p;
-  $('calcRes').innerHTML='Tu récupères <b>'+F(g)+'</b><br>Le cahier coûte '+F(prix)+(g>=prix&&prix>0?' : soit <b>'+(Math.floor(g/prix*10)/10).toString().replace('.',',')+' fois</b> son prix.':'.');
+  var o=Math.max(0,+$('owed').value||0), p=50, prix=(fin>Date.now())?CFG.prix:(fin?CFG.prixApres:CFG.prix), g=o*p/100;
+  $('calcRes').innerHTML='Si la moitié revient, tu récupères <b>'+F(g)+'</b><br>Le cahier coûte '+F(prix)+(g>=prix&&prix>0?' : soit <b>'+(Math.floor(g/prix*10)/10).toString().replace('.',',')+' fois</b> son prix.':'.');
 }
 var calcOnce=false;
 function calcEv(){ calc(); if(!calcOnce){calcOnce=true; ev('ev_calc');} }
-$('owed').addEventListener('input',calcEv); $('pct').addEventListener('input',calcEv);
+$('owed').addEventListener('input',calcEv);
 /* Messages interactifs : 4 situations x 3 tons */
 var SIT=[
  {l:'Rappel avant l’échéance',m:{doux:"Bonjour [Nom], j'espère que vous allez bien. Petit rappel amical : votre paiement de [montant] est prévu le [date]. Merci d'avance !",normal:"Bonjour [Nom]. Je vous rappelle que [montant] est à régler le [date]. Pouvez-vous me confirmer que ce sera bon ? Merci.",ferme:"Bonjour [Nom]. Le [date], vous devez me payer [montant]. Merci de me confirmer ce jour-là l'heure et le moyen de paiement."}},
@@ -349,8 +367,16 @@ if('IntersectionObserver' in window && !reduce){
   new IntersectionObserver(function(es,o){ if(es[0].isIntersecting){ lis.forEach(function(l,i){setTimeout(function(){l.classList.add('on');},i*320);}); o.disconnect(); } },{threshold:.3}).observe(pl);
 } else { rvs.forEach(function(r){r.classList.add('in');}); [].forEach.call($('planL').children,function(l){l.classList.add('on');}); }
 var target=35000, cur=0, cnt=$('cnt');
-function tick(){ cur+=Math.ceil((target-cur)/9); cnt.textContent='+ '+F(cur); if(cur<target) setTimeout(tick,60); }
-if(reduce){ cnt.textContent='+ '+F(target); } else setTimeout(tick,900);
+var enc=$('enc'), encv=$('encv');
+function tick(){ cur+=Math.ceil((target-cur)/9); cnt.textContent='+ '+F(cur); encv.textContent=F(target-cur); if(cur<target) setTimeout(tick,60); else { enc.classList.add('fin'); enc.innerHTML='&#10004; Tout est récupéré'; } }
+if(reduce){ cnt.textContent='+ '+F(target); enc.classList.add('fin'); enc.innerHTML='&#10004; Tout est récupéré'; } else setTimeout(tick,1500);
+/* Défilement horizontal des téléphones : points + suivi du premier balayage */
+var ph=$('phones'), dots=[].slice.call($('dots').children), swiped=false;
+ph.addEventListener('scroll',function(){
+  var f=ph.firstElementChild, step=f.getBoundingClientRect().width+18, i=Math.round(ph.scrollLeft/step);
+  dots.forEach(function(d,k){d.classList.toggle('on',k===i);});
+  if(!swiped&&ph.scrollLeft>20){swiped=true; ev('ev_swipe');}
+},{passive:true});
 /* Barre d'achat collante après le premier écran */
 var hero=document.querySelector('.hero'), off=$('offre'), st=$('sticky'), seenHero=true, seenOff=false;
 if('IntersectionObserver' in window){
