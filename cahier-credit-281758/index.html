@@ -137,7 +137,28 @@ function status(d){
 }
 function lastRel(d){var r=d.rel||[]; return r.length? r[r.length-1].t : 0;}
 function daysSinceRel(d){var t=lastRel(d); return t? Math.floor((Date.now()-t)/DAY) : 999;}
-function toRelaunch(d){var s=status(d); return (s==='late'||(s==='soon'&&diff(today(),d.due)>=0)) && daysSinceRel(d)>=2;}
+/* Plan de relance semi-automatique : l'application propose chaque jour la bonne étape, tu appuies pour envoyer */
+var PLAN=[
+ {d:-3,k:'rappel',tone:'doux',l:'Rappel amical'},
+ {d:0,k:'jourj',tone:'doux',l:'Jour de l’échéance'},
+ {d:2,k:'retard',tone:'normal',l:'Premier retard'},
+ {d:7,k:'retard',tone:'ferme',l:'Retard d’une semaine'},
+ {d:15,k:'dernier',tone:'normal',l:'Dernier rappel'},
+ {d:30,k:'dernier',tone:'ferme',l:'Avant procédure'}
+];
+function planDone(d,i){return (d.rel||[]).some(function(x){return x.p===i;});}
+function planDate(d,i){return addDays(d.due,PLAN[i].d);}
+function nextStep(d){
+  if(d.auto===false || rest(d)<=0) return -1;
+  var t=today(), best=-1;
+  for(var i=0;i<PLAN.length;i++){ if(planDate(d,i)<=t && !planDone(d,i)) best=i; }
+  if(best>-1){ for(var j=best+1;j<PLAN.length;j++) if(planDone(d,j)) return -1; }
+  return best;
+}
+function toRelaunch(d){
+  if(d.auto!==false) return nextStep(d)>-1;
+  var s=status(d); return (s==='late'||(s==='soon'&&diff(today(),d.due)>=0)) && daysSinceRel(d)>=2;
+}
 var PAYS=[['229','Bénin',1],['225','Côte d’Ivoire',1],['228','Togo',0],['221','Sénégal',0],['226','Burkina Faso',0],['223','Mali',0],['227','Niger',0],['224','Guinée',0],['241','Gabon',0],['237','Cameroun',0]];
 function paysOf(){var c=S.cc||'229'; for(var i=0;i<PAYS.length;i++) if(PAYS[i][0]===c) return PAYS[i]; return PAYS[0];}
 function waNumber(p){
@@ -327,7 +348,7 @@ function home(){
     h+=list.map(function(d){
       var s=status(d);
       return '<div class="debt '+s+'" data-a="open" data-id="'+d.id+'"><div class="top"><div><div class="nm">'+esc(d.name)+(d.demo?' <span class="sub">(exemple)</span>':'')+'</div><div class="ob">'+esc(d.obj||'')+'</div></div><div class="am">'+F(rest(d))+'</div></div>'+
-        '<span class="tag '+s+'">'+chipText(d)+'</span>'+
+        '<span class="tag '+s+'">'+chipText(d)+'</span>'+(nextStep(d)>-1?' <span class="tag soon">À relancer : '+esc(PLAN[nextStep(d)].l)+'</span>':'')+
         (s!=='paid'?'<div class="acts"><button class="btn wa" data-a="relance" data-id="'+d.id+'">Relancer</button><button class="btn sec" data-a="pay" data-id="'+d.id+'">Il a payé</button></div>':'')+'</div>';
     }).join('');
   }
@@ -357,6 +378,19 @@ function detail(d){
   else if(s!=='paid') h+='<p class="sub">💡 Ajoute un autre numéro, son quartier et un garant (bouton Modifier) : si le client te bloque, tu pourras le retrouver.</p>';
   if(s!=='paid') h+='<div class="acts"><button class="btn wa" data-a="relance" data-id="'+d.id+'">Relancer sur WhatsApp</button></div><div class="acts"><button class="btn sec" data-a="pay" data-id="'+d.id+'">Enregistrer un paiement</button><button class="btn sec" data-a="extend" data-id="'+d.id+'">Nouveau délai</button></div>';
   if(d.test) h+='<p class="sub">Test avant crédit : feu <b>'+esc(d.test.v)+'</b> ('+d.test.s+'/24) le '+fr(iso(new Date(d.test.t)))+'</p>';
+  if(s!=='paid'){
+    h+='<h3>Plan de relance</h3>';
+    if(d.auto===false) h+='<p class="sub">Plan désactivé pour ce client.</p><div class="acts"><button class="btn sec" data-a="planon" data-id="'+d.id+'">Réactiver le plan</button></div>';
+    else {
+      var ns2=nextStep(d);
+      h+='<p class="sub">L’application te propose chaque jour l’étape suivante, de plus en plus ferme. Tu appuies pour envoyer : rien ne part sans toi.</p><ul class="hist plan">';
+      PLAN.forEach(function(st,i){
+        var dt=planDate(d,i), done=planDone(d,i), now=(i===ns2), skip=!done&&!now&&dt<=today();
+        h+='<li>'+(done?'✔ ':now?'👉 ':skip?'· ':'○ ')+'<b>'+esc(st.l)+'</b> — '+fr(dt)+' ('+({doux:'doux',normal:'normal',ferme:'ferme'})[st.tone]+')'+(done?' : envoyé':now?' : <b>à faire aujourd’hui</b>':skip?' : passée':'')+'</li>';
+      });
+      h+='</ul><div class="acts"><button class="btn sec" data-a="planoff" data-id="'+d.id+'">Désactiver le plan</button></div>';
+    }
+  }
   h+='<h3>Preuve écrite</h3>';
   if(d.recon&&d.recon.signed) h+='<div class="ok2">✔ Reconnaissance de dette signée le '+fr(iso(new Date(d.recon.signed)))+'</div>';
   else if(d.recon&&d.recon.made) h+='<p class="sub">Reconnaissance préparée le '+fr(iso(new Date(d.recon.made)))+' : pas encore signée.</p>';
@@ -391,7 +425,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.7 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.8 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -441,13 +475,14 @@ function closeSheet(){document.getElementById('modal').innerHTML=''; document.bo
 function recipient(d,k){var to=sitOf(k).to; if(to==='garant') return d.gphone||''; if(to==='mediateur') return ''; return d.phone||d.phone2||'';}
 function relanceSheet(id){
   var d=find(id); if(!d) return;
-  var k=suggest(d), tone=((d.rel||[]).length? 'normal':'doux');
-  relDraft={id:id,k:k,tone:tone,promesse:addDays(today(),1)};
+  var k=suggest(d), tone=((d.rel||[]).length? 'normal':'doux'), ns=nextStep(d), pi=-1;
+  if(ns>-1){k=PLAN[ns].k; tone=PLAN[ns].tone; pi=ns;}
+  relDraft={id:id,k:k,tone:tone,promesse:addDays(today(),1),p:pi};
   paintRelance();
 }
 function paintRelance(){
   var d=find(relDraft.id), t=build(d,relDraft.k,relDraft.tone,relDraft.promesse), ds=daysSinceRel(d);
-  var h='<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Relancer '+esc(d.name)+'</h2><p class="sub">Choisis la situation et le ton. Tu peux modifier le message avant de l’envoyer.</p>';
+  var h='<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Relancer '+esc(d.name)+'</h2><p class="sub">'+(relDraft.p>-1?'<b>Étape '+(relDraft.p+1)+' sur '+PLAN.length+' de ton plan</b> ('+esc(PLAN[relDraft.p].l)+'). ':'')+'Tu peux changer la situation et le ton, et modifier le message avant de l’envoyer.</p>';
   h+='<label for="r_sit">Situation ('+SIT.length*3+' messages)</label><select id="r_sit">'+GORD.map(function(g){return '<optgroup label="'+g+'">'+SIT.filter(function(s){return GRP[s.k]===g;}).map(function(s){return '<option value="'+s.k+'"'+(s.k===relDraft.k?' selected':'')+'>'+esc(s.l)+'</option>';}).join('')+'</optgroup>';}).join('')+'</select>';
   var to=sitOf(relDraft.k).to;
   if(to==='garant') h+='<div class="note">'+(d.gphone?'Ce message est pour le <b>garant</b> ('+esc(d.gname||'')+'), pas pour le client.':'Message pour le <b>garant</b>. Ajoute son numéro dans « Modifier » pour l’envoyer directement, sinon copie-le.')+'</div>';
@@ -859,11 +894,11 @@ var ACT={
   tone:function(el){relDraft.tone=el.getAttribute('data-v'); paintRelance();},
   sendwa:function(){
     var d=find(relDraft.id), msg=val('r_msg'), num=waNumber(recipient(d,relDraft.k));
-    d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone}); save();
+    d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone,p:relDraft.p>-1?relDraft.p:undefined}); save();
     window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
     closeSheet(); render(); toast('Relance enregistrée dans l’historique.');
   },
-  copymsg:function(){ var d=find(relDraft.id); copyText(val('r_msg')); d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone}); save(); toast('Message copié. Colle-le dans WhatsApp ou en SMS.'); },
+  copymsg:function(){ var d=find(relDraft.id); copyText(val('r_msg')); d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone,p:relDraft.p>-1?relDraft.p:undefined}); save(); toast('Message copié. Colle-le dans WhatsApp ou en SMS.'); },
   pay:function(el){paySheet(el.getAttribute('data-id'));},
   savepay:function(el){
     var d=find(el.getAttribute('data-id')), a=+val('p_a'), dt=val('p_d')||today();
@@ -873,7 +908,7 @@ var ACT={
   },
   extend:function(el){extendSheet(el.getAttribute('data-id'));},
   extq:function(el){document.getElementById('e_d').value=addDays(today(),+el.getAttribute('data-v'));},
-  saveext:function(el){var d=find(el.getAttribute('data-id')); d.due=val('e_d')||d.due; save(); closeSheet(); render(); toast('Nouveau délai enregistré.');},
+  saveext:function(el){var d=find(el.getAttribute('data-id')); d.due=val('e_d')||d.due; (d.rel||[]).forEach(function(x){delete x.p;}); save(); closeSheet(); render(); toast('Nouveau délai enregistré.');},
   install:function(){
     if(!deferredPrompt) return;
     deferredPrompt.prompt();
@@ -973,6 +1008,8 @@ var ACT={
       S.me=d.me||''; S.debts=d.debts; S.owed=d.owed||[]; if(d.myfull!=null){S.myfull=d.myfull;S.cc=d.cc||'229';S.city=d.city||'';S.myphone=d.myphone||'';} save(); UI.view='home'; render(); toast('Cahier restauré.');
     }catch(e){toast("Ce texte n'est pas une sauvegarde valide.");}
   },
+  planoff:function(el){var d=find(el.getAttribute('data-id')); d.auto=false; save(); render();},
+  planon:function(el){var d=find(el.getAttribute('data-id')); d.auto=true; save(); render();},
   owed:function(){UI.view='owed';render();},
   dash:function(){UI.view='dash';render();},
   owednew:function(){
