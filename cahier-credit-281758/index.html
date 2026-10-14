@@ -206,9 +206,9 @@ var SIT=[
   normal:"Bonjour {nom}. Selon mon cahier, il reste {reste} sur {total} ({objet}). Si vous avez payé, envoyez-moi la preuve (capture Mobile Money, date, montant) et je corrige. — {moi}",
   ferme:"Bonjour {nom}. Mon cahier indique {reste} non payés. Sans preuve de paiement (capture, reçu), je dois considérer que la dette reste due. Merci de me l'envoyer aujourd'hui. — {moi}"},
  {k:'delai',l:'Il demande un délai ou des tranches',
-  doux:"Bonjour {nom}, je comprends votre situation. Nous pouvons faire par tranches : par exemple 3 paiements de {tranche3} pour finir {reste}. Dites-moi ce qui vous convient et on se met d'accord. — {moi}",
-  normal:"Bonjour {nom}. D'accord pour un paiement en 3 fois : {tranche3} le {promesse}, puis chaque semaine. Si un paiement manque, le reste devient dû tout de suite. Confirmez-moi par message. — {moi}",
-  ferme:"Bonjour {nom}. J'accepte un dernier arrangement : 3 paiements de {tranche3}, le premier le {promesse}. Aucun nouveau crédit tant que tout n'est pas payé. Confirmez avant ce soir. — {moi}"},
+  doux:"Bonjour {nom}, je comprends votre situation. Nous pouvons faire par tranches : par exemple 3 paiements ({tranches}) pour finir {reste}. Dites-moi ce qui vous convient et on se met d'accord. — {moi}",
+  normal:"Bonjour {nom}. D'accord pour un paiement en 3 fois : {tranches}, le premier le {promesse}, puis chaque semaine. Si un paiement manque, le reste devient dû tout de suite. Confirmez-moi par message. — {moi}",
+  ferme:"Bonjour {nom}. J'accepte un dernier arrangement : 3 paiements ({tranches}), le premier le {promesse}. Aucun nouveau crédit tant que tout n'est pas payé. Confirmez avant ce soir. — {moi}"},
  {k:'conteste',l:'Il conteste le montant',
   doux:"Bonjour {nom}, merci de me le dire. Voici le détail de mon cahier : {objet}, total {total}, déjà payé {paye}, reste {reste}. Dites-moi ce qui ne correspond pas et nous vérifions ensemble. — {moi}",
   normal:"Bonjour {nom}. D'après mon cahier : {objet} = {total} (donné le {datedette}), payé {paye}, reste {reste}. Si vous pensez qu'il y a une erreur, dites-moi exactement quel point et envoyez vos preuves. — {moi}",
@@ -216,7 +216,7 @@ var SIT=[
  {k:'dernier',l:'Dernier avertissement',
   doux:"Bonjour {nom}. Je ne veux pas en arriver là, mais la dette de {reste} ({objet}) dure depuis {jours} jours. Je vous demande de la régler avant le {promesse}. Parlons-en, je suis prêt(e) à trouver une solution. — {moi}",
   normal:"Bonjour {nom}. Dernier rappel : {reste} ({objet}), {jours} jours de retard. Sans paiement avant le {promesse}, je serai obligé(e) de passer par une procédure officielle de recouvrement. — {moi}",
-  ferme:"Bonjour {nom}. Dernier avertissement avant procédure : {reste} dus pour {objet}. Si le paiement n'est pas reçu avant le {promesse}, je passerai par la voie légale (mise en demeure puis procédure de recouvrement). — {moi}"},
+  ferme:"Bonjour {nom}. Dernier avertissement : {reste} dus pour {objet}. Sans paiement avant le {promesse}, je ferai une lettre officielle de mise en demeure, puis je demanderai l'aide d'un huissier. — {moi}"},
  /* --- v1.5 : plus de situations --- */
  {k:'avant',l:'Avant de donner : mes conditions',
   doux:"Bonjour {nom}, avec plaisir pour {objet} ({total}). Pour que tout soit clair entre nous : paiement de {total} avant le {echeance}. Si ça vous convient, je vous prépare ça. — {moi}",
@@ -233,7 +233,7 @@ var SIT=[
  {k:'momo',l:'Où envoyer le paiement (Mobile Money)',
   doux:"Bonjour {nom}, pour faciliter le paiement de {reste}, vous pouvez envoyer par Mobile Money au {monnum}. Envoyez-moi ensuite la capture, merci beaucoup. — {moi}",
   normal:"Bonjour {nom}. Pour régler {reste} ({objet}) : Mobile Money au {monnum}, puis envoyez-moi la capture avec la date. Je note votre paiement tout de suite. — {moi}",
-  ferme:"Bonjour {nom}. Plus d'excuse possible : envoyez {reste} maintenant par Mobile Money au {monnum} et envoyez-moi la capture. Je note dès réception. — {moi}"},
+  ferme:"Bonjour {nom}. Pour régler {reste} ({objet}), envoyez par Mobile Money au {monnum} aujourd'hui, puis envoyez-moi la capture. Je note dès réception. — {moi}"},
  {k:'faux',l:'Faux paiement / capture suspecte',
   doux:"Bonjour {nom}, merci pour la capture. De mon côté je ne vois pas encore l'argent arriver. Pouvez-vous vérifier avec votre opérateur et me donner le numéro de transaction ? — {moi}",
   normal:"Bonjour {nom}. Le paiement annoncé n'est pas arrivé sur mon compte. Envoyez-moi l'identifiant de transaction et l'heure exacte, je vérifie auprès de l'opérateur. — {moi}",
@@ -258,9 +258,9 @@ var SIT=[
   ferme:"Bonjour {garant}. Comme garant de {nom}, je vous demande de m'indiquer comment le paiement en attente sera réglé avant le {promesse}. Sans réponse, je devrai agir autrement. — {moi}"},
  {k:'mediation',l:'Demander l’aide d’un médiateur',
   to:'mediateur',
-  doux:"Bonjour, je vous contacte avec respect. {nom} me doit {reste} ({objet}) et nous n'arrivons pas à nous entendre. Pouvez-vous nous aider à trouver un arrangement à l'amiable ? Merci pour votre temps. — {moi}",
-  normal:"Bonjour. Je souhaite votre médiation dans une affaire de dette : {nom} me doit {reste} pour {objet} depuis {jours} jours. Pouvez-vous nous réunir cette semaine pour un arrangement ? Merci. — {moi}",
-  ferme:"Bonjour. {nom} ne respecte pas ses engagements : {reste} dus depuis {jours} jours. Je vous demande de nous convoquer pour régler cela. Je viens avec mes preuves (cahier, messages). Merci. — {moi}"},
+  doux:"Bonjour [nom de la personne choisie : chef de quartier, pasteur, imam, doyen du marché…], je vous contacte avec respect. {nom} me doit {reste} ({objet}) et nous n'arrivons pas à nous entendre. Pouvez-vous nous aider à trouver un arrangement à l'amiable ? Merci pour votre temps. — {moi}",
+  normal:"Bonjour [nom de la personne choisie]. Je souhaite votre médiation dans une affaire de dette : {nom} me doit {reste} pour {objet} depuis {jours} jours. Pouvez-vous nous réunir cette semaine pour un arrangement ? Merci. — {moi}",
+  ferme:"Bonjour [nom de la personne choisie]. {nom} n'a pas tenu sa parole : {reste} dus depuis {jours} jours. Pouvez-vous nous réunir pour régler cela ? Je viens avec mes preuves (cahier, messages). Merci. — {moi}"},
  {k:'demenage',l:'Il a déménagé / je ne sais plus où il est',
   doux:"Bonjour {nom}, j'espère que vous allez bien. Il paraît que vous avez changé d'adresse. Pouvez-vous me donner votre nouvelle localisation et un numéro pour vous joindre ? Il reste {reste} à régler. — {moi}",
   normal:"Bonjour {nom}. Je ne vous trouve plus au quartier {quartier}. Merci de me donner votre nouvelle adresse et un numéro joignable pour régler {reste} ({objet}). — {moi}",
@@ -270,9 +270,9 @@ var SIT=[
   normal:"Salut {nom}. Tu sais que je t'ai aidé(e) pour {objet}. Mon commerce a besoin de cet argent : {reste}. Dis-moi la date où tu peux me payer, qu'on reste en bons termes. — {moi}",
   ferme:"Salut {nom}. Même entre nous, je dois être clair(e) : {reste} sont dus et mon commerce en souffre. Je compte sur toi avant le {promesse}. Après, je ne pourrai plus donner à crédit. — {moi}"},
  {k:'geste',l:'Offrir un petit geste s’il paie vite',
-  doux:"Bonjour {nom}, une proposition : si vous réglez {reste} avant le {promesse}, je vous fais un petit geste sur un prochain achat. Dites-moi si ça vous aide. — {moi}",
-  normal:"Bonjour {nom}. Si vous payez les {reste} en une fois avant le {promesse}, nous clôturons le dossier et je garde votre place comme bon client. Qu'en dites-vous ? — {moi}",
-  ferme:"Bonjour {nom}. Offre valable jusqu'au {promesse} seulement : paiement complet de {reste} et le dossier est clos. Après cette date, je reprends toutes les mesures prévues. — {moi}"},
+  doux:"Bonjour {nom}, une proposition : si vous réglez {reste} avant le {promesse}, je vous fais un petit geste sur votre prochain achat (on en parle ensemble). Dites-moi si ça vous aide. — {moi}",
+  normal:"Bonjour {nom}. Si vous payez les {reste} en une fois avant le {promesse}, c'est réglé et nous repartons sur de bonnes bases. Qu'en dites-vous ? — {moi}",
+  ferme:"Bonjour {nom}. Offre valable jusqu'au {promesse} seulement : si vous payez les {reste} en une fois, nous n'en parlons plus. Après cette date, je ne fais plus d'arrangement. — {moi}"},
  {k:'confiance',l:'Reprendre le crédit après un retard',
   doux:"Bonjour {nom}, merci d'avoir réglé. Pour continuer à travailler ensemble, nous recommençons avec un petit montant et un délai court. Ça vous va ? — {moi}",
   normal:"Bonjour {nom}. Après le retard de la dernière fois, je reprends le crédit avec un montant plus petit et un paiement d'avance. Si tout est bien payé, nous augmenterons ensuite. — {moi}",
@@ -295,7 +295,7 @@ function build(d,k,tone,promesse){
   var tpl=sitOf(k)[tone]||sitOf(k).normal;
   var r=rest(d), t3=Math.ceil(r/3/100)*100;
   var vals={nom:d.name,reste:F(r),total:F(d.amount),paye:F(paid(d)),objet:d.obj||'votre achat',echeance:fr(d.due),
-    jours:Math.max(1,late(d)),promesse:fr(promesse),datedette:fr(d.date),tranche3:F(t3),
+    jours:Math.max(1,late(d)),promesse:fr(promesse),datedette:fr(d.date),tranche3:F(t3),tranches:F(t3)+', '+F(t3)+' puis '+F(Math.max(0,r-2*t3)),
     garant:d.gname||'Monsieur/Madame',quartier:d.where||'habituel',monnum:S.myphone||'[mon numéro]'};
   var out=tpl.replace(' — {moi}', S.me? ' — '+S.me : '');
   out=out.replace(/\{(\w+)\}/g,function(m,k2){return vals.hasOwnProperty(k2)? vals[k2] : m;});
@@ -425,7 +425,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.9 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.10 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -827,9 +827,9 @@ var OW=[
   normal:"Bonjour {nom}. Je vous écris avant l'échéance du {echeance} pour être honnête : je ne pourrai pas payer {reste} ce jour-là. Je propose de le faire le {promesse}. Merci de me confirmer. — {moi}",
   ferme:"Bonjour {nom}. Je vous informe que le paiement de {reste} sera fait le {promesse}, au plus tard. Je reste fidèle à mes engagements et je demande votre accord pour cette date. — {moi}"},
  {k:'tranches',l:'Payer en plusieurs fois',
-  doux:"Bonjour {nom}, pour régler {reste}, pouvons-nous faire en 3 paiements de {tranche3} ? Le premier le {promesse}. Cela m'aide à continuer à travailler avec vous. Merci. — {moi}",
-  normal:"Bonjour {nom}. Je propose de payer {reste} en 3 fois : {tranche3} le {promesse}, puis chaque semaine. Je confirme par message chaque paiement. Êtes-vous d'accord ? — {moi}",
-  ferme:"Bonjour {nom}. Voici mon plan de paiement pour {reste} : 3 paiements de {tranche3}, le premier le {promesse}. Merci de confirmer par écrit pour que nous soyons tous les deux clairs. — {moi}"},
+  doux:"Bonjour {nom}, pour régler {reste}, pouvons-nous faire en 3 paiements ({tranches}) ? Le premier le {promesse}. Cela m'aide à continuer à travailler avec vous. Merci. — {moi}",
+  normal:"Bonjour {nom}. Je propose de payer {reste} en 3 fois : {tranches}, le premier le {promesse}, puis chaque semaine. Je confirme par message chaque paiement. Êtes-vous d'accord ? — {moi}",
+  ferme:"Bonjour {nom}. Voici mon plan de paiement pour {reste} : 3 paiements ({tranches}), le premier le {promesse}. Merci de confirmer par écrit pour que nous soyons tous les deux clairs. — {moi}"},
  {k:'confirme',l:'Confirmer que j’ai payé',
   doux:"Bonjour {nom}, j'ai envoyé le paiement de {paye}. Merci de me confirmer la réception. Merci pour votre patience. — {moi}",
   normal:"Bonjour {nom}. Paiement envoyé : {paye}. Il reste {reste}, que je règle le {promesse}. Merci de noter et de me confirmer. — {moi}",
@@ -857,7 +857,7 @@ function owedFind(id){S.owed=S.owed||[]; for(var i=0;i<S.owed.length;i++) if(S.o
 function owedBuild(o,k,tone,prom){
   var tpl=null; OW.forEach(function(x){if(x.k===k) tpl=x;}); tpl=(tpl||OW[0])[tone]||OW[0].normal;
   var r=owedRest(o), t3=Math.ceil(r/3/100)*100;
-  var vals={nom:o.name,reste:F(r),paye:F(owedPaid(o)),echeance:fr(o.due),promesse:fr(prom),tranche3:F(t3)};
+  var vals={nom:o.name,reste:F(r),paye:F(owedPaid(o)),echeance:fr(o.due),promesse:fr(prom),tranche3:F(t3),tranches:F(t3)+', '+F(t3)+' puis '+F(Math.max(0,r-2*t3))};
   return tpl.replace(' — {moi}',S.me?' — '+S.me:'').replace(/\{(\w+)\}/g,function(m,k2){return vals.hasOwnProperty(k2)?vals[k2]:m;});
 }
 function paintOwedMsg(){
