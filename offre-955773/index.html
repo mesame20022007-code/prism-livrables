@@ -13,7 +13,7 @@
   html{scroll-behavior:smooth}
   body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:84px}
   .w{max-width:560px;margin:0 auto;padding:0 18px}
-  section{padding:42px 0;position:relative}
+  section{padding:30px 0;position:relative}
   h1{font-size:31px;line-height:1.1;margin:0 0 12px;font-weight:900;letter-spacing:-.3px}
   h2{font-size:27px;line-height:1.15;margin:0 0 16px;font-weight:900}
   h1 em,h2 em{color:var(--or);font-style:italic}
@@ -62,7 +62,7 @@
 
   /* HISTOIRE */
   .story{background:var(--bg2)}
-  .sc{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+  .sc{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:10px}
   .sc .n{display:inline-block;background:var(--or);color:#241606;font-weight:900;border-radius:99px;width:30px;height:30px;line-height:30px;text-align:center;margin-bottom:8px}
   .wab{background:#0b141a;border-radius:14px;padding:12px;font-size:16px;color:#e9edef}
   .wab .me{background:#005c4b;border-radius:10px;padding:8px 10px;margin-left:30px}
@@ -72,7 +72,7 @@
   .tg{background:var(--vert);color:#04210f}.ty{background:var(--jaune);color:#2b1b05}
 
   /* VOIX */
-  .quote{font-style:italic;border-left:4px solid var(--or);padding:6px 0 6px 14px;margin:0 0 14px;font-size:20px;font-weight:700;line-height:1.3}
+  .quote{font-style:italic;border-left:4px solid var(--or);padding:4px 0 4px 14px;margin:0 0 10px;font-size:19px;font-weight:700;line-height:1.3}
   /* SOLUTIONS */
   .grid{display:grid;gap:12px}
   .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
@@ -104,6 +104,9 @@
   .sits{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
   .sits button{flex:1 1 40%}
   .msgbox{background:#0b141a;color:#e9edef;border-radius:14px;padding:14px;font-size:17px;min-height:120px}
+  .mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mini div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:15px;line-height:1.3}
+  .mini i{display:block;font-style:normal;font-size:26px;margin-bottom:4px}
   /* TABLEAU */
   .list{padding:0;margin:0;list-style:none}
   .list li{padding:12px 0;border-bottom:1px solid var(--line)}
@@ -163,15 +166,13 @@
 <section class="story" data-voice="v2" data-s="histoire"><div class="w">
   <h2 class="rv">Il l'avait <em>bloquée</em>.</h2>
   <p class="note rv">Histoire inspirée de témoignages de commerçantes. Personnages fictifs.</p>
-  <div class="sc rv"><span class="n">1</span><p><b>Il lui devait 35 000 F.</b> Elle relance.</p>
+  <div class="sc rv"><span class="n">1</span><p><b>Il lui devait 35 000 F.</b> Elle relance : bloquée.</p>
     <div class="wab"><div class="me">Bonjour, petit rappel pour les 35 000 F…</div><div class="sys">&#128683; Tu ne peux plus répondre à cette conversation.</div></div></div>
-  <div class="sc rv"><span class="n">2</span><p><b>Dans son cahier</b>, elle avait noté son autre numéro, son quartier et un garant.</p>
-    <p class="note" style="margin:0">Mama Esther · Dantokpa · garant : Tante Rose</p></div>
-  <div class="sc rv"><span class="n">3</span><p><b>Le message au garant était déjà écrit.</b> Elle appuie. WhatsApp s'ouvre.</p>
-    <div class="wab"><div class="me">Bonjour Tante Rose, Je n'arrive plus à joindre Mama Esther, dont vous êtes la référence, au sujet d'un paiement en attente…</div><div class="them">Je lui dis de passer demain.</div></div></div>
-  <div class="sc rv"><span class="n">4</span><p><b>Le lendemain.</b></p>
+  <div class="sc rv"><span class="n">2</span><p><b>Dans son cahier</b> : son autre numéro, son quartier, son garant. Le message au garant est déjà écrit.</p>
+    <div class="wab"><div class="me">Bonjour Tante Rose, je n'arrive plus à joindre Mama Esther, dont vous êtes la référence…</div><div class="them">Je lui dis de passer demain.</div></div></div>
+  <div class="sc rv"><span class="n">3</span><p><b>Le lendemain.</b></p>
     <span class="tag tg">&#10004; + 35 000 F récupérés</span><span class="tag ty">&#9203; 18 000 F promis vendredi</span></div>
-  <p class="rv" style="font-size:21px;font-weight:800">Elle n'a pas arrêté le crédit. Elle l'a <em style="color:var(--or);font-style:normal">sécurisé</em>.</p>
+  <p class="rv" style="font-size:21px;font-weight:800">Elle n'a pas arrêté le crédit. Elle l'a <em>sécurisé</em>.</p>
 </div></section>
 
 <section id="avisS" data-s="avis"><div class="w"><h2>Elles l'utilisent déjà</h2><div id="avisL"></div></div></section>
@@ -201,17 +202,13 @@
 <div class="w"><p class="rv" style="margin-top:6px"><b>Et avant de donner à crédit</b> : un test feu vert, orange ou rouge, et une reconnaissance de dette en une minute.</p></div>
 </section>
 
-<section style="background:var(--bg2)" data-voice="v5" data-s="plan"><div class="w">
-  <h2 class="rv">Chaque jour, <em>la bonne relance</em></h2>
-  <p class="rv">Pour chaque client, le cahier prépare un plan : de plus en plus ferme, sans jamais être violent. Il te dit <b>« aujourd'hui, relance Mama Esther »</b> et tu envoies en un geste. Rien ne part sans toi.</p>
-  <ul class="plan" id="planL">
-    <li><i class="d1">J-3</i><div><b>Rappel amical</b><br><span class="note">doux</span></div></li>
-    <li><i class="d1">J0</i><div><b>Le jour de l'échéance</b><br><span class="note">doux</span></div></li>
-    <li><i class="d2">J+2</i><div><b>Premier retard</b><br><span class="note">normal</span></div></li>
-    <li><i class="d3">J+7</i><div><b>Une semaine de retard</b><br><span class="note">ferme</span></div></li>
-    <li><i class="d4">J+15</i><div><b>Dernier rappel</b><br><span class="note">normal</span></div></li>
-    <li><i class="d4">J+30</i><div><b>Avant procédure</b><br><span class="note">ferme</span></div></li>
-  </ul>
+<section style="background:var(--bg2);padding:30px 0" data-s="miniprix"><div class="w">
+  <div class="price rv" style="padding:16px">
+    <div class="old" id="oldM" style="font-size:20px"></div>
+    <div style="font-size:40px;font-weight:900;font-style:italic;color:var(--or);line-height:1.1" id="nowM"></div>
+    <p class="note" style="margin:4px 0 12px">Paiement unique · marche sans internet · toute l'Afrique de l'Ouest</p>
+    <a class="btn pulse" href="#offre" data-t="cta_mini" data-ev="cta_mini">Je prends mon cahier</a>
+  </div>
 </div></section>
 
 <section data-voice="v3" data-s="messages"><div class="w">
@@ -225,18 +222,16 @@
   <p>Dans le cahier, ces messages sont <b>déjà remplis avec le nom, le montant et la date</b>.</p>
 </div></section>
 
-<section style="background:var(--bg2)" data-s="recoit"><div class="w">
-  <h2 class="rv">Tout ce que tu reçois</h2>
-  <ul class="list rv">
-    <li><b>&#128210; Le cahier de crédit et son tableau de bord</b><span>Combien on te doit, combien tu dois, qui relancer, depuis quand ton argent est dehors.</span></li>
-    <li><b>&#128172; 66 messages de relance + le plan du jour</b><span>Avant le crédit, rappels, retard, « il m'a bloqué(e) », arrangement, remerciement.</span></li>
-    <li><b>&#128269; De quoi retrouver celui qui disparaît</b><span>Autre numéro, quartier, garant, médiateur.</span></li>
-    <li><b>&#9997;&#65039; La reconnaissance de dette</b><span>Somme écrite en toutes lettres, prête à imprimer et à signer.</span></li>
-    <li><b>&#9989; Le test « avant de donner à crédit »</b><span>Feu vert, orange ou rouge, et combien tu peux risquer.</span></li>
-    <li><b>&#128232; La lettre de mise en demeure</b><span>Avec date limite et décharge de réception.</span></li>
-    <li><b>&#128230; « Ce que je dois »</b><span>Tes dettes envers tes fournisseurs, et le message pour demander un délai.</span></li>
-    <li><b>&#128246; Marche sans internet</b><span>Tes données restent sur ton téléphone. Pour toute l'Afrique de l'Ouest : choisis ton pays.</span></li>
-  </ul>
+<section style="background:var(--bg2)" data-voice="v5" data-s="recoit"><div class="w">
+  <h2 class="rv">Tout est <em>dedans</em></h2>
+  <div class="mini rv">
+    <div><i>&#128210;</i><b>Cahier + tableau de bord</b></div>
+    <div><i>&#128172;</i><b>66 messages + plan du jour</b></div>
+    <div><i>&#128269;</i><b>Retrouver celui qui disparaît</b></div>
+    <div><i>&#9997;&#65039;</i><b>Reconnaissance de dette, test, mise en demeure</b></div>
+    <div><i>&#128230;</i><b>Ce que tu dois à tes fournisseurs</b></div>
+    <div><i>&#128246;</i><b>Sans internet, toute l'Afrique de l'Ouest</b></div>
+  </div>
 </div></section>
 
 <section data-voice="v6" data-s="calcul"><div class="w">
@@ -324,8 +319,9 @@ function ev(n){ if(window.suiviEv) window.suiviEv(n); }
 var fin=CFG.promoFin?new Date(CFG.promoFin).getTime():0;
 function paintPrice(){
   var promo=fin>Date.now(), prix=promo?CFG.prix:(fin?CFG.prixApres:CFG.prix);
-  $('now').textContent=F(prix); $('spr').textContent=F(prix);
+  $('now').textContent=F(prix); $('spr').textContent=F(prix); $('nowM').textContent=F(prix);
   $('old').textContent=(promo&&CFG.prixBarre)?F(CFG.prixBarre):''; $('old').style.display=(promo&&CFG.prixBarre)?'block':'none';
+  $('oldM').textContent=(promo&&CFG.prixBarre)?F(CFG.prixBarre):''; $('oldM').style.display=(promo&&CFG.prixBarre)?'block':'none';
   var c=$('cd');
   if(promo){var s=Math.floor((fin-Date.now())/1000), h=Math.floor(s/3600), m=Math.floor(s%3600/60); c.style.display='inline-block'; c.textContent='Prix de lancement : encore '+h+' h '+(m<10?'0':'')+m+' min';}
   else c.style.display='none';
@@ -376,9 +372,7 @@ var rvs=[].slice.call(document.querySelectorAll('.rv')), reduce=window.matchMedi
 if('IntersectionObserver' in window && !reduce){
   var io=new IntersectionObserver(function(es){es.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target);} });},{threshold:.15});
   rvs.forEach(function(r){io.observe(r);});
-  var pl=$('planL'), lis=[].slice.call(pl.children);
-  new IntersectionObserver(function(es,o){ if(es[0].isIntersecting){ lis.forEach(function(l,i){setTimeout(function(){l.classList.add('on');},i*320);}); o.disconnect(); } },{threshold:.3}).observe(pl);
-} else { rvs.forEach(function(r){r.classList.add('in');}); [].forEach.call($('planL').children,function(l){l.classList.add('on');}); }
+} else { rvs.forEach(function(r){r.classList.add('in');}); }
 var target=35000, cur=0, big=$('big'), xl=$('xl'), xr=$('xr'), flow=$('flow'), pcli=$('pcli');
 function paintX(){ big.textContent='+ '+F(cur); xl.textContent=F(target-cur); xr.textContent=F(cur); }
 function doneX(){ flow.classList.remove('run'); pcli.classList.add('fin'); xl.textContent='0 F ✔'; }
