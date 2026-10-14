@@ -168,7 +168,7 @@
   <p class="note rv">Histoire inspirée de témoignages de commerçantes. Personnages fictifs.</p>
   <div class="sc rv"><span class="n">1</span><p><b>Il lui devait 35 000 F.</b> Elle relance : bloquée.</p>
     <div class="wab"><div class="me">Bonjour, petit rappel pour les 35 000 F…</div><div class="sys">&#128683; Tu ne peux plus répondre à cette conversation.</div></div></div>
-  <div class="sc rv"><span class="n">2</span><p><b>Dans son cahier</b> : son autre numéro, son quartier, son garant. Le message au garant est déjà écrit.</p>
+  <div class="sc rv"><span class="n">2</span><p><b>Dans son cahier</b> : son autre numéro, son quartier, sa personne de confiance. Le message pour elle est déjà écrit.</p>
     <div class="wab"><div class="me">Bonjour Tante Rose, je n'arrive plus à joindre Mama Esther, dont vous êtes la référence…</div><div class="them">Je lui dis de passer demain.</div></div></div>
   <div class="sc rv"><span class="n">3</span><p><b>Le lendemain.</b></p>
     <span class="tag tg">&#10004; + 35 000 F récupérés</span><span class="tag ty">&#9203; 18 000 F promis vendredi</span></div>
@@ -193,7 +193,7 @@
 <div class="phones" id="phones">
   <figure class="ph"><div class="scr"><img src="img/ph_dash.webp" width="360" height="720" loading="lazy" decoding="async" alt="Tableau de bord"></div><figcaption><b>Ton argent d'un coup d'œil</b>Ce qu'on te doit, ce que tu dois, qui relancer aujourd'hui.</figcaption></figure>
   <figure class="ph"><div class="scr"><img src="img/ph_liste.webp" width="360" height="720" loading="lazy" decoding="async" alt="Liste des dettes"></div><figcaption><b>Qui te doit quoi</b>Chaque dette, chaque paiement, avec la date et la preuve.</figcaption></figure>
-  <figure class="ph"><div class="scr"><img src="img/ph_garant.webp" width="360" height="720" loading="lazy" decoding="async" alt="Message au garant"></div><figcaption><b>Il t'a bloquée ?</b>Le message pour son garant est déjà écrit.</figcaption></figure>
+  <figure class="ph"><div class="scr"><img src="img/ph_garant.webp" width="360" height="720" loading="lazy" decoding="async" alt="Message à la personne de confiance"></div><figcaption><b>Il t'a bloquée ?</b>Le message pour sa personne de confiance est déjà écrit.</figcaption></figure>
   <figure class="ph"><div class="scr"><img src="img/ph_plan.webp" width="360" height="720" loading="lazy" decoding="async" alt="Plan de relance"></div><figcaption><b>Le plan de relance</b>De plus en plus ferme, étape par étape.</figcaption></figure>
   <figure class="ph"><div class="scr"><img src="img/ph_retrouver.webp" width="360" height="720" loading="lazy" decoding="async" alt="Retrouver un client"></div><figcaption><b>Retrouver celui qui disparaît</b>Autre numéro, quartier, personne de confiance.</figcaption></figure>
   <figure class="ph"><div class="scr"><img src="img/ph_devoir.webp" width="360" height="720" loading="lazy" decoding="async" alt="Ce que je dois"></div><figcaption><b>Ce que tu dois aussi</b>Tes fournisseurs, et le message pour demander un délai.</figcaption></figure>
@@ -226,7 +226,7 @@
   <h2 class="rv">Tout est <em>dedans</em></h2>
   <div class="mini rv">
     <div><i>&#128210;</i><b>Cahier + tableau de bord</b></div>
-    <div><i>&#128172;</i><b>66 messages + plan du jour</b></div>
+    <div><i>&#128172;</i><b>69 messages + plan du jour</b></div>
     <div><i>&#128269;</i><b>Retrouver celui qui disparaît</b></div>
     <div><i>&#9997;&#65039;</i><b>Reconnaissance de dette, test, mise en demeure</b></div>
     <div><i>&#128230;</i><b>Ce que tu dois à tes fournisseurs</b></div>
@@ -348,7 +348,7 @@ var SIT=[
  {l:'Rappel avant l’échéance',m:{doux:"Bonjour [Nom], j'espère que vous allez bien. Petit rappel amical : votre paiement de [montant] est prévu le [date]. Merci d'avance !",normal:"Bonjour [Nom]. Je vous rappelle que [montant] est à régler le [date]. Pouvez-vous me confirmer que ce sera bon ? Merci.",ferme:"Bonjour [Nom]. Le [date], vous devez me payer [montant]. Merci de me confirmer ce jour-là l'heure et le moyen de paiement."}},
  {l:'Il promet « demain »',m:{doux:"Bonjour [Nom], merci pour votre réponse. Je note que vous me payez [montant] le [date]. Pouvez-vous me confirmer cette date ? Je compte sur vous.",normal:"Bonjour [Nom]. D'accord, je note votre promesse de me payer [montant] le [date]. C'est la date finale : sans paiement ce jour-là, je ne pourrai plus vous faire crédit. Merci.",ferme:"Bonjour [Nom]. Vous m'avez déjà promis plusieurs fois. Dernière promesse : [montant] le [date], sans faute. Après cette date, je ne ferai plus de crédit."}},
  {l:'Il dit avoir déjà payé',m:{doux:"Bonjour [Nom], merci pour votre message. Je ne retrouve pas ce paiement de mon côté. Pouvez-vous m'envoyer la preuve (capture Mobile Money ou date et montant) ? Je vérifie tout de suite.",normal:"Bonjour [Nom]. Selon mon cahier, il reste [montant]. Si vous avez payé, envoyez-moi la preuve (capture, date, montant) et je corrige.",ferme:"Bonjour [Nom]. Mon cahier indique [montant] non payés. Sans preuve de paiement, je dois considérer que la dette reste due. Merci de me l'envoyer aujourd'hui."}},
- {l:'Il m’a bloqué(e) : message au garant',m:{doux:"Bonjour [Garant], j'espère que vous allez bien. [Nom] vous a donné comme personne de confiance. Je n'arrive plus à le/la joindre au sujet d'un paiement en attente. Pouvez-vous lui demander de me contacter ? Merci beaucoup.",normal:"Bonjour [Garant]. Je n'arrive plus à joindre [Nom], dont vous êtes la référence, au sujet d'un paiement en attente. Pouvez-vous l'aider à me contacter cette semaine ? Merci.",ferme:"Bonjour [Garant]. Je n'arrive plus à joindre [Nom] au sujet d'un paiement en attente depuis plusieurs jours. Merci de lui demander de m'appeler avant le [date]."}}
+ {l:'Il m’a bloqué(e) : message à sa personne de confiance',m:{doux:"Bonjour [Personne de confiance], j'espère que vous allez bien. [Nom] vous a donné comme personne de confiance. Je n'arrive plus à le/la joindre au sujet d'un paiement en attente. Pouvez-vous lui demander de me contacter ? Merci beaucoup.",normal:"Bonjour [Personne de confiance]. Je n'arrive plus à joindre [Nom], dont vous êtes la référence, au sujet d'un paiement en attente. Pouvez-vous l'aider à me contacter cette semaine ? Merci.",ferme:"Bonjour [Personne de confiance]. Je n'arrive plus à joindre [Nom] au sujet d'un paiement en attente depuis plusieurs jours. Merci de lui demander de m'appeler avant le [date]."}}
 ];
 var cs=0, ct='doux';
 function paintMsg(){
