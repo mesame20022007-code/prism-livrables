@@ -104,7 +104,7 @@
 <script>
 (function(){
 'use strict';
-var KEY='cc_v1', DAY=86400000, FEEDBACK_URL='', FEEDBACK_DAYS=30;
+var KEY='cc_v1', DAY=86400000, FEEDBACK_URL='https://docs.google.com/forms/d/e/1FAIpQLSetMSkDDe-jB4RTkYzQWpeZVE6D3oCF47oHOjrUkfi3alx8ow/viewform', FEEDBACK_DAYS=30;
 var S=load(), UI={view:'home',filter:'all',id:null}, relDraft=null;
 
 function load(){
@@ -431,7 +431,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.12 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.13 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
