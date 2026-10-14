@@ -104,7 +104,7 @@
 <script>
 (function(){
 'use strict';
-var KEY='cc_v1', DAY=86400000;
+var KEY='cc_v1', DAY=86400000, FEEDBACK_URL='', FEEDBACK_DAYS=30;
 var S=load(), UI={view:'home',filter:'all',id:null}, relDraft=null;
 
 function load(){
@@ -341,6 +341,7 @@ function home(){
   h+='<div class="cards"><div class="c big"><span>On me doit en tout</span><b>'+F(due)+'</b></div>'+
      '<div class="c"><span>En retard ('+lateN+')</span><b style="color:var(--rouge)">'+F(lateT)+'</b></div>'+
      '<div class="c"><span>Récupéré ce mois</span><b style="color:var(--vert)">'+F(monthRecovered())+'</b></div></div>';
+  if(FEEDBACK_URL && S.firstUse && !S.fbDone && Date.now()-S.firstUse>=FEEDBACK_DAYS*DAY && Date.now()>(S.fbLater||0)) h+='<div class="banner">⭐ Ça fait un mois que tu utilises ton cahier. Ton avis nous aide à l’améliorer (2 minutes, il faut internet). <button class="btn gold" style="margin-top:8px;width:100%" data-a="fbgo">Donner mon avis</button><button class="btn sec" style="margin-top:8px;width:100%" data-a="fblater">Plus tard</button></div>';
   if(S.debts.length && Date.now()-S.lastBackup>7*DAY) h+='<div class="banner">💾 Fais une sauvegarde de ton cahier (Réglages) : si tu effaces les données du navigateur, tout disparaît. <button class="btn sec" style="margin-top:8px;width:100%" data-a="settings">Faire la sauvegarde</button></div>';
   h+='<div class="chips">'+
     [['all','Toutes'],['late','En retard'],['rel','À relancer ('+rel+')'],['paid','Payées']].map(function(c){return '<button class="chip'+(UI.filter===c[0]?' on':'')+'" data-a="filter" data-v="'+c[0]+'">'+c[1]+'</button>';}).join('')+'</div>';
@@ -424,12 +425,13 @@ function settings(){
   h+='<label for="s_city">Ma ville</label><input id="s_city" value="'+esc(S.city||'')+'" placeholder="ex : Cotonou">';
   h+='<label for="s_phone">Mon numéro (pour les lettres et les paiements)</label><input id="s_phone" type="tel" value="'+esc(S.myphone||'')+'">';
   h+='<div class="acts" style="margin-top:12px"><button class="btn" data-a="saveme">Enregistrer</button></div>';
+  if(FEEDBACK_URL && S.firstUse && !S.fbDone){ var jl=Math.ceil(FEEDBACK_DAYS-(Date.now()-S.firstUse)/DAY); h+='<p class="sub" style="margin-top:14px">⭐ '+(jl>0? 'Dans '+jl+' jour'+(jl>1?'s':'')+', nous te demanderons ton avis sur le cahier.' : 'Ton avis nous aide : <a href="'+FEEDBACK_URL+'" target="_blank" rel="noopener">donner mon avis</a>.')+'</p>'; }
   h+='<h3>Sauvegarde</h3><p class="sub">Tes dettes sont gardées dans ce téléphone seulement. Sauvegarde chaque semaine et garde le fichier sur WhatsApp ou dans ton e-mail.</p>';
   h+='<div class="acts"><button class="btn gold" data-a="backup">Télécharger la sauvegarde</button></div><div class="acts"><button class="btn sec" data-a="copybackup">Copier le texte de sauvegarde</button></div>';
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.11 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.12 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -893,7 +895,7 @@ var ACT={
     if(!due){toast("Choisis la date limite de paiement.");return;}
     var rec={name:name,phone:val('f_phone'),amount:amount,obj:val('f_obj'),date:val('f_date')||today(),due:due,
       phone2:val('f_phone2'),where:val('f_where').replace(/^\s+|\s+$/g,''),gname:val('f_gname').replace(/^\s+|\s+$/g,''),gphone:val('f_gphone')};
-    if(id){var d=find(id); for(var k in rec) d[k]=rec[k]; d.demo=false;} else { rec.id=uid(); rec.pay=[]; rec.rel=[]; if(PRE&&PRE.test) rec.test=PRE.test; PRE=null; S.debts.push(rec); }
+    if(id){var d=find(id); for(var k in rec) d[k]=rec[k]; d.demo=false;} else { if(!S.firstUse) S.firstUse=Date.now(); rec.id=uid(); rec.pay=[]; rec.rel=[]; if(PRE&&PRE.test) rec.test=PRE.test; PRE=null; S.debts.push(rec); }
     save(); UI.view='home'; render(); toast('Enregistré.');
   },
   del:function(el){ if(confirm('Supprimer cette dette ? Cette action est définitive.')){ S.debts=S.debts.filter(function(d){return d.id!==el.getAttribute('data-id');}); save(); UI.view='home'; render(); } },
@@ -1019,6 +1021,8 @@ var ACT={
   },
   releve:function(el){relanceSheet(el.getAttribute('data-id'),'releve');},
   recu:function(el){var id=el.getAttribute('data-id'), d=find(id); closeSheet(); relanceSheet(id, rest(d)<=0?'solde':'partiel');},
+  fbgo:function(){S.fbDone=true; save(); window.open(FEEDBACK_URL,'_blank'); render();},
+  fblater:function(){S.fbLater=Date.now()+7*DAY; save(); render();},
   planoff:function(el){var d=find(el.getAttribute('data-id')); d.auto=false; save(); render();},
   planon:function(el){var d=find(el.getAttribute('data-id')); d.auto=true; save(); render();},
   owed:function(){UI.view='owed';render();},
