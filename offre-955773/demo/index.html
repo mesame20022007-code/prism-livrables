@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4C2A75">
+<meta name="robots" content="noindex,nofollow">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cahier crédit">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Mon cahier de crédit</title>
+<style>
+  :root{--vio:#4C2A75;--vio2:#6a3fa0;--or:#E8B84A;--bg:#faf7ff;--card:#fff;--ink:#1c1530;--mut:#6d6585;--line:#e4dcf3;--rouge:#c62828;--orange:#d97a00;--vert:#1f8a55}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:110px}
+  body.noscroll{overflow:hidden}
+  .wrap{max-width:560px;margin:0 auto;padding:0 14px}
+  header{background:var(--vio);color:#fff;padding:14px 14px 16px}
+  header .row{max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  header h1{font-size:20px;margin:0}
+  header small{opacity:.8;display:block;font-size:13px}
+  .ic{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:12px;min-width:46px;min-height:46px;font-size:20px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .cards .c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+  .cards .c.big{grid-column:1/3;background:var(--vio);color:#fff;border:0}
+  .cards .c span{display:block;font-size:13px;color:var(--mut)}
+  .cards .c.big span{color:#d9c9f2}
+  .cards .c b{font-size:22px}
+  .cards .c.big b{font-size:30px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px}
+  .chip{white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 14px;font-size:15px;min-height:44px}
+  .chip.on{background:var(--vio);border-color:var(--vio);color:#fff}
+  .debt{background:var(--card);border:1px solid var(--line);border-left-width:6px;border-radius:14px;padding:12px;margin-bottom:10px}
+  .debt.late{border-left-color:var(--rouge)} .debt.soon{border-left-color:var(--orange)} .debt.ok{border-left-color:var(--vert)} .debt.paid{border-left-color:#bbb;opacity:.75}
+  .debt .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .debt .nm{font-weight:700;font-size:18px}
+  .debt .ob{color:var(--mut);font-size:14px}
+  .debt .am{font-weight:800;font-size:19px;white-space:nowrap}
+  .tag{display:inline-block;font-size:13px;padding:3px 9px;border-radius:999px;margin-top:6px;font-weight:600}
+  .tag.late{background:#fde7e7;color:var(--rouge)} .tag.soon{background:#fff0d9;color:var(--orange)} .tag.ok{background:#e1f5ea;color:var(--vert)} .tag.paid{background:#eee;color:#666}
+  .acts{display:flex;gap:8px;margin-top:10px}
+  .btn{border:0;border-radius:12px;min-height:48px;padding:0 16px;font-size:16px;font-weight:700;background:var(--vio);color:#fff;flex:1}
+  .btn.sec{background:#efe8fb;color:var(--vio)}
+  .btn.wa{background:#1fa855}
+  .btn.red{background:#fde7e7;color:var(--rouge)}
+  .btn.gold{background:var(--or);color:#2b1c00}
+  .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));background:var(--or);color:#2b1c00;border:0;border-radius:999px;min-height:58px;padding:0 22px;font-size:18px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:5}
+  .empty{background:#fff;border:1px dashed var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--mut)}
+  .banner{background:#fff6dc;border:1px solid #f0d58a;border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:15px}
+  label{display:block;font-size:14px;color:var(--mut);margin:12px 0 4px}
+  input,select,textarea{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);min-height:48px}
+  textarea{min-height:150px;resize:vertical}
+  .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .quick button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-size:14px;min-height:40px}
+  .sheetbg{position:fixed;inset:0;background:rgba(20,10,40,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+  .sheet{background:var(--bg);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+  .sheet h2{margin:0 0 4px;font-size:20px}
+  .sheet .x{float:right;background:#efe8fb;border:0;border-radius:10px;min-width:44px;min-height:44px;font-size:18px}
+  .tones{display:flex;gap:8px}
+  .tones button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;min-height:46px;font-size:15px;font-weight:700}
+  .tones button.on{background:var(--vio);color:#fff;border-color:var(--vio)}
+  details.more{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+  details.more summary{font-weight:700;cursor:pointer;min-height:36px;display:flex;align-items:center}
+  .note{font-size:14px;color:var(--mut);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:10px}
+  .note.warn{background:#fff0d9;border-color:#f3c98a;color:#7a4a00}
+  .bar{height:10px;background:#e9e1f7;border-radius:999px;overflow:hidden;margin:8px 0}
+  .bar i{display:block;height:100%;background:var(--vert)}
+  .hist{font-size:14px;color:var(--mut);margin:0;padding-left:18px}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:#2a1b45;color:#fff;border-radius:12px;padding:12px 16px;z-index:40;max-width:90%;font-size:15px}
+  .sub{font-size:14px;color:var(--mut)}
+  h3{margin:18px 0 6px;font-size:17px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{text-align:left;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;min-height:50px;padding:10px 14px;font-size:16px}
+  .opt.on{background:var(--vio);border-color:var(--vio);color:#fff;font-weight:700}
+  .doc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;font:16px/1.6 Georgia,"Times New Roman",serif;color:#111}
+  .doc h2{text-align:center;font-size:20px;margin:0 0 14px;letter-spacing:1px}
+  .doc p{margin:0 0 10px}
+  .doc .box{border:2px solid #111;padding:10px;margin:14px 0}
+  .doc .sig{margin-top:18px}
+  .doc .ln{display:inline-block;border-bottom:1px solid #111;min-width:200px}
+  .doc ul{margin:0 0 10px;padding-left:22px}
+  .ok2{background:#e1f5ea;border:1px solid #9fd8b9;border-radius:10px;padding:8px 10px;color:#14633c;font-size:15px;margin-top:10px}
+  #printzone{display:none}
+  @media print{
+    #app,#modal,.fab,.toast{display:none!important}
+    body{background:#fff;padding:0}
+    #printzone{display:block;padding:18mm 16mm;font:14pt/1.6 Georgia,"Times New Roman",serif;color:#000}
+    #printzone h2{text-align:center;font-size:18pt;margin:0 0 12mm}
+    #printzone p{margin:0 0 4mm}
+    #printzone .box{border:2px solid #000;padding:4mm;margin:6mm 0}
+    #printzone .sig{margin-top:9mm}
+    #printzone .ln{display:inline-block;border-bottom:1px solid #000;min-width:70mm}
+  }
+</style>
+</head>
+<body>
+<div id="demobar" style="position:sticky;top:0;z-index:50;background:#1a1408;color:#f5d27a;font:600 13px/1.35 system-ui,sans-serif;padding:8px 12px;display:flex;gap:8px;align-items:center;justify-content:space-between;border-bottom:1px solid #f5d27a55">
+<span>🧪 DÉMO · clients d’exemple · rien n’est enregistré</span>
+<a href="#" id="dbuy" style="background:#f5c542;color:#1a1408;border-radius:99px;padding:6px 12px;text-decoration:none;white-space:nowrap;font-weight:800">Prendre mon cahier</a></div>
+<div id="demogate" style="display:none;position:fixed;inset:0;z-index:99;background:#000a;align-items:flex-end;justify-content:center">
+<div style="background:#fff;color:#1c1530;max-width:520px;width:100%;border-radius:18px 18px 0 0;padding:20px 18px 24px;font:16px/1.45 system-ui,sans-serif">
+<b style="font-size:18px">C’est la démo 🙂</b><p class="dgt" style="margin:8px 0 14px"></p>
+<a href="#" class="dbuy2" style="display:block;text-align:center;background:#f5c542;color:#1a1408;border-radius:12px;padding:13px;font-weight:800;text-decoration:none">Prendre mon cahier</a>
+<button type="button" onclick="document.getElementById('demogate').style.display='none'" style="display:block;width:100%;margin-top:10px;background:none;border:0;color:#555;font-size:15px;padding:8px">Continuer la démo</button></div></div>
+
+<div id="app"></div>
+<div id="modal"></div>
+<div id="printzone"></div>
+<script>
+(function(){
+'use strict';
+var KEY='cc_demo', DAY=86400000, FEEDBACK_URL='', FEEDBACK_DAYS=30;
+var S=load(), UI={view:'home',filter:'all',id:null}, relDraft=null;
+var DEMO_NEW=!S.debts.length; if(!S.me) S.me='Boutique Mama Ola (démo)';
+
+function load(){
+  try{var r=sessionStorage.getItem(KEY); if(r){var o=JSON.parse(r); if(o&&o.debts) return o;}}catch(e){}
+  return {v:1,me:'',debts:[],lastBackup:0};
+}
+function save(){
+  try{sessionStorage.setItem(KEY,JSON.stringify(S));}
+  catch(e){toast("Impossible d'enregistrer : mémoire pleine ou navigation privée.");}
+}
+function uid(){return 'd'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function pad(n){return (n<10?'0':'')+n;}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function today(){return iso(new Date());}
+function parse(s){var p=String(s).split('-'); return new Date(+p[0],+p[1]-1,+p[2],12,0,0);}
+function addDays(s,n){var d=parse(s); d.setDate(d.getDate()+n); return iso(d);}
+function diff(a,b){return Math.round((parse(a)-parse(b))/DAY);}
+function fr(s){if(!s) return ''; var p=s.split('-'); return p[2]+'/'+p[1]+'/'+p[0];}
+function F(n){n=Math.round(+n||0); return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' F';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function paid(d){var t=0; (d.pay||[]).forEach(function(p){t+=+p.a||0;}); return t;}
+function rest(d){return Math.max(0,(+d.amount||0)-paid(d));}
+function late(d){return rest(d)>0 ? diff(today(),d.due) : 0;}
+function status(d){
+  if(rest(d)<=0) return 'paid';
+  var l=diff(today(),d.due);
+  if(l>0) return 'late';
+  if(l>=-3) return 'soon';
+  return 'ok';
+}
+function lastRel(d){var r=d.rel||[]; return r.length? r[r.length-1].t : 0;}
+function daysSinceRel(d){var t=lastRel(d); return t? Math.floor((Date.now()-t)/DAY) : 999;}
+/* Plan de relance semi-automatique : l'application propose chaque jour la bonne étape, tu appuies pour envoyer */
+var PLAN=[
+ {d:-3,k:'rappel',tone:'doux',l:'Rappel amical'},
+ {d:0,k:'jourj',tone:'doux',l:'Jour de l’échéance'},
+ {d:2,k:'retard',tone:'normal',l:'Premier retard'},
+ {d:7,k:'retard',tone:'ferme',l:'Retard d’une semaine'},
+ {d:15,k:'dernier',tone:'normal',l:'Dernier rappel'},
+ {d:30,k:'dernier',tone:'ferme',l:'Avant procédure'}
+];
+function planDone(d,i){return (d.rel||[]).some(function(x){return x.p===i;});}
+function planDate(d,i){return addDays(d.due,PLAN[i].d);}
+function nextStep(d){
+  if(d.auto===false || rest(d)<=0) return -1;
+  var t=today(), best=-1;
+  for(var i=0;i<PLAN.length;i++){ if(planDate(d,i)<=t && !planDone(d,i)) best=i; }
+  if(best>-1){ for(var j=best+1;j<PLAN.length;j++) if(planDone(d,j)) return -1; }
+  return best;
+}
+function toRelaunch(d){
+  if(d.auto!==false) return nextStep(d)>-1;
+  var s=status(d); return (s==='late'||(s==='soon'&&diff(today(),d.due)>=0)) && daysSinceRel(d)>=2;
+}
+var PAYS=[['229','Bénin',1],['225','Côte d’Ivoire',1],['228','Togo',0],['221','Sénégal',0],['226','Burkina Faso',0],['223','Mali',0],['227','Niger',0],['224','Guinée',0],['241','Gabon',0],['237','Cameroun',0]];
+function paysOf(){var c=S.cc||'229'; for(var i=0;i<PAYS.length;i++) if(PAYS[i][0]===c) return PAYS[i]; return PAYS[0];}
+function waNumber(p){
+  if(!p) return '';
+  var raw=String(p), s=raw.replace(/[^\d+]/g,'');
+  if(s.charAt(0)==='+') return s.slice(1);
+  s=s.replace(/^00/,'');
+  var pa=paysOf(), cc=pa[0];
+  if(raw.replace(/\s/g,'').indexOf('00')===0) return s;
+  if(cc==='229'){
+    if(s.indexOf('229')===0){ if(s.length===11) return '229'+'01'+s.slice(3); return s; }
+    if(s.length===10 && s.indexOf('01')===0) return '229'+s;
+    if(s.length===8) return '22901'+s;
+    return s;
+  }
+  if(s.indexOf(cc)===0 && s.length>=cc.length+8) return s;
+  if(pa[2]) return cc+s;
+  return cc+s.replace(/^0+/,'');
+}
+function toast(t){
+  var e=document.createElement('div'); e.className='toast'; e.textContent=t; document.body.appendChild(e);
+  setTimeout(function(){ if(e.parentNode) e.parentNode.removeChild(e); },2800);
+}
+
+/* ---------- MESSAGES DE RELANCE : 8 situations x 3 tons ---------- */
+var SIT=[
+ {k:'rappel',l:'Rappel avant l’échéance',
+  doux:"Bonjour {nom}, j'espère que vous allez bien. Petit rappel amical : votre paiement de {reste} ({objet}) est prévu le {echeance}. Merci d'avance ! — {moi}",
+  normal:"Bonjour {nom}. Je vous rappelle que {reste} est à régler le {echeance} pour {objet}. Pouvez-vous me confirmer que ce sera bon ? Merci. — {moi}",
+  ferme:"Bonjour {nom}. Le {echeance}, vous devez me payer {reste} ({objet}). Merci de me confirmer ce jour-là l'heure et le moyen de paiement (Mobile Money ou main à main). — {moi}"},
+ {k:'retard',l:'Premier retard',
+  doux:"Bonjour {nom}, j'espère que tout va bien. Je pense que le paiement de {reste} ({objet}), prévu le {echeance}, a peut-être été oublié. Pouvez-vous me dire quand vous pourrez le régler ? Merci beaucoup. — {moi}",
+  normal:"Bonjour {nom}. Le paiement de {reste} ({objet}) était prévu le {echeance} et n'est pas encore arrivé ({jours} jours de retard). Merci de me dire aujourd'hui quand vous pouvez me payer. — {moi}",
+  ferme:"Bonjour {nom}. Vous avez {jours} jours de retard sur {reste} ({objet}). J'attends votre paiement dans les 48 heures. Si vous avez une difficulté, dites-le-moi maintenant pour que nous trouvions une solution. — {moi}"},
+ {k:'promet',l:'Il promet encore (« demain »)',
+  doux:"Bonjour {nom}, merci pour votre réponse. Je note que vous me payez {reste} le {promesse}. Pouvez-vous me confirmer cette date ? Je compte sur vous. — {moi}",
+  normal:"Bonjour {nom}. D'accord, je note votre promesse de me payer {reste} le {promesse}. C'est la date finale : sans paiement ce jour-là, je ne pourrai plus vous faire crédit. Merci. — {moi}",
+  ferme:"Bonjour {nom}. Vous m'avez déjà promis plusieurs fois. Je note votre dernière promesse : {reste} le {promesse}, sans faute. Après cette date, je prendrai d'autres dispositions et je ne ferai plus de crédit. — {moi}"},
+ {k:'silence',l:'Il ne répond plus',
+  doux:"Bonjour {nom}, j'espère que vous allez bien. Je n'ai pas de nouvelles depuis un moment. Je voulais juste savoir comment nous pouvons régler les {reste} ({objet}). Répondez-moi quand vous voyez ce message, merci. — {moi}",
+  normal:"Bonjour {nom}. Je vous ai écrit plusieurs fois sans réponse au sujet de {reste} ({objet}). Merci de me répondre aujourd'hui, même pour me dire quand vous pouvez payer. — {moi}",
+  ferme:"Bonjour {nom}. Sans réponse de votre part, je ne peux pas considérer cette dette comme réglée : {reste} ({objet}), {jours} jours de retard. Répondez-moi avant demain soir pour qu'on trouve un arrangement. — {moi}"},
+ {k:'dejapaye',l:'Il dit avoir déjà payé',
+  doux:"Bonjour {nom}, merci pour votre message. Je ne retrouve pas ce paiement de mon côté. Pouvez-vous m'envoyer la preuve (capture Mobile Money ou date et montant) ? Je vérifie tout de suite. — {moi}",
+  normal:"Bonjour {nom}. Selon mon cahier, il reste {reste} sur {total} ({objet}). Si vous avez payé, envoyez-moi la preuve (capture Mobile Money, date, montant) et je corrige. — {moi}",
+  ferme:"Bonjour {nom}. Mon cahier indique {reste} non payés. Sans preuve de paiement (capture, reçu), je dois considérer que la dette reste due. Merci de me l'envoyer aujourd'hui. — {moi}"},
+ {k:'delai',l:'Il demande un délai ou des tranches',
+  doux:"Bonjour {nom}, je comprends votre situation. Nous pouvons faire par tranches : par exemple 3 paiements ({tranches}) pour finir {reste}. Dites-moi ce qui vous convient et on se met d'accord. — {moi}",
+  normal:"Bonjour {nom}. D'accord pour un paiement en 3 fois : {tranches}, le premier le {promesse}, puis chaque semaine. Si un paiement manque, le reste devient dû tout de suite. Confirmez-moi par message. — {moi}",
+  ferme:"Bonjour {nom}. J'accepte un dernier arrangement : 3 paiements ({tranches}), le premier le {promesse}. Aucun nouveau crédit tant que tout n'est pas payé. Confirmez avant ce soir. — {moi}"},
+ {k:'conteste',l:'Il conteste le montant',
+  doux:"Bonjour {nom}, merci de me le dire. Voici le détail de mon cahier : {objet}, total {total}, déjà payé {paye}, reste {reste}. Dites-moi ce qui ne correspond pas et nous vérifions ensemble. — {moi}",
+  normal:"Bonjour {nom}. D'après mon cahier : {objet} = {total} (donné le {datedette}), payé {paye}, reste {reste}. Si vous pensez qu'il y a une erreur, dites-moi exactement quel point et envoyez vos preuves. — {moi}",
+  ferme:"Bonjour {nom}. Mon cahier est clair : {total} pour {objet}, payé {paye}, reste {reste}. Si vous contestez, envoyez-moi vos preuves aujourd'hui, sinon je considère le montant comme exact. — {moi}"},
+ {k:'dernier',l:'Dernier avertissement',
+  doux:"Bonjour {nom}. Je ne veux pas en arriver là, mais la dette de {reste} ({objet}) dure depuis {jours} jours. Je vous demande de la régler avant le {promesse}. Parlons-en, je suis prêt(e) à trouver une solution. — {moi}",
+  normal:"Bonjour {nom}. Dernier rappel : {reste} ({objet}), {jours} jours de retard. Sans paiement avant le {promesse}, je serai obligé(e) de passer par une procédure officielle de recouvrement. — {moi}",
+  ferme:"Bonjour {nom}. Dernier avertissement : {reste} dus pour {objet}. Sans paiement avant le {promesse}, je ferai une lettre officielle de mise en demeure, puis je demanderai l'aide d'un huissier. — {moi}"},
+ /* --- v1.5 : plus de situations --- */
+ {k:'avant',l:'Avant de donner : mes conditions',
+  doux:"Bonjour {nom}, avec plaisir pour {objet} ({total}). Pour que tout soit clair entre nous : paiement de {total} avant le {echeance}. Si ça vous convient, je vous prépare ça. — {moi}",
+  normal:"Bonjour {nom}. Pour {objet} à crédit ({total}) : paiement complet le {echeance}, pas de nouveau crédit tant que ce n'est pas payé. Vous êtes d'accord ? Je note tout dans mon cahier. — {moi}",
+  ferme:"Bonjour {nom}. Je peux vous donner {objet} ({total}) à crédit seulement si : 1) paiement avant le {echeance}, 2) vous confirmez ici par écrit. Sans votre accord écrit, pas de crédit. — {moi}"},
+ {k:'refus',l:'Refuser un crédit poliment',
+  doux:"Bonjour {nom}, merci de votre confiance. En ce moment je ne peux pas donner à crédit, mon stock est payé comptant. Si vous payez une partie maintenant, je vous sers volontiers. — {moi}",
+  normal:"Bonjour {nom}. Je ne fais plus de crédit tant que les anciens paiements ne sont pas réglés. Dès que c'est fait, nous en reparlons avec plaisir. — {moi}",
+  ferme:"Bonjour {nom}. Ma décision est prise : pas de nouveau crédit pour le moment. Je vends au comptant, et je serai content(e) de vous servir ainsi. — {moi}"},
+ {k:'jourj',l:'Le jour de l’échéance',
+  doux:"Bonjour {nom}, bonne journée ! C'est aujourd'hui le jour prévu pour {reste} ({objet}). Merci de me dire à quelle heure vous passez ou envoyez. — {moi}",
+  normal:"Bonjour {nom}. Aujourd'hui {echeance}, c'est le paiement de {reste} ({objet}). Je compte sur vous ce jour. Mobile Money ou main à main, dites-moi. — {moi}",
+  ferme:"Bonjour {nom}. Nous sommes le {echeance} : {reste} doivent m'être payés aujourd'hui, comme convenu. Confirmez-moi le paiement avant ce soir. — {moi}"},
+ {k:'momo',l:'Où envoyer le paiement (Mobile Money)',
+  doux:"Bonjour {nom}, pour faciliter le paiement de {reste}, vous pouvez envoyer par Mobile Money au {monnum}. Envoyez-moi ensuite la capture, merci beaucoup. — {moi}",
+  normal:"Bonjour {nom}. Pour régler {reste} ({objet}) : Mobile Money au {monnum}, puis envoyez-moi la capture avec la date. Je note votre paiement tout de suite. — {moi}",
+  ferme:"Bonjour {nom}. Pour régler {reste} ({objet}), envoyez par Mobile Money au {monnum} aujourd'hui, puis envoyez-moi la capture. Je note dès réception. — {moi}"},
+ {k:'faux',l:'Faux paiement / capture suspecte',
+  doux:"Bonjour {nom}, merci pour la capture. De mon côté je ne vois pas encore l'argent arriver. Pouvez-vous vérifier avec votre opérateur et me donner le numéro de transaction ? — {moi}",
+  normal:"Bonjour {nom}. Le paiement annoncé n'est pas arrivé sur mon compte. Envoyez-moi l'identifiant de transaction et l'heure exacte, je vérifie auprès de l'opérateur. — {moi}",
+  ferme:"Bonjour {nom}. Votre capture ne correspond à aucun paiement reçu chez moi. Tant que l'argent n'est pas sur mon compte, la dette de {reste} reste due. Merci de régler vraiment. — {moi}"},
+ {k:'partiel',l:'Paiement partiel reçu : merci et suite',
+  doux:"Bonjour {nom}, merci pour votre paiement de {dernier}, je l'ai noté. Total payé : {paye}. Il reste {reste}. Pour quelle date pouvez-vous me donner la suite ? — {moi}",
+  normal:"Bonjour {nom}. J'ai bien reçu {dernier} : merci. Total payé : {paye} sur {total}. Il reste {reste}, que je note pour le {promesse}. Confirmez-moi cette date. — {moi}",
+  ferme:"Bonjour {nom}. Paiement de {dernier} reçu (total payé : {paye}). Le solde de {reste} doit arriver le {promesse}, sans autre retard. Aucun nouveau crédit avant le règlement complet. — {moi}"},
+ {k:'solde',l:'Dette payée : merci (et garder le client)',
+  doux:"Bonjour {nom}, merci beaucoup, votre dette est entièrement payée ! C'était un plaisir. Vous êtes toujours le/la bienvenu(e) chez moi. — {moi}",
+  normal:"Bonjour {nom}. Bien reçu, tout est réglé : merci d'avoir respecté votre parole. On peut continuer à travailler ensemble, avec un petit montant à crédit au début. — {moi}",
+  ferme:"Bonjour {nom}. Tout est réglé, merci. Pour un prochain crédit, je demande d'abord un paiement d'avance et un délai court. Passez me voir pour en parler. — {moi}"},
+ {k:'bloque',l:'Il m’a bloqué(e) : message à sa personne de confiance',
+  to:'garant',
+  doux:"Bonjour {garant}, j'espère que vous allez bien. {nom} vous a donné comme personne de confiance. Je n'arrive plus à le/la joindre au sujet d'un paiement en attente. Pouvez-vous lui demander de me contacter ? Merci beaucoup. — {moi}",
+  normal:"Bonjour {garant}. {nom} vous a donné comme référence. Je n'arrive plus à le/la joindre depuis {jours} jours au sujet d'un paiement en attente. Pouvez-vous l'aider à me contacter cette semaine ? Merci. — {moi}",
+  ferme:"Bonjour {garant}. Je n'arrive plus à joindre {nom}, dont vous êtes la référence, au sujet d'un paiement en attente depuis {jours} jours. Merci de lui demander de m'appeler avant le {promesse}. — {moi}"},
+ {k:'garant',l:'Demander l’aide de la personne de confiance',
+  to:'garant',
+  doux:"Bonjour {garant}, {nom} vous a donné comme personne de confiance. Un paiement est en attente. Pouvez-vous m'aider à trouver un arrangement avec lui/elle ? Merci. — {moi}",
+  normal:"Bonjour {garant}. Un paiement de {nom} est en retard. Pouvez-vous l'aider à me contacter et à régler avant le {promesse} ? Merci de me répondre. — {moi}",
+  ferme:"Bonjour {garant}. {nom} vous a citée comme personne de confiance. Pouvez-vous lui rappeler de régler le paiement en attente avant le {promesse} ? Merci de me répondre. — {moi}"},
+ {k:'mediation',l:'Demander l’aide d’un médiateur',
+  to:'mediateur',
+  doux:"Bonjour [nom de la personne choisie : chef de quartier, pasteur, imam, doyen du marché…], je vous contacte avec respect. {nom} me doit {reste} ({objet}) et nous n'arrivons pas à nous entendre. Pouvez-vous nous aider à trouver un arrangement à l'amiable ? Merci pour votre temps. — {moi}",
+  normal:"Bonjour [nom de la personne choisie]. Je souhaite votre médiation dans une affaire de dette : {nom} me doit {reste} pour {objet} depuis {jours} jours. Pouvez-vous nous réunir cette semaine pour un arrangement ? Merci. — {moi}",
+  ferme:"Bonjour [nom de la personne choisie]. {nom} n'a pas tenu sa parole : {reste} dus depuis {jours} jours. Pouvez-vous nous réunir pour régler cela ? Je viens avec mes preuves (cahier, messages). Merci. — {moi}"},
+ {k:'demenage',l:'Il a déménagé / je ne sais plus où il est',
+  doux:"Bonjour {nom}, j'espère que vous allez bien. Il paraît que vous avez changé d'adresse. Pouvez-vous me donner votre nouvelle localisation et un numéro pour vous joindre ? Il reste {reste} à régler. — {moi}",
+  normal:"Bonjour {nom}. Je ne vous trouve plus au quartier {quartier}. Merci de me donner votre nouvelle adresse et un numéro joignable pour régler {reste} ({objet}). — {moi}",
+  ferme:"Bonjour {nom}. Changer d'adresse n'efface pas la dette : {reste} ({objet}). Donnez-moi votre nouvelle adresse et votre date de paiement avant le {promesse}. — {moi}"},
+ {k:'proche',l:'Entre proches / amis (ton doux)',
+  doux:"Salut {nom}, comment tu vas ? Je ne veux pas gâcher notre amitié, mais j'ai besoin des {reste} ({objet}) pour mon commerce. Dis-moi ce qui est possible pour toi, on trouve un arrangement. — {moi}",
+  normal:"Salut {nom}. Tu sais que je t'ai aidé(e) pour {objet}. Mon commerce a besoin de cet argent : {reste}. Dis-moi la date où tu peux me payer, qu'on reste en bons termes. — {moi}",
+  ferme:"Salut {nom}. Même entre nous, je dois être clair(e) : {reste} sont dus et mon commerce en souffre. Je compte sur toi avant le {promesse}. Après, je ne pourrai plus donner à crédit. — {moi}"},
+ {k:'geste',l:'Offrir un petit geste s’il paie vite',
+  doux:"Bonjour {nom}, une proposition : si vous réglez {reste} avant le {promesse}, je vous fais un petit geste sur votre prochain achat (on en parle ensemble). Dites-moi si ça vous aide. — {moi}",
+  normal:"Bonjour {nom}. Si vous payez les {reste} en une fois avant le {promesse}, c'est réglé et nous repartons sur de bonnes bases. Qu'en dites-vous ? — {moi}",
+  ferme:"Bonjour {nom}. Offre valable jusqu'au {promesse} seulement : si vous payez les {reste} en une fois, nous n'en parlons plus. Après cette date, je ne fais plus d'arrangement. — {moi}"},
+ {k:'releve',l:'Envoyer son relevé au client',
+  doux:"Bonjour {nom}, voici où nous en sommes, pour que tout soit clair entre nous : {objet}, total {total} (donné le {datedette}). Déjà payé : {paye}. Reste : {reste}, prévu le {echeance}. Merci ! — {moi}",
+  normal:"Bonjour {nom}. Votre relevé : {objet}, total {total}. Payé : {paye}. Reste à payer : {reste} avant le {echeance}. Dites-moi si quelque chose ne correspond pas. — {moi}",
+  ferme:"Bonjour {nom}. Relevé de votre compte : total {total}, payé {paye}, reste {reste}, échéance le {echeance}. Merci de régler ce reste à cette date. — {moi}"},
+ {k:'confiance',l:'Reprendre le crédit après un retard',
+  doux:"Bonjour {nom}, merci d'avoir réglé. Pour continuer à travailler ensemble, nous recommençons avec un petit montant et un délai court. Ça vous va ? — {moi}",
+  normal:"Bonjour {nom}. Après le retard de la dernière fois, je reprends le crédit avec un montant plus petit et un paiement d'avance. Si tout est bien payé, nous augmenterons ensuite. — {moi}",
+  ferme:"Bonjour {nom}. Nouveau crédit possible seulement avec : acompte, délai court et accord écrit. Un nouveau retard = arrêt complet du crédit. Si vous êtes d'accord, écrivez « OK ». — {moi}"}
+];
+var GRP={rappel:'Avant l’échéance',avant:'Avant l’échéance',refus:'Avant l’échéance',jourj:'Avant l’échéance',momo:'Pour être payé(e)',releve:'Pour être payé(e)',
+  retard:'Après l’échéance',promet:'Après l’échéance',silence:'Après l’échéance',dejapaye:'Après l’échéance',conteste:'Après l’échéance',faux:'Après l’échéance',
+  delai:'Arrangements',partiel:'Arrangements',geste:'Arrangements',confiance:'Arrangements',solde:'Arrangements',
+  bloque:'Quand ça se complique',garant:'Quand ça se complique',mediation:'Quand ça se complique',demenage:'Quand ça se complique',proche:'Quand ça se complique',dernier:'Quand ça se complique'};
+var GORD=['Avant l’échéance','Pour être payé(e)','Après l’échéance','Arrangements','Quand ça se complique'];
+function sitOf(k){for(var i=0;i<SIT.length;i++) if(SIT[i].k===k) return SIT[i]; return SIT[1];}
+function suggest(d){
+  var l=late(d), n=(d.rel||[]).length;
+  if(l<=0) return 'rappel';
+  if(n>=4) return 'dernier';
+  if(l>14) return 'silence';
+  return 'retard';
+}
+function build(d,k,tone,promesse){
+  var tpl=sitOf(k)[tone]||sitOf(k).normal;
+  var r=rest(d), t3=Math.ceil(r/3/100)*100;
+  var vals={nom:d.name,reste:F(r),total:F(d.amount),paye:F(paid(d)),objet:d.obj||'votre achat',echeance:fr(d.due),
+    jours:Math.max(1,late(d)),promesse:fr(promesse),datedette:fr(d.date),dernier:((d.pay&&d.pay.length)?F(d.pay[d.pay.length-1].a):F(0)),tranche3:F(t3),tranches:F(t3)+', '+F(t3)+' puis '+F(Math.max(0,r-2*t3)),
+    garant:d.gname||'Monsieur/Madame',quartier:d.where||'habituel',monnum:S.myphone||'[mon numéro]'};
+  var out=tpl.replace(' — {moi}', S.me? ' — '+S.me : '');
+  out=out.replace(/\{(\w+)\}/g,function(m,k2){return vals.hasOwnProperty(k2)? vals[k2] : m;});
+  return out;
+}
+
+/* ---------- VUES ---------- */
+function find(id){for(var i=0;i<S.debts.length;i++) if(S.debts[i].id===id) return S.debts[i]; return null;}
+function sortDebts(a,b){
+  var sa=status(a), sb=status(b), ord={late:0,soon:1,ok:2,paid:3};
+  if(ord[sa]!==ord[sb]) return ord[sa]-ord[sb];
+  if(sa==='late') return late(b)-late(a);
+  return parse(a.due)-parse(b.due);
+}
+function chipText(d){
+  var s=status(d), l=diff(today(),d.due);
+  if(s==='paid') return 'Payée';
+  if(s==='late') return 'En retard de '+l+' jour'+(l>1?'s':'');
+  if(l===0) return 'À payer aujourd’hui';
+  return 'À payer le '+fr(d.due)+' (dans '+(-l)+' j)';
+}
+function monthRecovered(){
+  var now=new Date(), m=now.getFullYear()+'-'+pad(now.getMonth()+1), t=0;
+  S.debts.forEach(function(d){(d.pay||[]).forEach(function(p){ if(String(p.d).slice(0,7)===m) t+=+p.a||0; });});
+  return t;
+}
+function home(){
+  var due=0, lateT=0, lateN=0, rel=0;
+  S.debts.forEach(function(d){ var r=rest(d); due+=r; if(status(d)==='late'){lateT+=r;lateN++;} if(toRelaunch(d)) rel++; });
+  var list=S.debts.slice().sort(sortDebts).filter(function(d){
+    var s=status(d);
+    if(UI.filter==='late') return s==='late';
+    if(UI.filter==='rel') return toRelaunch(d);
+    if(UI.filter==='paid') return s==='paid';
+    return s!=='paid';
+  });
+  var h='<header><div class="row"><div><h1>Mon cahier de crédit</h1><small>Démo : touche une dette pour tout voir</small></div><button class="ic" data-a="settings" aria-label="Réglages">⚙</button></div></header><div class="wrap">';
+  h+='<div class="acts" style="margin-top:14px"><button class="btn gold" data-a="dash">📊 Mon tableau de bord</button></div><div class="acts"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois à mes fournisseurs'+((S.owed||[]).length?' ('+F((S.owed||[]).reduce(function(t,o){return t+owedRest(o);},0))+')':'')+'</button></div><div id="instslot"></div>';
+  h+='<div class="cards"><div class="c big"><span>On me doit en tout</span><b>'+F(due)+'</b></div>'+
+     '<div class="c"><span>En retard ('+lateN+')</span><b style="color:var(--rouge)">'+F(lateT)+'</b></div>'+
+     '<div class="c"><span>Récupéré ce mois</span><b style="color:var(--vert)">'+F(monthRecovered())+'</b></div></div>';
+  if(FEEDBACK_URL && S.firstUse && !S.fbDone && Date.now()-S.firstUse>=FEEDBACK_DAYS*DAY && Date.now()>(S.fbLater||0)) h+='<div class="banner">⭐ Ça fait un mois que tu utilises ton cahier. Ton avis nous aide à l’améliorer (2 minutes, il faut internet). <button class="btn gold" style="margin-top:8px;width:100%" data-a="fbgo">Donner mon avis</button><button class="btn sec" style="margin-top:8px;width:100%" data-a="fblater">Plus tard</button></div>';
+  if(S.debts.length && Date.now()-S.lastBackup>7*DAY) h+='<div class="banner">💾 Fais une sauvegarde de ton cahier (Réglages) : si tu effaces les données du navigateur, tout disparaît. <button class="btn sec" style="margin-top:8px;width:100%" data-a="settings">Faire la sauvegarde</button></div>';
+  h+='<div class="chips">'+
+    [['all','Toutes'],['late','En retard'],['rel','À relancer ('+rel+')'],['paid','Payées']].map(function(c){return '<button class="chip'+(UI.filter===c[0]?' on':'')+'" data-a="filter" data-v="'+c[0]+'">'+c[1]+'</button>';}).join('')+'</div>';
+  if(!S.debts.length){
+    h+='<div class="empty"><b style="color:var(--ink);font-size:18px">Ton cahier est vide</b><p>Note ici chaque client qui te doit de l’argent. Chaque jour, l’application te montre qui relancer et prépare le message WhatsApp.</p><button class="btn" data-a="new">+ Ajouter ma première dette</button><p style="margin-top:14px"><button class="btn sec" data-a="demo">Voir un exemple</button></p></div>';
+  } else if(!list.length){
+    h+='<div class="empty">Rien dans cette liste.</div>';
+  } else {
+    h+=list.map(function(d){
+      var s=status(d);
+      return '<div class="debt '+s+'" data-a="open" data-id="'+d.id+'"><div class="top"><div><div class="nm">'+esc(d.name)+(d.demo?' <span class="sub">(exemple)</span>':'')+'</div><div class="ob">'+esc(d.obj||'')+'</div></div><div class="am">'+F(rest(d))+'</div></div>'+
+        '<span class="tag '+s+'">'+chipText(d)+'</span>'+(nextStep(d)>-1?' <span class="tag soon">À relancer : '+esc(PLAN[nextStep(d)].l)+'</span>':'')+
+        (s!=='paid'?'<div class="acts"><button class="btn wa" data-a="relance" data-id="'+d.id+'">Relancer</button><button class="btn sec" data-a="pay" data-id="'+d.id+'">Il a payé</button></div>':'')+'</div>';
+    }).join('');
+  }
+  h+='</div><button class="fab" data-a="new">+ Nouvelle dette</button>';
+  return h;
+}
+function formView(d){
+  var e=d||PRE||{name:'',phone:'',amount:'',obj:'',date:today(),due:addDays(today(),7)};
+  var h='<header><div class="row"><div><h1>'+(d?'Modifier la dette':'Nouvelle dette')+'</h1></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<label for="f_name">Nom du client *</label><input id="f_name" value="'+esc(e.name)+'" autocomplete="off">';
+  h+='<label for="f_phone">Numéro WhatsApp (pays : '+esc(paysOf()[1])+', à changer dans Réglages)</label><input id="f_phone" type="tel" inputmode="tel" placeholder="le numéro, comme tu l’appelles" value="'+esc(e.phone)+'">';
+  h+='<label for="f_amount">Montant dû (F) *</label><input id="f_amount" type="number" inputmode="numeric" value="'+esc(e.amount)+'">';
+  h+='<label for="f_obj">Pour quoi ? (ce que tu lui as vendu)</label><input id="f_obj" placeholder="ex : 3 sacs de riz" value="'+esc(e.obj)+'">';
+  h+='<details class="more"'+((e.gname||e.gphone||e.phone2||e.where)?' open':'')+'><summary>🔎 Pour le retrouver s’il disparaît (conseillé)</summary><label for="f_phone2">Autre numéro (ou celui d’un proche)</label><input id="f_phone2" type="tel" inputmode="tel" value="'+esc(e.phone2||'')+'"><label for="f_where">Quartier / où il habite ou travaille</label><input id="f_where" placeholder="ex : Dantokpa, près du marché" value="'+esc(e.where||'')+'"><label for="f_gname">Personne de confiance</label><input id="f_gname" placeholder="nom d’un proche ou d’un voisin qui le connaît" value="'+esc(e.gname||'')+'"><label for="f_gphone">Numéro de la personne de confiance</label><input id="f_gphone" type="tel" inputmode="tel" value="'+esc(e.gphone||'')+'"></details>';
+  h+='<label for="f_date">Date où tu as donné à crédit</label><input id="f_date" type="date" value="'+esc(e.date)+'">';
+  h+='<label for="f_due">Il doit payer avant le *</label><input id="f_due" type="date" value="'+esc(e.due)+'"><div class="quick"><button data-a="due" data-v="3">3 jours</button><button data-a="due" data-v="7">7 jours</button><button data-a="due" data-v="15">15 jours</button><button data-a="due" data-v="30">1 mois</button></div>';
+  h+='<div class="acts" style="margin-top:18px"><button class="btn" data-a="saveform" data-id="'+(d?d.id:'')+'">Enregistrer</button></div></div>';
+  return h;
+}
+function detail(d){
+  var r=rest(d), p=paid(d), pct=d.amount>0? Math.min(100,Math.round(p/d.amount*100)) : 0, s=status(d);
+  var h='<header><div class="row"><div><h1>'+esc(d.name)+'</h1><small>'+esc(d.obj||'')+'</small></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="cards"><div class="c big"><span>Reste à payer</span><b>'+F(r)+'</b></div><div class="c"><span>Total donné</span><b>'+F(d.amount)+'</b></div><div class="c"><span>Déjà payé</span><b style="color:var(--vert)">'+F(p)+'</b></div></div>';
+  h+='<div class="bar"><i style="width:'+pct+'%"></i></div><span class="tag '+s+'">'+chipText(d)+'</span> <span class="sub">échéance '+fr(d.due)+'</span>';
+  if(d.phone) h+='<p class="sub">WhatsApp : '+esc(d.phone)+' — <a href="tel:'+esc(d.phone)+'">appeler</a></p>'; else h+='<p class="sub">Pas de numéro : tu pourras copier le message.</p>';
+  if(d.phone2||d.where||d.gname) h+='<p class="sub">'+(d.phone2?'Autre numéro : '+esc(d.phone2)+'<br>':'')+(d.where?'Quartier : '+esc(d.where)+'<br>':'')+(d.gname?'Personne de confiance : '+esc(d.gname)+(d.gphone?' ('+esc(d.gphone)+')':''):'')+'</p>';
+  else if(s!=='paid') h+='<p class="sub">💡 Ajoute un autre numéro, son quartier et une personne de confiance (bouton Modifier) : si le client te bloque, tu pourras le retrouver.</p>';
+  if(s!=='paid') h+='<div class="acts"><button class="btn wa" data-a="relance" data-id="'+d.id+'">Relancer sur WhatsApp</button></div><div class="acts"><button class="btn sec" data-a="pay" data-id="'+d.id+'">Enregistrer un paiement</button><button class="btn sec" data-a="extend" data-id="'+d.id+'">Nouveau délai</button></div><div class="acts"><button class="btn sec" data-a="releve" data-id="'+d.id+'">📄 Envoyer son relevé au client</button></div>';
+  if(d.test) h+='<p class="sub">Test avant crédit : feu <b>'+esc(d.test.v)+'</b> ('+d.test.s+'/24) le '+fr(iso(new Date(d.test.t)))+'</p>';
+  if(s!=='paid'){
+    h+='<h3>Plan de relance</h3>';
+    if(d.auto===false) h+='<p class="sub">Plan désactivé pour ce client.</p><div class="acts"><button class="btn sec" data-a="planon" data-id="'+d.id+'">Réactiver le plan</button></div>';
+    else {
+      var ns2=nextStep(d);
+      h+='<p class="sub">L’application te propose chaque jour l’étape suivante, de plus en plus ferme. Tu appuies pour envoyer : rien ne part sans toi.</p><ul class="hist plan">';
+      PLAN.forEach(function(st,i){
+        var dt=planDate(d,i), done=planDone(d,i), now=(i===ns2), skip=!done&&!now&&dt<=today();
+        h+='<li>'+(done?'✔ ':now?'👉 ':skip?'· ':'○ ')+'<b>'+esc(st.l)+'</b> — '+fr(dt)+' ('+({doux:'doux',normal:'normal',ferme:'ferme'})[st.tone]+')'+(done?' : envoyé':now?' : <b>à faire aujourd’hui</b>':skip?' : passée':'')+'</li>';
+      });
+      h+='</ul><div class="acts"><button class="btn sec" data-a="planoff" data-id="'+d.id+'">Désactiver le plan</button></div>';
+    }
+  }
+  h+='<h3>Preuve écrite</h3>';
+  if(d.recon&&d.recon.signed) h+='<div class="ok2">✔ Reconnaissance de dette signée le '+fr(iso(new Date(d.recon.signed)))+'</div>';
+  else if(d.recon&&d.recon.made) h+='<p class="sub">Reconnaissance préparée le '+fr(iso(new Date(d.recon.made)))+' : pas encore signée.</p>';
+  else h+='<p class="sub">Aucune reconnaissance de dette. Un écrit signé par le client te protège beaucoup.</p>';
+  h+='<div class="acts"><button class="btn gold" data-a="reconform" data-id="'+d.id+'">'+(d.recon&&d.recon.made?'Refaire / revoir la reconnaissance':'Faire une reconnaissance de dette')+'</button></div>';
+  if(s!=='paid'){
+    h+='<h3>Mise en demeure</h3>';
+    if(d.med&&d.med.sent){
+      var left=diff(d.med.limit,today()), modeTxt=MODES[d.med.mode]||'';
+      if(left>=0) h+='<div class="ok2">Lettre envoyée le '+fr(iso(new Date(d.med.sent)))+' ('+esc(modeTxt)+'). Date limite : <b>'+fr(d.med.limit)+'</b> (dans '+left+' jour'+(left>1?'s':'')+').</div>';
+      else h+='<div class="note warn"><b>Délai dépassé depuis '+(-left)+' jour'+(-left>1?'s':'')+'</b> (limite : '+fr(d.med.limit)+').<ol class="hist" style="padding-left:20px;margin:6px 0 0"><li>Écris ou appelle une dernière fois pour proposer un arrangement <b>par écrit</b>.</li><li>Sans réponse : va voir un <b>huissier de justice</b> ou un avocat avec tes pièces (reconnaissance de dette, lettre et décharge, relevé, rappels).</li><li>La procédure simplifiée d’injonction de payer existe dans les pays de l’OHADA (Bénin, Côte d’Ivoire, Togo, Sénégal, Burkina, Mali, Niger, Guinée, Cameroun, Gabon…) pour une créance certaine, liquide et exigible : demande à un huissier ou un avocat de ton pays les frais exacts avant de commencer.</li><li>Ne te fais jamais justice toi-même.</li></ol></div>';
+    } else if(d.med&&d.med.made) h+='<p class="sub">Lettre préparée le '+fr(iso(new Date(d.med.made)))+' : pas encore envoyée.</p>';
+    else h+='<p class="sub">Dernière étape avant une procédure officielle : une lettre formelle avec une date limite.</p>';
+    h+='<div class="acts"><button class="btn sec" data-a="medform" data-id="'+d.id+'">'+(d.med&&d.med.made?'Revoir / refaire la lettre':'Faire une mise en demeure')+'</button></div>';
+  }
+  h+='<div class="acts"><button class="btn sec" data-a="edit" data-id="'+d.id+'">Modifier</button><button class="btn red" data-a="del" data-id="'+d.id+'">Supprimer</button></div>';
+  h+='<h3>Paiements reçus</h3>'+((d.pay||[]).length? '<ul class="hist">'+d.pay.map(function(x){return '<li>'+fr(x.d)+' : '+F(x.a)+'</li>';}).join('')+'</ul>' : '<p class="sub">Aucun paiement pour l’instant.</p>');
+  h+='<h3>Relances envoyées</h3>'+((d.rel||[]).length? '<ul class="hist">'+d.rel.map(function(x){return '<li>'+fr(iso(new Date(x.t)))+' : '+esc(sitOf(x.s).l)+'</li>';}).join('')+'</ul>' : '<p class="sub">Aucune relance pour l’instant.</p>');
+  h+='</div>';
+  return h;
+}
+function settings(){
+  var h='<header><div class="row"><div><h1>Réglages</h1></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap"><div id="instslot"></div>';
+  h+='<label for="s_me">Mon nom ou le nom de ma boutique (signé sous chaque message)</label><input id="s_me" value="'+esc(S.me)+'" placeholder="ex : Boutique Mama Ola">';
+  h+='<label for="s_full">Mon nom complet (pour les reconnaissances de dette)</label><input id="s_full" value="'+esc(S.myfull||'')+'" placeholder="ex : Esther Dossou">';
+  h+='<label for="s_cc">Mon pays (pour envoyer sur WhatsApp)</label><select id="s_cc">'+PAYS.map(function(x){return '<option value="'+x[0]+'"'+(x[0]===(S.cc||'229')?' selected':'')+'>'+x[1]+' (+'+x[0]+')</option>';}).join('')+'</select>';
+  h+='<label for="s_city">Ma ville</label><input id="s_city" value="'+esc(S.city||'')+'" placeholder="ex : Cotonou">';
+  h+='<label for="s_phone">Mon numéro (pour les lettres et les paiements)</label><input id="s_phone" type="tel" value="'+esc(S.myphone||'')+'">';
+  h+='<div class="acts" style="margin-top:12px"><button class="btn" data-a="saveme">Enregistrer</button></div>';
+  if(FEEDBACK_URL && S.firstUse && !S.fbDone){ var jl=Math.ceil(FEEDBACK_DAYS-(Date.now()-S.firstUse)/DAY); h+='<p class="sub" style="margin-top:14px">⭐ '+(jl>0? 'Dans '+jl+' jour'+(jl>1?'s':'')+', nous te demanderons ton avis sur le cahier.' : 'Ton avis nous aide : <a href="'+FEEDBACK_URL+'" target="_blank" rel="noopener">donner mon avis</a>.')+'</p>'; }
+  h+='<h3>Sauvegarde</h3><p class="sub">Tes dettes sont gardées dans ce téléphone seulement. Sauvegarde chaque semaine et garde le fichier sur WhatsApp ou dans ton e-mail.</p>';
+  h+='<div class="acts"><button class="btn gold" data-a="backup">Télécharger la sauvegarde</button></div><div class="acts"><button class="btn sec" data-a="copybackup">Copier le texte de sauvegarde</button></div>';
+  h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
+  h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
+  h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.13 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  return h;
+}
+
+/* ---------- MODE DÉMO ---------- */
+var BUY=(function(){var q=location.search||''; return '../'+(q?q+'&':'?')+'from=demo#offre';})();
+function demoPing(n){try{if(window.suiviEv) window.suiviEv(n);}catch(e){}}
+function demoGate(quoi){
+  demoPing('ev_demo_gate_'+quoi);
+  var o=document.getElementById('demogate');
+  o.querySelector('.dgt').textContent = quoi==='wa'
+    ? 'Dans ton vrai cahier, ce bouton ouvre WhatsApp avec le message déjà écrit pour ton client. Tu n’as plus qu’à appuyer sur Envoyer.'
+    : quoi==='copie'
+    ? 'Dans ton vrai cahier, tu copies le message (déjà rempli avec le nom, le montant et la date) et tu le colles dans WhatsApp ou en SMS.'
+    : 'Dans ton vrai cahier, tes données sont gardées sur ton téléphone et tu peux en faire une sauvegarde.';
+  o.style.display='flex';
+}
+function demoWa(url){demoGate('wa');}
+document.addEventListener('click',function(e){
+  var t=e.target.closest&&e.target.closest('[data-a]'); if(t) demoPing('ev_demo_'+String(t.getAttribute('data-a')).slice(0,20));
+},true);
+window.addEventListener('load',function(){ if(DEMO_NEW){ demo(); render(); } demoPing('vu_demo'); });
+
+function render(){
+  var a=document.getElementById('app'), h;
+  if(UI.view==='form') h=formView(UI.id? find(UI.id):null);
+  else if(UI.view==='detail' && find(UI.id)) h=detail(find(UI.id));
+  else if(UI.view==='med' && find(UI.id)) h=medForm(find(UI.id));
+  else if(UI.view==='medview' && find(UI.id) && RC) h=medView(find(UI.id));
+  else if(UI.view==='test') h=testForm();
+  else if(UI.view==='testres' && TR) h=testResult();
+  else if(UI.view==='recon' && find(UI.id)) h=reconForm(find(UI.id));
+  else if(UI.view==='reconview' && find(UI.id) && RC) h=reconView(find(UI.id));
+  else if(UI.view==='owed') h=owedView();
+  else if(UI.view==='dash') h=dashView();
+  else if(UI.view==='settings') h=settings();
+  else {UI.view='home'; h=home();}
+  a.innerHTML=h;
+  window.scrollTo(0,0);
+  paintInstall();
+}
+/* ---------- INSTALLATION SUR L'ECRAN D'ACCUEIL + HORS CONNEXION ---------- */
+var deferredPrompt=null;
+function isStandalone(){
+  try{ return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }catch(e){return false;}
+}
+function paintInstall(){ var s0=document.getElementById('instslot'); if(s0) s0.innerHTML=''; return;
+  var s=document.getElementById('instslot'); if(!s) return;
+  if(isStandalone() || !/^https?:$/.test(location.protocol)){ s.innerHTML=''; return; }
+  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(deferredPrompt) s.innerHTML='<div class="acts"><button class="btn gold" data-a="install">📲 Installer sur l’écran d’accueil</button></div>';
+  else if(ios) s.innerHTML='<div class="note">📲 Pour l’installer : touche le bouton <b>Partager</b> de Safari, puis <b>Sur l’écran d’accueil</b>.</div>';
+  else s.innerHTML='<div class="note">📲 Pour l’installer : ouvre le menu ⋮ du navigateur, puis <b>Installer l’application</b> ou <b>Ajouter à l’écran d’accueil</b>. Ensuite, il marche aussi sans internet.</div>';
+}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault(); deferredPrompt=e; paintInstall();});
+window.addEventListener('appinstalled',function(){deferredPrompt=null; paintInstall(); toast('Installé ! Cherche « Cahier crédit » sur ton écran d’accueil.');});
+if(false){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+}
+
+/* ---------- FENETRES (relance, paiement, délai) ---------- */
+function openSheet(html){
+  var m=document.getElementById('modal');
+  m.innerHTML='<div class="sheetbg" data-a="sheetbg"><div class="sheet" data-stop="1">'+html+'</div></div>';
+  document.body.className='noscroll';
+}
+function closeSheet(){document.getElementById('modal').innerHTML=''; document.body.className='';}
+function recipient(d,k){var to=sitOf(k).to; if(to==='garant') return d.gphone||''; if(to==='mediateur') return ''; return d.phone||d.phone2||'';}
+function relanceSheet(id,kk){
+  var d=find(id); if(!d) return;
+  var k=suggest(d), tone=((d.rel||[]).length? 'normal':'doux'), ns=nextStep(d), pi=-1;
+  if(ns>-1){k=PLAN[ns].k; tone=PLAN[ns].tone; pi=ns;}
+  if(kk){k=kk; tone='doux'; pi=-1;}
+  relDraft={id:id,k:k,tone:tone,promesse:addDays(today(),1),p:pi};
+  paintRelance();
+}
+function paintRelance(){
+  var d=find(relDraft.id), t=build(d,relDraft.k,relDraft.tone,relDraft.promesse), ds=daysSinceRel(d);
+  if(relDraft.pay && S.myphone && !sitOf(relDraft.k).to) t+=String.fromCharCode(10)+'Paiement Mobile Money : '+S.myphone;
+  var h='<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Relancer '+esc(d.name)+'</h2><p class="sub">'+(relDraft.p>-1?'<b>Étape '+(relDraft.p+1)+' sur '+PLAN.length+' de ton plan</b> ('+esc(PLAN[relDraft.p].l)+'). ':'')+'Tu peux changer la situation et le ton, et modifier le message avant de l’envoyer.</p>';
+  h+='<label for="r_sit">Situation ('+SIT.length*3+' messages)</label><select id="r_sit">'+GORD.map(function(g){return '<optgroup label="'+g+'">'+SIT.filter(function(s){return GRP[s.k]===g;}).map(function(s){return '<option value="'+s.k+'"'+(s.k===relDraft.k?' selected':'')+'>'+esc(s.l)+'</option>';}).join('')+'</optgroup>';}).join('')+'</select>';
+  var to=sitOf(relDraft.k).to;
+  if(to==='garant') h+='<div class="note">'+(d.gphone?'Ce message est pour la <b>personne de confiance</b> ('+esc(d.gname||'')+'), pas pour le client.':'Message pour la <b>personne de confiance</b>. Ajoute son numéro dans « Modifier » pour l’envoyer directement, sinon copie-le.')+' Le montant n’y est pas écrit, pour respecter la vie privée du client. <b>Prévins toujours le client</b> que tu pourras contacter sa personne de confiance.</div>';
+  if(to==='mediateur') h+='<div class="note">Message pour un <b>médiateur</b> (chef de quartier, pasteur, imam, aîné de la famille…). Copie-le et envoie-le à la personne choisie.</div>';
+  h+='<label>Ton</label><div class="tones">'+[['doux','Doux'],['normal','Normal'],['ferme','Ferme']].map(function(x){return '<button data-a="tone" data-v="'+x[0]+'" class="'+(relDraft.tone===x[0]?'on':'')+'">'+x[1]+'</button>';}).join('')+'</div>';
+  if(['promet','delai','dernier','partiel','geste','bloque','garant','demenage'].indexOf(relDraft.k)>-1) h+='<label for="r_prom">Date limite que tu fixes</label><input id="r_prom" type="date" value="'+relDraft.promesse+'">';
+  h+='<label for="r_msg">Message</label><textarea id="r_msg">'+esc(t)+'</textarea>';
+  if(S.myphone && !to) h+='<label class="chk" style="display:flex;gap:10px;align-items:center;margin-top:8px;font-weight:600"><input type="checkbox" id="r_pay" style="width:22px;height:22px"'+(relDraft.pay?' checked':'')+'> Ajouter mon numéro Mobile Money pour faciliter le paiement</label>';
+  if(ds<2) h+='<div class="note warn">Tu l’as déjà relancé '+(ds===0?'aujourd’hui':'hier')+'. Mieux vaut attendre 2 jours : trop de messages fâchent le client et WhatsApp peut bloquer ton compte.</div>';
+  h+='<div class="note">Reste poli(e) : ne menace jamais, n’affiche pas son nom ailleurs.</div>';
+  h+='<div class="acts" style="margin-top:12px">'+(recipient(d,relDraft.k)?'<button class="btn wa" data-a="sendwa">Ouvrir WhatsApp</button>':'')+'<button class="btn sec" data-a="copymsg">Copier</button></div>';
+  openSheet(h);
+}
+function paySheet(id){
+  var d=find(id); if(!d) return;
+  openSheet('<button class="x" data-a="closesheet">✕</button><h2>Paiement de '+esc(d.name)+'</h2><p class="sub">Reste à payer : <b>'+F(rest(d))+'</b></p><label for="p_a">Montant reçu (F)</label><input id="p_a" type="number" inputmode="numeric" value="'+rest(d)+'"><label for="p_d">Date</label><input id="p_d" type="date" value="'+today()+'"><div class="acts" style="margin-top:14px"><button class="btn" data-a="savepay" data-id="'+id+'">Enregistrer</button></div>');
+}
+function extendSheet(id){
+  var d=find(id); if(!d) return;
+  openSheet('<button class="x" data-a="closesheet">✕</button><h2>Nouveau délai</h2><p class="sub">Le client a demandé du temps ? Note la nouvelle date : l’application te rappellera.</p><label for="e_d">Il paiera avant le</label><input id="e_d" type="date" value="'+addDays(today(),7)+'"><div class="quick"><button data-a="extq" data-v="3">3 jours</button><button data-a="extq" data-v="7">7 jours</button><button data-a="extq" data-v="15">15 jours</button></div><div class="acts" style="margin-top:14px"><button class="btn" data-a="saveext" data-id="'+id+'">Enregistrer</button></div>');
+}
+
+/* ---------- RECONNAISSANCE DE DETTE ---------- */
+var RC=null;
+function toWords(n){
+  n=Math.floor(Math.abs(+n||0));
+  if(n===0) return 'zéro';
+  var u=['','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+  var t=['','','vingt','trente','quarante','cinquante','soixante'];
+  function b100(x,fin){
+    if(x<20) return u[x];
+    var d=Math.floor(x/10), r=x%10;
+    if(d===7){ if(r===0) return 'soixante-dix'; if(r===1) return 'soixante et onze'; return 'soixante-'+u[10+r]; }
+    if(d===9){ return 'quatre-vingt-'+u[10+r]; }
+    if(d===8){ return r===0 ? 'quatre-vingt'+(fin?'s':'') : 'quatre-vingt-'+u[r]; }
+    if(r===0) return t[d];
+    if(r===1) return t[d]+' et un';
+    return t[d]+'-'+u[r];
+  }
+  function b1000(x,fin){
+    var c=Math.floor(x/100), r=x%100, s='';
+    if(c>0){ s=(c===1)?'cent':u[c]+' cent'+((r===0&&fin)?'s':''); }
+    if(r>0){ s+=(s?' ':'')+b100(r,fin); }
+    return s;
+  }
+  var parts=[], bn=Math.floor(n/1e9), mn=Math.floor((n%1e9)/1e6), th=Math.floor((n%1e6)/1000), un=n%1000;
+  if(bn) parts.push(b1000(bn,true)+' milliard'+(bn>1?'s':''));
+  if(mn) parts.push(b1000(mn,true)+' million'+(mn>1?'s':''));
+  if(th) parts.push(th===1?'mille':b1000(th,false)+' mille');
+  if(un) parts.push(b1000(un,true));
+  return parts.join(' ');
+}
+function Fp(n){return String(Math.round(+n||0)).replace(/\B(?=(\d{3})+(?!\d))/g,' ');}
+function plan(total,n,per,start){
+  var out=[], acc=0, base=Math.floor(total/n/100)*100;
+  if(n<2) return [{a:total,d:start}];
+  for(var i=0;i<n;i++){ var a=(i===n-1)? total-acc : base; acc+=a; out.push({a:a,d:addDays(start,i*per)}); }
+  return out;
+}
+function ordinal(i){return i===1?'1er':i+'e';}
+function reconBlocks(r){
+  var B=[], words=toWords(r.amount);
+  B.push({t:'h',x:'RECONNAISSANCE DE DETTE'});
+  B.push({t:'p',x:'Je soussigné(e) '+r.debName+(r.debCity?', demeurant à '+r.debCity:'')+(r.debId?', pièce d’identité : '+r.debId:'')+','});
+  B.push({t:'p',x:'reconnais devoir à '+r.credName+(r.credCity?', demeurant à '+r.credCity:'')+','});
+  B.push({t:'p',x:'la somme de '+Fp(r.amount)+' francs CFA ('+words+' francs CFA), au titre de : '+r.motif+'.'});
+  B.push({t:'b',x:'Remboursement'});
+  if(r.sched.length<2){
+    B.push({t:'p',x:'Je m’engage à rembourser cette somme en une seule fois, au plus tard le '+fr(r.sched[0].d)+'.'});
+  } else {
+    B.push({t:'p',x:'Je m’engage à rembourser cette somme en '+r.sched.length+' versements :'});
+    r.sched.forEach(function(s,i){B.push({t:'li',x:ordinal(i+1)+' versement : '+Fp(s.a)+' F le '+fr(s.d)});});
+    B.push({t:'p',x:'Si un versement n’est pas payé à la date prévue, tout le solde restant devient immédiatement dû.'});
+  }
+  B.push({t:'p',x:'Cette dette ne porte pas d’intérêts.'});
+  B.push({t:'p',x:'Fait à '+(r.place||'__________')+', le '+fr(r.date)+', en deux exemplaires originaux (un pour chaque partie).'});
+  B.push({t:'box',x:'À écrire de la main du débiteur, avant de signer : « Lu et approuvé. Bon pour la somme de '+words+' francs CFA ('+Fp(r.amount)+' F CFA). »'});
+  B.push({t:'sig',x:'Le débiteur : '+r.debName});
+  B.push({t:'sig',x:'Le créancier : '+r.credName});
+  if(r.wit.length){ r.wit.forEach(function(w){B.push({t:'sig',x:'Témoin : '+w});}); }
+  else B.push({t:'sig',x:'Témoin (facultatif) : ____________________'});
+  return B;
+}
+function blocksText(B){
+  return B.map(function(b){
+    if(b.t==='l') return b.x;
+    if(b.t==='r') return b.x;
+    if(b.t==='hr') return '--------------------------------';
+    if(b.t==='h') return b.x+'\n';
+    if(b.t==='li') return '  - '+b.x;
+    if(b.t==='b') return b.x.toUpperCase()+' :';
+    if(b.t==='box') return '['+b.x+']';
+    if(b.t==='sig') return b.x+'\nSignature : ______________________';
+    return b.x;
+  }).join('\n');
+}
+function blocksHTML(B){
+  var h='', inUl=false;
+  B.forEach(function(b){
+    if(b.t!=='li' && inUl){h+='</ul>';inUl=false;}
+    if(b.t==='h') h+='<h2>'+esc(b.x)+'</h2>';
+    else if(b.t==='l') h+='<p>'+esc(b.x).replace(/\n/g,'<br>')+'</p>';
+    else if(b.t==='r') h+='<p style="text-align:right">'+esc(b.x).replace(/\n/g,'<br>')+'</p>';
+    else if(b.t==='hr') h+='<hr style="border:0;border-top:2px dashed #111;margin:18px 0">';
+    else if(b.t==='p') h+='<p>'+esc(b.x)+'</p>';
+    else if(b.t==='b') h+='<p><b>'+esc(b.x)+'</b></p>';
+    else if(b.t==='li'){ if(!inUl){h+='<ul>';inUl=true;} h+='<li>'+esc(b.x)+'</li>'; }
+    else if(b.t==='box') h+='<div class="box">'+esc(b.x)+'</div>';
+    else if(b.t==='sig') h+='<p class="sig">'+esc(b.x)+'<br>Signature : <span class="ln">&nbsp;</span></p>';
+  });
+  if(inUl) h+='</ul>';
+  return h;
+}
+function reconForm(d){
+  var sv=(d.recon&&d.recon.data)||{};
+  var e={credName:sv.credName||S.myfull||S.me||'', credCity:sv.credCity||S.city||'', debName:sv.debName||d.name, debCity:sv.debCity||'', debId:sv.debId||'',
+    amount:rest(d)||d.amount, motif:sv.motif||((d.obj||'')+(paid(d)>0?' (solde restant sur '+Fp(d.amount)+' F)':'')),
+    place:sv.place||S.city||'', date:today(), n:1, per:7, start:(d.due>=today()?d.due:addDays(today(),7)), wit:(sv.wit||'')};
+  var h='<header><div class="row"><div><h1>Reconnaissance de dette</h1><small>'+esc(d.name)+'</small></div><button class="ic" data-a="open" data-id="'+d.id+'" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="note">Ce document sert de preuve écrite. Remplis-le avec le client, puis imprime-le (ou recopie-le à la main) pour le faire signer.</div>';
+  h+='<h3>Moi (celui qui a prêté)</h3><label for="rc_cn">Mon nom complet *</label><input id="rc_cn" value="'+esc(e.credName)+'"><label for="rc_cc">Ma ville</label><input id="rc_cc" value="'+esc(e.credCity)+'">';
+  h+='<h3>Le client (celui qui doit)</h3><label for="rc_dn">Son nom complet *</label><input id="rc_dn" value="'+esc(e.debName)+'"><label for="rc_dc">Sa ville ou son quartier</label><input id="rc_dc" value="'+esc(e.debCity)+'"><label for="rc_di">Sa pièce d’identité (type et numéro, facultatif)</label><input id="rc_di" value="'+esc(e.debId)+'" placeholder="ex : CNI n° ...">';
+  h+='<h3>La dette</h3><label for="rc_am">Montant reconnu (F) *</label><input id="rc_am" type="number" inputmode="numeric" value="'+esc(e.amount)+'"><label for="rc_mo">Pour quoi ? *</label><input id="rc_mo" value="'+esc(e.motif)+'">';
+  h+='<h3>Remboursement</h3><label for="rc_n">Nombre de versements</label><select id="rc_n"><option value="1">1 seul (en une fois)</option><option value="2">2 versements</option><option value="3">3 versements</option><option value="4">4 versements</option><option value="6">6 versements</option></select>';
+  h+='<label for="rc_per">Rythme (si plusieurs versements)</label><select id="rc_per"><option value="7">Chaque semaine</option><option value="15">Tous les 15 jours</option><option value="30">Chaque mois</option></select>';
+  h+='<label for="rc_st">Premier (ou seul) paiement le *</label><input id="rc_st" type="date" value="'+esc(e.start)+'">';
+  h+='<h3>Signature</h3><label for="rc_pl">Fait à (ville)</label><input id="rc_pl" value="'+esc(e.place)+'"><label for="rc_dt">Date</label><input id="rc_dt" type="date" value="'+esc(e.date)+'"><label for="rc_wi">Témoin(s) (un nom par ligne, facultatif)</label><textarea id="rc_wi" style="min-height:70px">'+esc(e.wit)+'</textarea>';
+  h+='<div class="acts" style="margin-top:18px"><button class="btn" data-a="reconmake" data-id="'+d.id+'">Préparer le document</button></div></div>';
+  return h;
+}
+function reconView(d){
+  var h='<header><div class="row"><div><h1>Document prêt</h1><small>'+esc(d.name)+'</small></div><button class="ic" data-a="open" data-id="'+d.id+'" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="doc">'+blocksHTML(RC.blocks)+'</div>';
+  h+='<div class="acts" style="margin-top:12px"><button class="btn gold" data-a="reconprint">Imprimer / PDF</button><button class="btn sec" data-a="reconcopy">Copier</button></div>';
+  if(d.phone) h+='<div class="acts"><button class="btn wa" data-a="reconwa" data-id="'+d.id+'">Envoyer le texte au client pour qu’il relise</button></div>';
+  h+='<div class="acts"><button class="btn sec" data-a="reconform" data-id="'+d.id+'">Modifier</button></div>';
+  h+='<h3>Pour que ce soit solide</h3><ol class="hist" style="padding-left:20px"><li>Imprime 2 exemplaires (ou recopie-le à la main sur une feuille).</li><li>Le client écrit lui-même à la main la phrase du cadre « Bon pour la somme de… », puis date et signe, devant toi (et un témoin si possible).</li><li>Prends en photo les deux exemplaires signés. Avec son accord, garde aussi une photo de sa pièce d’identité.</li><li>Chacun garde un exemplaire original.</li><li>Fais payer de préférence par Mobile Money : ça laisse une trace.</li></ol>';
+  h+='<div class="note warn">Modèle indicatif. Les règles exactes de preuve peuvent varier : pour une grosse somme, fais relire par un huissier, un notaire ou un avocat. Ce n’est pas un conseil juridique.</div>';
+  h+='<h3>Quand le client a signé</h3><div class="acts"><button class="btn '+(d.recon&&d.recon.signed?'sec':'')+'" data-a="reconsigned" data-id="'+d.id+'">'+(d.recon&&d.recon.signed?'✔ Signé le '+fr(iso(new Date(d.recon.signed)))+' (annuler)':'J’ai reçu l’exemplaire signé')+'</button></div></div>';
+  return h;
+}
+
+/* ---------- LETTRE DE MISE EN DEMEURE ---------- */
+var MODES={main:'Remise en main propre contre décharge',recommande:'Lettre recommandée avec accusé de réception',whatsapp:'Copie envoyée par WhatsApp (l’original suit en main propre)'};
+function medBlocks(r){
+  var B=[], w=toWords(r.reste), limit=addDays(r.date,r.delay);
+  B.push({t:'l',x:r.credName+(r.credCity?'\n'+r.credCity:'')+(r.credPhone?'\nTél. : '+r.credPhone:'')});
+  B.push({t:'r',x:r.debName+(r.debCity?'\n'+r.debCity:'')});
+  B.push({t:'r',x:(r.place?r.place+', ':'')+'le '+fr(r.date)});
+  B.push({t:'b',x:'Objet : MISE EN DEMEURE DE PAYER la somme de '+Fp(r.reste)+' francs CFA'});
+  B.push({t:'p',x:'Mode d’envoi : '+MODES[r.mode]});
+  B.push({t:'p',x:'Madame, Monsieur,'});
+  B.push({t:'p',x:'Le '+fr(r.dateDette)+', je vous ai fourni : '+r.obj+', pour un montant total de '+Fp(r.total)+' F.'+(r.paye>0?' Vous avez déjà payé '+Fp(r.paye)+' F ; il reste donc '+Fp(r.reste)+' F.':'')+' Cette somme devait être payée au plus tard le '+fr(r.due)+'.'+(r.reconDate?' Vous avez reconnu cette dette par écrit le '+fr(r.reconDate)+'.':'')});
+  B.push({t:'p',x:r.relN===1 ? 'Malgré mon rappel du '+r.relDates+', cette somme n’a pas été payée.' : r.relN>1 ? 'Malgré mes '+r.relN+' rappels ('+r.relDates+'), cette somme n’a pas été payée.' : 'À ce jour, cette somme n’a pas été payée.'});
+  if(r.tone==='formelle') B.push({t:'p',x:'Par la présente, je vous mets en demeure de me payer la somme de '+Fp(r.reste)+' francs CFA ('+w+' francs CFA) dans un délai de '+r.delay+' jours à compter de la réception de cette lettre, soit au plus tard le '+fr(limit)+'.'});
+  else B.push({t:'p',x:'Je vous demande de bien vouloir régler la somme de '+Fp(r.reste)+' francs CFA ('+w+' francs CFA) dans un délai de '+r.delay+' jours à compter de la réception de cette lettre, soit au plus tard le '+fr(limit)+'. Cette lettre constitue une mise en demeure de payer.'});
+  B.push({t:'p',x:'Paiement : en main propre contre reçu'+(r.pay?', ou par Mobile Money au '+r.pay:'')+'.'});
+  if(r.tone==='formelle') B.push({t:'p',x:'À défaut de paiement dans ce délai, je saisirai les voies légales de recouvrement (notamment la procédure d’injonction de payer devant la juridiction compétente), avec les frais que cela entraîne.'});
+  else B.push({t:'p',x:'Si je ne reçois pas votre paiement dans ce délai, je devrai engager les démarches légales de recouvrement, ce qui entraînerait des frais supplémentaires. Je préfère que nous évitions cela.'});
+  B.push({t:'p',x:'Si vous rencontrez une difficulté, contactez-moi avant le '+fr(limit)+' pour proposer un arrangement par écrit.'});
+  B.push({t:'p',x:'Veuillez agréer, Madame, Monsieur, mes salutations distinguées.'});
+  B.push({t:'sig',x:r.credName});
+  B.push({t:'b',x:'Pièces jointes :'});
+  B.push({t:'li',x:'Relevé de la dette (montants donnés et paiements reçus)'});
+  if(r.reconDate) B.push({t:'li',x:'Copie de la reconnaissance de dette signée le '+fr(r.reconDate)});
+  if(r.relN>0) B.push({t:'li',x:'Copies de mes rappels (captures WhatsApp ou messages)'});
+  B.push({t:'hr',x:''});
+  B.push({t:'b',x:'DÉCHARGE DE RÉCEPTION (à signer par la personne qui reçoit la lettre)'});
+  B.push({t:'p',x:'Lettre de mise en demeure reçue le ____ / ____ / ________'});
+  B.push({t:'sig',x:'Nom de la personne qui reçoit : ______________________'});
+  return B;
+}
+function medDays(d){return d.med&&d.med.sent? diff(d.med.limit,today()) : null;}
+function medForm(d){
+  var sv=(d.med&&d.med.data)||{}, rels=(d.rel||[]);
+  var h='<header><div class="row"><div><h1>Mise en demeure</h1><small>'+esc(d.name)+' • reste '+F(rest(d))+'</small></div><button class="ic" data-a="open" data-id="'+d.id+'" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="note">C’est la dernière étape avant une procédure officielle. Avant de l’envoyer, assure-toi d’avoir déjà relancé le client (au moins 2 fois) et, si possible, fait signer une reconnaissance de dette.</div>';
+  if(rels.length<2) h+='<div class="note warn">Tu n’as relancé ce client que '+rels.length+' fois dans le cahier. Relance d’abord : une mise en demeure arrive mieux après des rappels.</div>';
+  h+='<h3>Moi</h3><label for="md_cn">Mon nom complet *</label><input id="md_cn" value="'+esc(sv.credName||S.myfull||S.me||'')+'"><label for="md_cc">Ma ville</label><input id="md_cc" value="'+esc(sv.credCity||S.city||'')+'"><label for="md_cp">Mon numéro (pour que le client me contacte et me paie)</label><input id="md_cp" type="tel" value="'+esc(sv.credPhone||S.myphone||'')+'">';
+  h+='<h3>Le client</h3><label for="md_dn">Son nom complet *</label><input id="md_dn" value="'+esc(sv.debName||d.name)+'"><label for="md_dc">Sa ville ou son quartier</label><input id="md_dc" value="'+esc(sv.debCity||'')+'">';
+  h+='<h3>La lettre</h3><label for="md_am">Montant réclamé (F) *</label><input id="md_am" type="number" inputmode="numeric" value="'+rest(d)+'">';
+  h+='<label for="md_de">Délai donné pour payer</label><select id="md_de"><option value="8">8 jours</option><option value="15">15 jours</option></select>';
+  h+='<label for="md_to">Ton</label><select id="md_to"><option value="courtoise">Courtoise (ferme mais polie)</option><option value="formelle">Formelle (avant procédure)</option></select>';
+  h+='<label for="md_mo">Comment vas-tu l’envoyer ?</label><select id="md_mo"><option value="main">'+MODES.main+'</option><option value="recommande">'+MODES.recommande+'</option><option value="whatsapp">'+MODES.whatsapp+'</option></select>';
+  h+='<label for="md_pa">Comment te payer ? (Mobile Money : numéro et nom)</label><input id="md_pa" value="'+esc(sv.pay||S.myphone||'')+'" placeholder="ex : 01 97 00 00 00 (Esther Dossou)">';
+  h+='<label for="md_pl">Fait à (ville)</label><input id="md_pl" value="'+esc(sv.place||S.city||'')+'"><label for="md_dt">Date de la lettre</label><input id="md_dt" type="date" value="'+today()+'">';
+  h+='<div class="acts" style="margin-top:18px"><button class="btn" data-a="medmake" data-id="'+d.id+'">Préparer la lettre</button></div></div>';
+  return h;
+}
+function medView(d){
+  var h='<header><div class="row"><div><h1>Lettre prête</h1><small>'+esc(d.name)+'</small></div><button class="ic" data-a="open" data-id="'+d.id+'" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="doc">'+blocksHTML(RC.blocks)+'</div>';
+  h+='<div class="acts" style="margin-top:12px"><button class="btn gold" data-a="reconprint">Imprimer / PDF</button><button class="btn sec" data-a="reconcopy">Copier</button></div>';
+  if(d.phone) h+='<div class="acts"><button class="btn wa" data-a="medwa" data-id="'+d.id+'">Envoyer une copie par WhatsApp</button></div>';
+  h+='<div class="acts"><button class="btn sec" data-a="medform" data-id="'+d.id+'">Modifier</button></div>';
+  h+='<h3>Pour que la lettre compte</h3><ol class="hist" style="padding-left:20px"><li>Imprime la lettre en 2 exemplaires.</li><li>Remets-la en main propre : la personne signe la décharge sur ton exemplaire (ou envoie-la en recommandé avec accusé de réception, ou par huissier pour plus de poids).</li><li>Prends une photo de la décharge signée et des pièces jointes, et garde tout ensemble.</li><li>Si le client refuse de signer : note la date, l’heure, un témoin, et envoie aussi une copie par WhatsApp.</li><li>Appuie ensuite sur « J’ai envoyé la lettre » : le cahier calcule la date limite.</li></ol>';
+  h+='<div class="note warn">Modèle indicatif, pas un conseil juridique. Ne menace jamais (violence, révéler ses secrets, etc.) : seules les démarches légales sont permises. Pour une grosse somme, demande l’aide d’un huissier ou d’un avocat.</div>';
+  h+='<div class="acts" style="margin-top:12px"><button class="btn" data-a="medsent" data-id="'+d.id+'">J’ai envoyé la lettre</button></div></div>';
+  return h;
+}
+
+/* ---------- TEST AVANT DE DONNER A CREDIT ---------- */
+var T=null, TR=null, PRE=null;
+var TQ=[
+ {k:'q1',t:'Depuis quand connais-tu cette personne ?',o:[[3,'Plus d’un an'],[2,'3 à 12 mois'],[1,'Moins de 3 mois'],[0,'Je ne la connais pas vraiment']],w:'Tu la connais depuis peu de temps.'},
+ {k:'q2',t:'A-t-elle déjà acheté chez toi ?',o:[[3,'Oui, elle a toujours payé à temps'],[2,'Oui, mais parfois en retard'],[1,'Jamais encore'],[0,'Elle m’a déjà fait perdre de l’argent']],w:'Elle n’a pas un bon historique de paiement avec toi.'},
+ {k:'q3',t:'Pourrais-tu la retrouver facilement ?',o:[[3,'Je connais sa maison ou sa boutique, et sa famille'],[2,'Je connais son lieu de travail ou son marché'],[1,'J’ai seulement son numéro'],[0,'Rien de sûr']],w:'Tu aurais du mal à la retrouver si elle disparaît.'},
+ {k:'q4',t:'A-t-elle un revenu régulier ?',o:[[3,'Oui, je le vois (salaire, commerce qui marche)'],[2,'Activité irrégulière'],[1,'Je ne sais pas'],[0,'Pas de revenu visible']],w:'Tu n’es pas sûr(e) qu’elle ait de quoi te payer.'},
+ {k:'q5',t:'Si elle ne paie jamais, ça te fait quoi ?',o:[[3,'Je peux le supporter'],[1,'Ça me gêne beaucoup'],[0,'Ça me met en difficulté']],w:'Une perte te ferait trop mal.'},
+ {k:'q6',t:'Une personne fiable peut-elle se porter garante ?',o:[[3,'Oui, quelqu’un de fiable'],[1,'Peut-être'],[0,'Non']],w:'Personne ne se porte garant pour elle.'},
+ {k:'q7',t:'Accepte-t-elle de signer un écrit et de verser une avance ?',o:[[3,'Oui, sans problème'],[1,'Elle hésite'],[0,'Elle refuse']],w:'Elle hésite ou refuse de signer et d’avancer de l’argent.'},
+ {k:'q8',t:'Que t’a-t-on dit sur elle ?',o:[[3,'On me l’a recommandée'],[2,'Rien de particulier'],[0,'On m’a dit qu’elle paie mal']],w:'On t’a prévenu(e) qu’elle paie mal (ce n’est qu’un avis, garde-le en tête).'}
+];
+function evalTest(ans,amount,maxLoss){
+  var s=0, weak=[];
+  TQ.forEach(function(q){var v=+ans[q.k]||0; s+=v; if(v<=1) weak.push({v:v,w:q.w});});
+  weak.sort(function(a,b){return a.v-b.v;});
+  var v=s>=19?'vert':(s>=12?'orange':'rouge');
+  if(ans.q2===0||ans.q3===0) v='rouge';
+  if((ans.q5===0||ans.q7===0)&&v==='vert') v='orange';
+  if(!(maxLoss>0)) maxLoss=amount;
+  var fac=v==='vert'?0:(v==='orange'?0.3:1);
+  var avance=Math.ceil(amount*fac/100)*100;
+  var cred=0;
+  if(v==='vert') cred=Math.min(amount,maxLoss);
+  else if(v==='orange') cred=Math.min(amount-avance,Math.floor(maxLoss/2/100)*100);
+  if(cred<0) cred=0;
+  return {score:s,verdict:v,weak:weak.slice(0,3).map(function(x){return x.w;}),cred:cred,comptant:amount-cred,avance:Math.min(avance,amount),days:v==='vert'?15:(v==='orange'?21:0)};
+}
+function testForm(){
+  var h='<header><div class="row"><div><h1>Avant de donner à crédit</h1><small>8 questions, 1 minute</small></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="note">Réponds avec honnêteté. Le résultat t’aide à décider, il ne remplace pas ton jugement.</div>';
+  h+='<label for="t_name">Nom du client *</label><input id="t_name" autocomplete="off">';
+  h+='<label for="t_phone">Son numéro WhatsApp (facultatif)</label><input id="t_phone" type="tel" inputmode="tel">';
+  h+='<label for="t_am">Montant qu’il demande à crédit (F) *</label><input id="t_am" type="number" inputmode="numeric">';
+  h+='<label for="t_max">Combien peux-tu perdre sans être en difficulté ? (F) *</label><input id="t_max" type="number" inputmode="numeric" value="'+esc(S.maxLoss||'')+'">';
+  TQ.forEach(function(q,i){
+    h+='<h3>'+(i+1)+'. '+esc(q.t)+'</h3><div class="opts" data-q="'+q.k+'">'+q.o.map(function(o){return '<button class="opt" data-a="ans" data-q="'+q.k+'" data-v="'+o[0]+'">'+esc(o[1])+'</button>';}).join('')+'</div>';
+  });
+  h+='<div class="acts" style="margin-top:18px"><button class="btn" data-a="testrun">Voir le résultat</button></div></div>';
+  return h;
+}
+function testResult(){
+  var r=TR.r, c={vert:['#1f8a55','Feu vert','Tu peux donner à crédit, avec un écrit simple.'],orange:['#d97a00','Feu orange','Prudence : donne à crédit seulement avec des protections.'],rouge:['#c62828','Feu rouge','Ne donne pas à crédit pour cette commande.']}[r.verdict];
+  var h='<header><div class="row"><div><h1>Résultat</h1><small>'+esc(T.name)+' • '+F(T.amount)+'</small></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div style="background:'+c[0]+';color:#fff;border-radius:16px;padding:16px;margin:14px 0"><div style="font-size:26px;font-weight:800">'+c[1]+'</div><div>'+c[2]+'</div><div style="opacity:.85;margin-top:6px;font-size:14px">Score : '+r.score+' sur 24</div></div>';
+  if(r.weak.length) h+='<h3>Pourquoi</h3><ul class="hist">'+r.weak.map(function(w){return '<li>'+esc(w)+'</li>';}).join('')+'</ul>';
+  h+='<h3>Mes conditions</h3>';
+  if(r.verdict==='rouge'){
+    h+='<div class="cards"><div class="c big"><span>Crédit conseillé</span><b>0 F</b></div></div><p>Propose-lui de payer <b>tout de suite</b> (ou à la livraison). Si elle insiste, ne cède pas : une dette impayée coûte plus cher que la vente perdue.</p>';
+  } else {
+    h+='<div class="cards"><div class="c big"><span>Crédit conseillé (maximum)</span><b>'+F(r.cred)+'</b></div><div class="c"><span>À payer maintenant</span><b>'+F(r.comptant)+'</b></div><div class="c"><span>Délai conseillé</span><b>'+r.days+' jours</b></div></div>';
+    h+='<ul class="hist">'+(r.verdict==='orange'?'<li>Une <b>avance de '+F(r.comptant)+'</b> avant de livrer.</li><li>Paiement en <b>2 ou 3 tranches</b> avec des dates précises.</li><li>Une <b>reconnaissance de dette signée</b> (avec la mention écrite de sa main).</li><li>Si possible, une <b>personne fiable qui se porte garante</b> par écrit.</li>':'<li>Un <b>écrit simple</b> : montant et date de paiement.</li><li>Une date précise de paiement (pas « bientôt »).</li><li>Un rappel 2 jours avant la date.</li>')+'</ul>';
+  }
+  var msg=testMsg(r);
+  h+='<label for="t_msg">Message à envoyer</label><textarea id="t_msg">'+esc(msg)+'</textarea>';
+  h+='<div class="acts" style="margin-top:10px">'+(T.phone?'<button class="btn wa" data-a="testwa">Ouvrir WhatsApp</button>':'')+'<button class="btn sec" data-a="testcopy">Copier</button></div>';
+  if(r.verdict!=='rouge') h+='<div class="acts"><button class="btn gold" data-a="testsave">Enregistrer cette dette dans le cahier</button></div>';
+  h+='<div class="acts"><button class="btn sec" data-a="test">Refaire un test</button></div>';
+  h+='<div class="note warn">Outil d’aide à la décision, pas une garantie : même un client « vert » peut ne pas payer. Ne partage jamais le nom d’un client dans des groupes.</div></div>';
+  return h;
+}
+function testMsg(r){
+  var me=S.me?' — '+S.me:'', n=T.name;
+  if(r.verdict==='rouge') return 'Bonjour '+n+', merci pour votre confiance. Pour cette commande ('+F(T.amount)+'), je ne fais pas de crédit en ce moment. Je peux vous la servir dès le paiement. Merci de votre compréhension.'+me;
+  if(r.verdict==='vert') return 'Bonjour '+n+', merci pour votre commande ('+F(T.amount)+'). Pour le crédit, voici mes conditions : '+(r.comptant>0?F(r.comptant)+' à payer maintenant, ':'')+F(r.cred)+' à régler au plus tard le '+fr(addDays(today(),r.days))+', avec un petit écrit signé. Si cela vous convient, je prépare tout et vous me confirmez par message.'+me;
+  var t=Math.ceil(r.cred/2/100)*100;
+  return 'Bonjour '+n+', merci pour votre commande ('+F(T.amount)+'). Pour le crédit, voici mes conditions : une avance de '+F(r.comptant)+' avant la livraison, puis '+F(r.cred)+' en 2 tranches ('+F(t)+' le '+fr(addDays(today(),r.days-7))+', puis le reste le '+fr(addDays(today(),r.days))+'), avec un écrit signé. Si cela vous convient, je prépare tout et vous me confirmez par message.'+me;
+}
+
+/* ---------- DONNEES D'EXEMPLE, SAUVEGARDE ---------- */
+function demo(){
+  var t=today(), names=[
+    ['Mama Esther','01 97 00 00 01',45000,'12 pagnes wax',-20,-9],
+    ['Koffi (menuisier)','01 96 00 00 02',18000,'Tissu et fil',-12,-2],
+    ['Awa la coiffeuse','01 95 00 00 03',32500,'Produits de beauté',-30,-18],
+    ['Jean (école de son fils)','01 94 00 00 04',60000,'Tenue et fournitures',-5,6],
+    ['Sandrine','01 93 00 00 05',9500,'2 sacs de riz',-2,1]
+  ];
+  names.forEach(function(n){
+    S.debts.push({id:uid(),name:n[0],phone:n[1],amount:n[2],obj:n[3],date:addDays(t,n[4]),due:addDays(t,n[5]),pay:[],rel:[],demo:true});
+  });
+  S.debts[0].pay.push({a:10000,d:addDays(t,-6)});
+  save();
+}
+function backupText(){return JSON.stringify({app:'cahier-credit',v:1,exportedAt:new Date().toISOString(),data:{me:S.me,myfull:S.myfull||'',city:S.city||'',cc:S.cc||'229',myphone:S.myphone||'',debts:S.debts,owed:S.owed||[]}});}
+function downloadBackup(){
+  var txt=backupText(), name='cahier-credit-'+today()+'.json';
+  try{
+    var b=new Blob([txt],{type:'application/json'}), a=document.createElement('a');
+    a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(a.href);},500);
+    S.lastBackup=Date.now(); save(); toast('Sauvegarde téléchargée. Envoie-la-toi sur WhatsApp.');
+  }catch(e){ copyText(txt); toast('Texte de sauvegarde copié.'); }
+}
+function copyText(t){ demoGate('copie'); return;
+  function fallback(){
+    var ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{document.execCommand('copy');}catch(e){}
+    document.body.removeChild(ta);
+  }
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).catch(fallback); return; }
+  }catch(e){}
+  fallback();
+}
+
+/* ---------- TABLEAU DE BORD (centre de contrôle) ---------- */
+function dashView(){
+  S.owed=S.owed||[];
+  var act=S.debts.filter(function(d){return rest(d)>0;}), due=0, lateT=0, ages=[0,0,0,0], risk=[], tot=0, got=0, given=0, mo=today().slice(0,7);
+  act.forEach(function(d){var r=rest(d), l=late(d); due+=r; if(l>0) lateT+=r; ages[l<=0?0:(l<=7?1:(l<=30?2:3))]+=r;
+    if(l>7 && !d.gphone && !d.phone2 && !d.where) risk.push(d);});
+  S.debts.forEach(function(d){tot+=+d.amount||0; got+=paid(d); if(String(d.date).slice(0,7)===mo) given+=+d.amount||0;});
+  var owed=0, owedSoon=[]; S.owed.forEach(function(o){var r=owedRest(o); owed+=r; if(r>0 && diff(today(),o.due)>=-3) owedSoon.push(o);});
+  var rec=monthRecovered(), rate=tot>0? Math.round(got/tot*100) : 0, todo=S.debts.filter(toRelaunch).sort(function(a,b){return rest(b)-rest(a);});
+  var top=act.slice().sort(function(a,b){return rest(b)-rest(a);}).slice(0,3), mx=Math.max(1,ages[0],ages[1],ages[2],ages[3]);
+  var h='<header><div class="row"><div><h1>Tableau de bord</h1><small>Ton argent d’un coup d’œil</small></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="cards"><div class="c big"><span>Les clients me doivent</span><b>'+F(due)+'</b></div><div class="c"><span>Je dois (fournisseurs)</span><b style="color:var(--rouge)">'+F(owed)+'</b></div><div class="c"><span>Reste net</span><b style="color:'+(due-owed>=0?'var(--vert)':'var(--rouge)')+'">'+F(due-owed)+'</b></div></div>';
+  h+='<h3>À faire aujourd’hui</h3>';
+  if(!todo.length && !owedSoon.length) h+='<div class="ok2">Rien d’urgent aujourd’hui. 👍</div>';
+  todo.slice(0,5).forEach(function(d){h+='<div class="debt '+status(d)+'"><div class="top"><div><div class="nm">'+esc(d.name)+'</div><div class="ob">'+chipText(d)+'</div></div><div class="am">'+F(rest(d))+'</div></div><div class="acts"><button class="btn wa" data-a="relance" data-id="'+d.id+'">Relancer</button><button class="btn sec" data-a="pay" data-id="'+d.id+'">Il a payé</button></div></div>';});
+  if(todo.length>5) h+='<p class="sub">+ '+(todo.length-5)+' autres à relancer (voir « À relancer » sur l’accueil).</p>';
+  owedSoon.forEach(function(o){h+='<div class="note warn">📦 À payer à <b>'+esc(o.name)+'</b> : '+F(owedRest(o))+' ('+(diff(today(),o.due)>0?'en retard':'avant le '+fr(o.due))+'). <button class="btn sec" style="margin-top:8px;width:100%" data-a="owed">Voir mes dettes fournisseurs</button></div>';});
+  h+='<h3>Ce mois-ci</h3><div class="cards"><div class="c"><span>Récupéré</span><b style="color:var(--vert)">'+F(rec)+'</b></div><div class="c"><span>Donné à crédit</span><b>'+F(given)+'</b></div><div class="c"><span>Déjà récupéré en tout</span><b>'+rate+' %</b></div></div>';
+  h+='<h3>Mon argent dehors : depuis quand ?</h3>';
+  [['Pas encore en retard',0,'var(--vert)'],['1 à 7 jours',1,'#d8a31a'],['8 à 30 jours',2,'#e0702a'],['Plus de 30 jours',3,'var(--rouge)']].forEach(function(x){
+    h+='<div style="margin:8px 0"><div class="row" style="font-size:14px"><span>'+x[0]+'</span><b>'+F(ages[x[1]])+'</b></div><div class="bar"><i style="width:'+Math.round(ages[x[1]]/mx*100)+'%;background:'+x[2]+'"></i></div></div>';});
+  if(ages[3]>0) h+='<div class="note warn">Plus l’argent reste dehors, moins il revient. Relance d’abord les plus grosses sommes en retard.</div>';
+  if(top.length){ h+='<h3>Les 3 plus grosses dettes</h3>'; top.forEach(function(d){h+='<div class="debt '+status(d)+'" data-a="open" data-id="'+d.id+'"><div class="top"><div><div class="nm">'+esc(d.name)+'</div><div class="ob">'+chipText(d)+'</div></div><div class="am">'+F(rest(d))+'</div></div></div>';}); }
+  if(risk.length) h+='<h3>⚠ Difficiles à retrouver</h3><p class="sub">En retard de plus de 7 jours, sans autre numéro, quartier ni personne de confiance : '+risk.map(function(d){return esc(d.name);}).join(', ')+'. Complète leurs infos (Modifier) tant que tu peux encore les joindre.</p>';
+  h+='<h3>Aller plus loin</h3><div class="acts"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois</button></div></div>';
+  return h;
+}
+
+/* ---------- CE QUE JE DOIS (mes dettes envers mes fournisseurs) ---------- */
+var OW=[
+ {k:'delai',l:'Demander un délai',
+  doux:"Bonjour {nom}, j'espère que vous allez bien. Je rencontre une petite difficulté pour régler {reste} à la date prévue ({echeance}). Pouvez-vous m'accorder jusqu'au {promesse} ? Je vous remercie pour votre compréhension et votre confiance. — {moi}",
+  normal:"Bonjour {nom}. Je vous écris avant l'échéance du {echeance} pour être honnête : je ne pourrai pas payer {reste} ce jour-là. Je propose de le faire le {promesse}. Merci de me confirmer. — {moi}",
+  ferme:"Bonjour {nom}. Je vous informe que le paiement de {reste} sera fait le {promesse}, au plus tard. Je reste fidèle à mes engagements et je demande votre accord pour cette date. — {moi}"},
+ {k:'tranches',l:'Payer en plusieurs fois',
+  doux:"Bonjour {nom}, pour régler {reste}, pouvons-nous faire en 3 paiements ({tranches}) ? Le premier le {promesse}. Cela m'aide à continuer à travailler avec vous. Merci. — {moi}",
+  normal:"Bonjour {nom}. Je propose de payer {reste} en 3 fois : {tranches}, le premier le {promesse}, puis chaque semaine. Je confirme par message chaque paiement. Êtes-vous d'accord ? — {moi}",
+  ferme:"Bonjour {nom}. Voici mon plan de paiement pour {reste} : 3 paiements ({tranches}), le premier le {promesse}. Merci de confirmer par écrit pour que nous soyons tous les deux clairs. — {moi}"},
+ {k:'confirme',l:'Confirmer que j’ai payé',
+  doux:"Bonjour {nom}, j'ai envoyé le paiement de {paye}. Merci de me confirmer la réception. Merci pour votre patience. — {moi}",
+  normal:"Bonjour {nom}. Paiement envoyé : {paye}. Il reste {reste}, que je règle le {promesse}. Merci de noter et de me confirmer. — {moi}",
+  ferme:"Bonjour {nom}. J'ai payé {paye}. Merci d'enregistrer ce paiement et de m'envoyer un reçu ou une confirmation écrite. — {moi}"}
+];
+var OD=null;
+function owedRest(o){var p=0; (o.pay||[]).forEach(function(x){p+=+x.a||0;}); return Math.max(0,(+o.amount||0)-p);}
+function owedPaid(o){return (+o.amount||0)-owedRest(o);}
+function owedView(){
+  S.owed=S.owed||[]; var tot=0; S.owed.forEach(function(o){tot+=owedRest(o);});
+  var h='<header><div class="row"><div><h1>Ce que je dois</h1><small>Mes fournisseurs : ce que je dois payer</small></div><button class="ic" data-a="home" aria-label="Retour">✕</button></div></header><div class="wrap">';
+  h+='<div class="cards"><div class="c big"><span>Je dois en tout</span><b>'+F(tot)+'</b></div></div>';
+  h+='<p class="sub">Beaucoup de commerçants doivent de l’argent à leurs fournisseurs <b>et</b> attendent l’argent de leurs clients. Note ici ce que tu dois : tu vois tes dates et tu prépares un message honnête pour demander un délai.</p>';
+  if(!S.owed.length) h+='<div class="empty">Rien noté pour l’instant.</div>';
+  else h+=S.owed.slice().sort(function(a,b){return parse(a.due)-parse(b.due);}).map(function(o){
+    var r=owedRest(o), l=diff(today(),o.due), tag=r<=0?'paid':(l>0?'late':(l>=-3?'soon':'ok')), txt=r<=0?'Payé':(l>0?'En retard de '+l+' j':(l===0?'À payer aujourd’hui':'À payer le '+fr(o.due)));
+    return '<div class="debt '+tag+'"><div class="top"><div><div class="nm">'+esc(o.name)+'</div><div class="ob">'+esc(o.obj||'')+'</div></div><div class="am">'+F(r)+'</div></div><span class="tag '+tag+'">'+txt+'</span>'+
+      (r>0?'<div class="acts"><button class="btn wa" data-a="owedmsg" data-id="'+o.id+'">Écrire au fournisseur</button><button class="btn sec" data-a="owedpay" data-id="'+o.id+'">J’ai payé</button></div>':'')+
+      '<div class="acts"><button class="btn red" data-a="oweddel" data-id="'+o.id+'">Supprimer</button></div></div>';
+  }).join('');
+  h+='</div><button class="fab" data-a="owednew">+ Je dois à quelqu’un</button>';
+  return h;
+}
+function owedFind(id){S.owed=S.owed||[]; for(var i=0;i<S.owed.length;i++) if(S.owed[i].id===id) return S.owed[i]; return null;}
+function owedBuild(o,k,tone,prom){
+  var tpl=null; OW.forEach(function(x){if(x.k===k) tpl=x;}); tpl=(tpl||OW[0])[tone]||OW[0].normal;
+  var r=owedRest(o), t3=Math.ceil(r/3/100)*100;
+  var vals={nom:o.name,reste:F(r),paye:F(owedPaid(o)),echeance:fr(o.due),promesse:fr(prom),tranche3:F(t3),tranches:F(t3)+', '+F(t3)+' puis '+F(Math.max(0,r-2*t3))};
+  return tpl.replace(' — {moi}',S.me?' — '+S.me:'').replace(/\{(\w+)\}/g,function(m,k2){return vals.hasOwnProperty(k2)?vals[k2]:m;});
+}
+function paintOwedMsg(){
+  var o=owedFind(OD.id);
+  var h='<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Écrire à '+esc(o.name)+'</h2><p class="sub">Un message honnête et poli garde la confiance de ton fournisseur.</p>';
+  h+='<label for="o_sit">Situation</label><select id="o_sit">'+OW.map(function(s){return '<option value="'+s.k+'"'+(s.k===OD.k?' selected':'')+'>'+esc(s.l)+'</option>';}).join('')+'</select>';
+  h+='<label>Ton</label><div class="tones">'+[['doux','Doux'],['normal','Normal'],['ferme','Ferme']].map(function(x){return '<button data-a="owedtone" data-v="'+x[0]+'" class="'+(OD.tone===x[0]?'on':'')+'">'+x[1]+'</button>';}).join('')+'</div>';
+  h+='<label for="o_prom">Je paie à partir du</label><input id="o_prom" type="date" value="'+OD.prom+'">';
+  h+='<label for="o_msg">Message</label><textarea id="o_msg">'+esc(owedBuild(o,OD.k,OD.tone,OD.prom))+'</textarea>';
+  h+='<div class="acts" style="margin-top:12px">'+(o.phone?'<button class="btn wa" data-a="owedsend">Ouvrir WhatsApp</button>':'')+'<button class="btn sec" data-a="owedcopy">Copier</button></div>';
+  openSheet(h);
+}
+
+/* ---------- ACTIONS ---------- */
+function val(id){var e=document.getElementById(id); return e? e.value : '';}
+var ACT={
+  home:function(){PRE=null;UI.view='home';UI.id=null;render();},
+  settings:function(){UI.view='settings';render();},
+  filter:function(el){UI.filter=el.getAttribute('data-v');render();},
+  new:function(){PRE=null;UI.view='form';UI.id=null;render();},
+  edit:function(el){UI.view='form';UI.id=el.getAttribute('data-id');render();},
+  open:function(el){UI.view='detail';UI.id=el.getAttribute('data-id');render();},
+  due:function(el){var n=+el.getAttribute('data-v'); document.getElementById('f_due').value=addDays(val('f_date')||today(),n);},
+  saveform:function(el){
+    var id=el.getAttribute('data-id'), name=val('f_name').replace(/^\s+|\s+$/g,''), amount=+val('f_amount'), due=val('f_due');
+    if(!name){toast('Écris le nom du client.');return;}
+    if(!(amount>0)){toast('Écris le montant dû.');return;}
+    if(!due){toast("Choisis la date limite de paiement.");return;}
+    var rec={name:name,phone:val('f_phone'),amount:amount,obj:val('f_obj'),date:val('f_date')||today(),due:due,
+      phone2:val('f_phone2'),where:val('f_where').replace(/^\s+|\s+$/g,''),gname:val('f_gname').replace(/^\s+|\s+$/g,''),gphone:val('f_gphone')};
+    if(id){var d=find(id); for(var k in rec) d[k]=rec[k]; d.demo=false;} else { if(!S.firstUse) S.firstUse=Date.now(); rec.id=uid(); rec.pay=[]; rec.rel=[]; if(PRE&&PRE.test) rec.test=PRE.test; PRE=null; S.debts.push(rec); }
+    save(); UI.view='home'; render(); toast('Enregistré.');
+  },
+  del:function(el){ if(confirm('Supprimer cette dette ? Cette action est définitive.')){ S.debts=S.debts.filter(function(d){return d.id!==el.getAttribute('data-id');}); save(); UI.view='home'; render(); } },
+  relance:function(el){relanceSheet(el.getAttribute('data-id'));},
+  tone:function(el){relDraft.tone=el.getAttribute('data-v'); paintRelance();},
+  sendwa:function(){
+    if(relDraft.k==='conteste'){ find(relDraft.id).auto=false; }
+    var d=find(relDraft.id), msg=val('r_msg'), num=waNumber(recipient(d,relDraft.k));
+    d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone,p:relDraft.p>-1?relDraft.p:undefined}); save();
+    demoWa('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+    closeSheet(); render(); toast('Relance enregistrée dans l’historique.');
+  },
+  copymsg:function(){ var d=find(relDraft.id); copyText(val('r_msg')); d.rel=d.rel||[]; d.rel.push({t:Date.now(),s:relDraft.k,tone:relDraft.tone,p:relDraft.p>-1?relDraft.p:undefined}); save(); toast('Message copié. Colle-le dans WhatsApp ou en SMS.'); },
+  pay:function(el){paySheet(el.getAttribute('data-id'));},
+  savepay:function(el){
+    var d=find(el.getAttribute('data-id')), a=+val('p_a'), dt=val('p_d')||today();
+    if(!(a>0)){toast('Écris le montant reçu.');return;}
+    d.pay=d.pay||[]; d.pay.push({a:a,d:dt}); save(); closeSheet(); render();
+    toast(rest(d)<=0? 'Bravo, cette dette est payée en entier !' : 'Paiement enregistré. Reste : '+F(rest(d)));
+    setTimeout(function(){openSheet('<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Paiement noté ✔</h2><p class="sub">Envoyer un reçu à <b>'+esc(d.name)+'</b> ? Cela évite le « je t’ai déjà payé » plus tard.</p><div class="acts"><button class="btn wa" data-a="recu" data-id="'+d.id+'">Envoyer le reçu</button><button class="btn sec" data-a="closesheet">Plus tard</button></div>');},350);
+  },
+  extend:function(el){extendSheet(el.getAttribute('data-id'));},
+  extq:function(el){document.getElementById('e_d').value=addDays(today(),+el.getAttribute('data-v'));},
+  saveext:function(el){var d=find(el.getAttribute('data-id')); d.due=val('e_d')||d.due; (d.rel||[]).forEach(function(x){delete x.p;}); save(); closeSheet(); render(); toast('Nouveau délai enregistré.');},
+  install:function(){
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){deferredPrompt=null; paintInstall();});
+  },
+  closesheet:function(){closeSheet();},
+  sheetbg:function(el,ev){ if(ev.target===el) closeSheet(); },
+  saveme:function(){S.me=val('s_me').replace(/^\s+|\s+$/g,''); S.myfull=val('s_full').replace(/^\s+|\s+$/g,''); S.cc=val('s_cc')||'229'; S.city=val('s_city').replace(/^\s+|\s+$/g,''); S.myphone=val('s_phone').replace(/^\s+|\s+$/g,''); save(); toast('Enregistré.');},
+  medform:function(el){UI.id=el.getAttribute('data-id'); UI.view='med'; render();
+    var d=find(UI.id), m=d.med||{}, sv=m.data||{}; if(sv.delay){document.getElementById('md_de').value=sv.delay; document.getElementById('md_to').value=sv.tone; document.getElementById('md_mo').value=sv.mode;}},
+  medmake:function(el){
+    var d=find(el.getAttribute('data-id')), t=function(id){return val(id).replace(/^\s+|\s+$/g,'');};
+    var reste=+val('md_am');
+    if(!t('md_cn')){toast('Écris ton nom complet.');return;}
+    if(!t('md_dn')){toast('Écris le nom complet du client.');return;}
+    if(!(reste>0)){toast('Écris le montant réclamé.');return;}
+    var rels=d.rel||[], seen={}, days=[]; rels.forEach(function(x){var k=iso(new Date(x.t)); if(!seen[k]){seen[k]=1; days.push(k);}}); var relDates=days.slice(-4).map(fr).join(', ');
+    var r={credName:t('md_cn'),credCity:t('md_cc'),credPhone:t('md_cp'),debName:t('md_dn'),debCity:t('md_dc'),reste:reste,total:d.amount,paye:paid(d),
+      obj:d.obj||'des marchandises',dateDette:d.date,due:d.due,reconDate:(d.recon&&d.recon.signed)?iso(new Date(d.recon.signed)):'',
+      relN:days.length,relDates:relDates,delay:+val('md_de'),tone:val('md_to'),mode:val('md_mo'),pay:t('md_pa'),place:t('md_pl')||t('md_cc'),date:val('md_dt')||today()};
+    var B=medBlocks(r); RC={blocks:B,text:blocksText(B)};
+    d.med=d.med||{}; d.med.made=Date.now(); d.med.delay=r.delay;
+    d.med.data={credName:r.credName,credCity:r.credCity,credPhone:r.credPhone,debName:r.debName,debCity:r.debCity,pay:r.pay,place:r.place,delay:r.delay,tone:r.tone,mode:r.mode};
+    S.myfull=S.myfull||r.credName; S.city=S.city||r.credCity||r.place; S.myphone=S.myphone||r.credPhone;
+    save(); UI.id=d.id; UI.view='medview'; render();
+  },
+  medwa:function(el){
+    var d=find(el.getAttribute('data-id'));
+    var msg='Bonjour '+d.name+', je vous envoie une copie de ma lettre de mise en demeure concernant la somme de '+F(rest(d))+'. L’original vous sera remis. Merci de me contacter avant la date limite indiquée.\n\n'+RC.text;
+    demoWa('https://wa.me/'+waNumber(d.phone)+'?text='+encodeURIComponent(msg),'_blank');
+  },
+  medsent:function(el){
+    var id=el.getAttribute('data-id');
+    openSheet('<button class="x" data-a="closesheet">✕</button><h2>Comment l’as-tu envoyée ?</h2><p class="sub">Le délai court à partir d’aujourd’hui. Garde la preuve (décharge signée, accusé de réception, photo).</p><div class="acts"><button class="btn" data-a="medmode" data-v="main" data-id="'+id+'">En main propre (décharge)</button></div><div class="acts"><button class="btn" data-a="medmode" data-v="recommande" data-id="'+id+'">Recommandé avec accusé</button></div><div class="acts"><button class="btn sec" data-a="medmode" data-v="whatsapp" data-id="'+id+'">Copie par WhatsApp</button></div>');
+  },
+  medmode:function(el){
+    var d=find(el.getAttribute('data-id')); d.med=d.med||{}; d.med.sent=Date.now(); d.med.mode=el.getAttribute('data-v'); d.med.limit=addDays(today(),d.med.delay||8);
+    save(); closeSheet(); UI.id=d.id; UI.view='detail'; render(); toast('Date limite : '+fr(d.med.limit));
+  },
+  reconform:function(el){UI.id=el.getAttribute('data-id'); UI.view='recon'; render();
+    var d=find(UI.id), sv=(d.recon&&d.recon.data)||{}; if(sv.n){document.getElementById('rc_n').value=sv.n; document.getElementById('rc_per').value=sv.per||7;}},
+  reconmake:function(el){
+    var d=find(el.getAttribute('data-id')), t=function(id){return val(id).replace(/^\s+|\s+$/g,'');};
+    var amount=+val('rc_am'), n=+val('rc_n'), per=+val('rc_per'), start=val('rc_st');
+    if(!t('rc_cn')){toast('Écris ton nom complet.');return;}
+    if(!t('rc_dn')){toast('Écris le nom complet du client.');return;}
+    if(!(amount>0)){toast('Écris le montant reconnu.');return;}
+    if(!t('rc_mo')){toast('Écris pour quoi est cette dette.');return;}
+    if(!start){toast('Choisis la date du paiement.');return;}
+    var wit=val('rc_wi').split(/\n+/).map(function(x){return x.replace(/^\s+|\s+$/g,'');}).filter(Boolean);
+    var r={credName:t('rc_cn'),credCity:t('rc_cc'),debName:t('rc_dn'),debCity:t('rc_dc'),debId:t('rc_di'),amount:amount,motif:t('rc_mo'),
+      sched:plan(amount,n,per,start),place:t('rc_pl')||t('rc_cc'),date:val('rc_dt')||today(),wit:wit};
+    var B=reconBlocks(r);
+    RC={blocks:B,text:blocksText(B)};
+    d.recon=d.recon||{}; d.recon.made=Date.now();
+    d.recon.data={credName:r.credName,credCity:r.credCity,debName:r.debName,debCity:r.debCity,debId:r.debId,motif:r.motif,place:r.place,wit:wit.join('\n'),n:n,per:per};
+    S.myfull=S.myfull||r.credName; S.city=S.city||r.credCity||r.place;
+    save(); UI.id=d.id; UI.view='reconview'; render();
+  },
+  test:function(){T={ans:{}}; TR=null; UI.view='test'; render();},
+  ans:function(el){
+    var q=el.getAttribute('data-q'); T.ans[q]=+el.getAttribute('data-v');
+    var sibs=el.parentNode.getElementsByTagName('button'); for(var i=0;i<sibs.length;i++) sibs[i].className='opt';
+    el.className='opt on';
+  },
+  testrun:function(){
+    var name=val('t_name').replace(/^\s+|\s+$/g,''), am=+val('t_am'), mx=+val('t_max');
+    if(!name){toast('Écris le nom du client.');return;}
+    if(!(am>0)){toast('Écris le montant demandé.');return;}
+    if(!(mx>0)){toast('Écris combien tu peux perdre sans être en difficulté.');return;}
+    for(var i=0;i<TQ.length;i++){ if(!T.ans.hasOwnProperty(TQ[i].k)){toast('Réponds à la question '+(i+1)+'.');return;} }
+    T.name=name; T.phone=val('t_phone'); T.amount=am; S.maxLoss=mx; save();
+    TR={r:evalTest(T.ans,am,mx)}; UI.view='testres'; render();
+  },
+  testcopy:function(){copyText(val('t_msg')); toast('Message copié.');},
+  testwa:function(){demoWa('https://wa.me/'+waNumber(T.phone)+'?text='+encodeURIComponent(val('t_msg')),'_blank');},
+  testsave:function(){
+    var r=TR.r;
+    PRE={name:T.name,phone:T.phone,amount:r.cred,obj:'',date:today(),due:addDays(today(),r.days),test:{v:r.verdict,s:r.score,t:Date.now()}};
+    UI.view='form'; UI.id=null; render();
+  },
+  reconcopy:function(){copyText(RC.text); toast('Texte copié.');},
+  reconprint:function(){document.getElementById('printzone').innerHTML=blocksHTML(RC.blocks); window.print();},
+  reconwa:function(el){
+    var d=find(el.getAttribute('data-id')), num=waNumber(d.phone);
+    var msg='Bonjour '+d.name+', voici le texte de la reconnaissance de dette pour la somme que nous avons convenue. Relis-le : si tout est bon, je te l’apporte pour qu’on le signe ensemble.\n\n'+RC.text;
+    demoWa('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+  },
+  reconsigned:function(el){var d=find(el.getAttribute('data-id')); d.recon=d.recon||{}; d.recon.signed=d.recon.signed?0:Date.now(); save(); render(); toast(d.recon.signed?'Notée : reconnaissance signée.':'Retiré.');},
+  backup:function(){demoGate('sauvegarde');},
+  copybackup:function(){copyText(backupText()); S.lastBackup=Date.now(); save(); toast('Texte copié. Colle-le dans un message à toi-même.');},
+  restore:function(){
+    try{
+      var o=JSON.parse(val('s_restore')); var d=o.data||o;
+      if(!d||!d.debts) throw new Error('x');
+      if(!confirm('Remplacer le cahier actuel par cette sauvegarde ?')) return;
+      S.me=d.me||''; S.debts=d.debts; S.owed=d.owed||[]; if(d.myfull!=null){S.myfull=d.myfull;S.cc=d.cc||'229';S.city=d.city||'';S.myphone=d.myphone||'';} save(); UI.view='home'; render(); toast('Cahier restauré.');
+    }catch(e){toast("Ce texte n'est pas une sauvegarde valide.");}
+  },
+  releve:function(el){relanceSheet(el.getAttribute('data-id'),'releve');},
+  recu:function(el){var id=el.getAttribute('data-id'), d=find(id); closeSheet(); relanceSheet(id, rest(d)<=0?'solde':'partiel');},
+  fbgo:function(){S.fbDone=true; save(); window.open(FEEDBACK_URL,'_blank'); render();},
+  fblater:function(){S.fbLater=Date.now()+7*DAY; save(); render();},
+  planoff:function(el){var d=find(el.getAttribute('data-id')); d.auto=false; save(); render();},
+  planon:function(el){var d=find(el.getAttribute('data-id')); d.auto=true; save(); render();},
+  owed:function(){UI.view='owed';render();},
+  dash:function(){UI.view='dash';render();},
+  owednew:function(){
+    openSheet('<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>Je dois à quelqu’un</h2><label for="w_name">Fournisseur *</label><input id="w_name" autocomplete="off"><label for="w_phone">Son numéro WhatsApp</label><input id="w_phone" type="tel" inputmode="tel"><label for="w_amount">Montant que je dois (F) *</label><input id="w_amount" type="number" inputmode="numeric"><label for="w_obj">Pour quoi ?</label><input id="w_obj" placeholder="ex : marchandise de la semaine"><label for="w_due">Je dois payer avant le *</label><input id="w_due" type="date" value="'+addDays(today(),7)+'"><div class="acts" style="margin-top:14px"><button class="btn" data-a="owedsave">Enregistrer</button></div>');
+  },
+  owedsave:function(){
+    var n=val('w_name').replace(/^\s+|\s+$/g,''), a=+val('w_amount'), d=val('w_due');
+    if(!n){toast('Écris le nom du fournisseur.');return;} if(!(a>0)){toast('Écris le montant.');return;} if(!d){toast('Choisis la date.');return;}
+    S.owed=S.owed||[]; S.owed.push({id:uid(),name:n,phone:val('w_phone'),amount:a,obj:val('w_obj'),due:d,pay:[]}); save(); closeSheet(); render(); toast('Enregistré.');
+  },
+  owedpay:function(el){
+    var o=owedFind(el.getAttribute('data-id'));
+    openSheet('<button class="x" data-a="closesheet" aria-label="Fermer">✕</button><h2>J’ai payé '+esc(o.name)+'</h2><p class="sub">Reste : <b>'+F(owedRest(o))+'</b></p><label for="wp_a">Montant payé (F)</label><input id="wp_a" type="number" inputmode="numeric" value="'+owedRest(o)+'"><div class="acts" style="margin-top:14px"><button class="btn" data-a="owedpaysave" data-id="'+o.id+'">Enregistrer</button></div>');
+  },
+  owedpaysave:function(el){
+    var o=owedFind(el.getAttribute('data-id')), a=+val('wp_a'); if(!(a>0)){toast('Écris le montant.');return;}
+    o.pay=o.pay||[]; o.pay.push({a:a,d:today()}); save(); closeSheet(); render(); toast(owedRest(o)<=0?'Payé en entier !':'Enregistré. Reste : '+F(owedRest(o)));
+  },
+  oweddel:function(el){ if(confirm('Supprimer cette ligne ?')){ S.owed=(S.owed||[]).filter(function(o){return o.id!==el.getAttribute('data-id');}); save(); render(); } },
+  owedmsg:function(el){ OD={id:el.getAttribute('data-id'),k:'delai',tone:'doux',prom:addDays(parse(owedFind(el.getAttribute('data-id')).due)>new Date()?owedFind(el.getAttribute('data-id')).due:today(),7)}; paintOwedMsg(); },
+  owedtone:function(el){OD.tone=el.getAttribute('data-v'); paintOwedMsg();},
+  owedcopy:function(){copyText(val('o_msg')); toast('Message copié.');},
+  owedsend:function(){var o=owedFind(OD.id); demoWa('https://wa.me/'+waNumber(o.phone)+'?text='+encodeURIComponent(val('o_msg')),'_blank'); closeSheet();},
+  demo:function(){demo(); UI.view='home'; render(); toast('Exemples ajoutés (marqués « exemple »).');},
+  undemo:function(){S.debts=S.debts.filter(function(d){return !d.demo;}); save(); UI.view='home'; render(); toast('Exemples supprimés.');},
+  wipe:function(){ if(confirm('Tout effacer ? Fais d’abord une sauvegarde.') && confirm('Vraiment tout effacer ?')){ S={v:1,me:'',debts:[],lastBackup:0}; save(); UI.view='home'; render(); } }
+};
+document.addEventListener('click',function(ev){
+  var el=ev.target; while(el && el!==document && !(el.getAttribute && el.getAttribute('data-a'))) el=el.parentNode;
+  if(!el || el===document) return;
+  var a=el.getAttribute('data-a');
+  if(a==='sheetbg' && ev.target!==el) return;
+  if(a==='open'){ var cb=ev.target.closest&&ev.target.closest('button'); if(cb && cb!==el) return; }
+  if(ACT[a]){ ev.stopPropagation(); ACT[a](el,ev); }
+});
+document.addEventListener('change',function(ev){
+  var t=ev.target;
+  if(t.id==='r_pay'){relDraft.pay=t.checked; var dd=find(relDraft.id), m0=build(dd,relDraft.k,relDraft.tone,relDraft.promesse); document.getElementById('r_msg').value=m0+(t.checked?'\nPaiement Mobile Money : '+S.myphone:'');}
+  if(t.id==='r_sit'){relDraft.k=t.value; paintRelance();}
+  if(t.id==='o_sit'){OD.k=t.value; paintOwedMsg();}
+  if(t.id==='o_prom'){OD.prom=t.value||OD.prom; document.getElementById('o_msg').value=owedBuild(owedFind(OD.id),OD.k,OD.tone,OD.prom);}
+  if(t.id==='r_prom'){relDraft.promesse=t.value||relDraft.promesse; var d=find(relDraft.id); document.getElementById('r_msg').value=build(d,relDraft.k,relDraft.tone,relDraft.promesse)+((relDraft.pay&&S.myphone&&!sitOf(relDraft.k).to)?String.fromCharCode(10)+'Paiement Mobile Money : '+S.myphone:'');}
+});
+window.__cc={S:function(){return S;},evalTest:evalTest,toWords:toWords,plan:plan,build:build,waNumber:waNumber,rest:rest,status:status,late:late,suggest:suggest,F:F};
+render();
+})();
+</script>
+<script>window.SUIVI_CFG={track:'https://script.google.com/macros/s/AKfycbzCCnm4FV2TYd1c00YKqoVrpRUEBRc-UteVQOtHefZNEyKeH8StrKlVSCdimESLNFaO2A/exec',prefix:'cc_',clarity:'yp1g4zxpb6',pixel:'1716387339476694'};</script>
+<script src="../suivi.js"></script>
+<script src="../sortie.js"></script>
+<script>(function(){var u=(function(){var q=location.search||''; return '../'+(q?q+'&':'?')+'from=demo#offre';})();
+[].forEach.call(document.querySelectorAll('#dbuy,.dbuy2'),function(a){a.href=u; a.setAttribute('data-ev','demo_buy');});
+if(window.SORTIE_INIT) SORTIE_INIT({lieu:'demo', delai:40000});})();</script>
+</body>
+</html>

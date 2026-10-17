@@ -158,6 +158,7 @@
     <div>
       <p class="sub">Garde tes clients, <b>sans te ruiner</b>. Ton cahier de crédit sur téléphone : il te dit qui relancer, écrit le message et garde la preuve.</p>
       <a class="btn pulse" href="#offre" data-t="cta_hero" data-ev="cta_hero">Je veux mon cahier</a>
+      <a class="demolink" href="demo/" data-ev="demo_hero" style="display:block;text-align:center;margin-top:10px;color:var(--or);font-weight:700;text-decoration:underline">ou essaie-le d'abord gratuitement →</a>
       <div class="peek"><i></i> Une commerçante a été bloquée par un client. Voici ce qu'elle a fait.</div>
     </div>
   </div>
@@ -199,7 +200,13 @@
   <figure class="ph"><div class="scr"><img src="img/ph_devoir.webp" width="360" height="720" loading="lazy" decoding="async" alt="Ce que je dois"></div><figcaption><b>Ce que tu dois aussi</b>Tes fournisseurs, et le message pour demander un délai.</figcaption></figure>
 </div>
 <div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
-<div class="w"><p class="rv" style="margin-top:6px"><b>Et avant de donner à crédit</b> : un test feu vert, orange ou rouge, et une reconnaissance de dette en une minute.</p></div>
+<div class="w"><p class="rv" style="margin-top:6px"><b>Et avant de donner à crédit</b> : un test feu vert, orange ou rouge, et une reconnaissance de dette en une minute.</p>
+  <div class="price rv" style="padding:16px;margin-top:16px;text-align:center">
+    <b style="font-size:20px">Essaie le cahier avant de payer</b>
+    <p class="note" style="margin:6px 0 12px">Des clients d'exemple sont déjà dedans : ouvre une dette, regarde le plan de relance, le message prêt, le reçu. Gratuit, sans inscription.</p>
+    <a class="btn s demolink" href="demo/" data-ev="demo_section">Ouvrir la démo du cahier</a>
+  </div>
+</div>
 </section>
 
 <section style="background:var(--bg2);padding:30px 0" data-s="miniprix"><div class="w">
@@ -277,6 +284,7 @@
   <details><summary>C'est valable dans mon pays ?</summary><p>L'application marche pour toute l'Afrique de l'Ouest : tu choisis ton pays pour les numéros WhatsApp. Les procédures légales citées existent dans les pays de l'OHADA ; pour une grosse somme, demande à un huissier ou un avocat de ton pays.</p></details>
   <details><summary>Est-ce que ça remplace un avocat ?</summary><p>Non. Ce sont des modèles pratiques à adapter, pas un conseil juridique.</p></details>
   <details><summary>Pour qui c'est fait ?</summary><p>Commerçantes, couturières, coiffeuses, artisans, prestataires : toute personne qui donne à crédit et veut être payée sans se fâcher.</p></details>
+  <p style="text-align:center;margin-top:16px"><a href="#" id="pasconv" data-ev="pas_convaincu" style="color:var(--or);text-decoration:underline">Pas convaincu(e) ? Dis-moi ce qui te fait hésiter</a></p>
 </div></section>
 
 <section><div class="w">
@@ -311,6 +319,13 @@ window.SUIVI_CFG={
 /* =============================================================== */
 </script>
 <script src="suivi.js"></script>
+<script src="sortie.js"></script>
+<script>(function(){
+  var q=location.search||'';
+  [].forEach.call(document.querySelectorAll('a.demolink'),function(a){a.href='demo/'+q;});
+  if(window.SORTIE_INIT) SORTIE_INIT({lieu:'landing',delai:30000});
+  var p=document.getElementById('pasconv'); if(p) p.addEventListener('click',function(e){e.preventDefault(); try{sessionStorage.removeItem('cc_sortie_fait');}catch(_){} if(window.SORTIE_OUVRIR) SORTIE_OUVRIR();});
+})();</script>
 <script>
 (function(){
 var $=function(id){return document.getElementById(id);};
