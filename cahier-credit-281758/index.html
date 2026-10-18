@@ -431,7 +431,7 @@ function settings(){
   h+='<label for="s_restore">Restaurer : colle ici le texte de sauvegarde</label><textarea id="s_restore" style="min-height:90px"></textarea><div class="acts"><button class="btn sec" data-a="restore">Restaurer</button></div>';
   h+='<h3>Exemples</h3><div class="acts"><button class="btn sec" data-a="demo">Charger des exemples</button><button class="btn sec" data-a="undemo">Supprimer les exemples</button></div>';
   h+='<h3>Zone sensible</h3><div class="acts"><button class="btn red" data-a="wipe">Tout effacer</button></div>';
-  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.13 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
+  h+='<p class="sub" style="margin-top:20px">Mon cahier de crédit • version 1.14 • PRISM Pratique. Outil d’organisation : les messages sont des modèles à adapter, ce n’est pas un conseil juridique.</p></div>';
   return h;
 }
 function render(){
@@ -451,6 +451,7 @@ function render(){
   a.innerHTML=h;
   window.scrollTo(0,0);
   paintInstall();
+  paintInAppBanner();
 }
 /* ---------- INSTALLATION SUR L'ECRAN D'ACCUEIL + HORS CONNEXION ---------- */
 var deferredPrompt=null;
@@ -459,11 +460,28 @@ function isStandalone(){
 }
 function paintInstall(){
   var s=document.getElementById('instslot'); if(!s) return;
-  if(isStandalone() || !/^https?:$/.test(location.protocol)){ s.innerHTML=''; return; }
+  if(isStandalone() || !/^https?:$/.test(location.protocol) || (typeof inAppBrowser==='function' && inAppBrowser())){ s.innerHTML=''; return; }
   var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
   if(deferredPrompt) s.innerHTML='<div class="acts"><button class="btn gold" data-a="install">📲 Installer sur l’écran d’accueil</button></div>';
   else if(ios) s.innerHTML='<div class="note">📲 Pour l’installer : touche le bouton <b>Partager</b> de Safari, puis <b>Sur l’écran d’accueil</b>.</div>';
   else s.innerHTML='<div class="note">📲 Pour l’installer : ouvre le menu ⋮ du navigateur, puis <b>Installer l’application</b> ou <b>Ajouter à l’écran d’accueil</b>. Ensuite, il marche aussi sans internet.</div>';
+}
+/* Navigateur intégré (Facebook, Instagram, Messenger...) : les données n'y sont pas les mêmes que dans Chrome/Safari -> on invite à ouvrir dans le vrai navigateur */
+function inAppBrowser(){ return /FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|musical_ly|TikTok|Snapchat|Line\//i.test(navigator.userAgent||''); }
+function paintInAppBanner(){
+  var old=document.getElementById('inappbar'); if(old) old.remove();
+  if(!inAppBrowser() || !/^https?:$/.test(location.protocol)) return;
+  try{ if(sessionStorage.getItem('cc_inapp_ok')) return; }catch(e){}
+  var android=/android/i.test(navigator.userAgent), url=location.href.split('#')[0];
+  var intent='intent://'+url.replace(/^https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end';
+  var b=document.createElement('div'); b.id='inappbar';
+  b.style.cssText='background:#fff3cd;color:#3b2f00;border-bottom:3px solid #e8b84a;padding:12px 14px;font:15px/1.4 system-ui,sans-serif';
+  b.innerHTML='<b>⚠️ Tu es dans le navigateur de Facebook.</b> Tes dettes y sont gardées à part : si tu ouvres ensuite le cahier dans Chrome, tu ne les retrouveras pas. <b>Ouvre-le dans ton vrai navigateur dès le début :</b> touche les <b>3 points</b> en haut de l’écran, puis <b>« Ouvrir dans le navigateur »</b>'+(android?' (Chrome).':' (Safari).')+
+    '<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">'+
+    (android?'<a href="'+intent+'" style="background:#e8b84a;color:#241606;border-radius:10px;padding:9px 12px;font-weight:800;text-decoration:none">Ouvrir dans Chrome</a>':'')+
+    '<button type="button" data-a="inappcopy" style="background:#fff;border:1px solid #c9971c;border-radius:10px;padding:9px 12px;font-weight:700">Copier le lien</button>'+
+    '<button type="button" data-a="inappok" style="background:none;border:0;color:#6b5b00;padding:9px 6px">J’ai compris</button></div>';
+  var app=document.getElementById('app'); if(app&&app.parentNode) app.parentNode.insertBefore(b,app);
 }
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault(); deferredPrompt=e; paintInstall();});
 window.addEventListener('appinstalled',function(){deferredPrompt=null; paintInstall(); toast('Installé ! Cherche « Cahier crédit » sur ton écran d’accueil.');});
@@ -1001,6 +1019,8 @@ var ACT={
     PRE={name:T.name,phone:T.phone,amount:r.cred,obj:'',date:today(),due:addDays(today(),r.days),test:{v:r.verdict,s:r.score,t:Date.now()}};
     UI.view='form'; UI.id=null; render();
   },
+  inappcopy:function(){copyText(location.href.split('#')[0]); toast('Lien copié. Colle-le dans Chrome.');},
+  inappok:function(){try{sessionStorage.setItem('cc_inapp_ok','1');}catch(e){} var o=document.getElementById('inappbar'); if(o) o.remove();},
   reconcopy:function(){copyText(RC.text); toast('Texte copié.');},
   reconprint:function(){document.getElementById('printzone').innerHTML=blocksHTML(RC.blocks); window.print();},
   reconwa:function(el){
