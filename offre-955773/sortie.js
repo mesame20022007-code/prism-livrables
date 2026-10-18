@@ -55,27 +55,25 @@
   }
   function ouvrir(lieu,source){
     if(deja()) return; marquer(); css(); ev('sortie_ouverte_'+source);
-    var d=document.createElement('div'); d.id='sx';
-    d.innerHTML='<div class="sx-p"><h4>Avant de partir 🙂</h4><p style="margin:0 0 6px;color:#555">Qu’est-ce qui te fait hésiter ? Coche ce qui te correspond (plusieurs choix possibles). C’est anonyme et ça m’aide à améliorer le cahier.</p>'+
-      OPTS.map(function(o){return '<label class="sx-o"><input type="checkbox" value="'+o[0]+'"> '+o[1]+'</label>';}).join('')+
-      '<input class="sx-t" id="sx-autre" maxlength="300" placeholder="Autre chose : écris-le ici" style="display:none">'+
-      '<textarea class="sx-t" id="sx-det" maxlength="1000" rows="3" placeholder="Dis-m’en plus si tu veux (facultatif)" style="display:none"></textarea>'+
-      '<button type="button" class="sx-b sx-send" style="width:100%;border:0;font-size:16px;opacity:.45" disabled>Envoyer ma réponse</button>'+
+    var d=document.createElement('div'); d.id='sx'; var envoye=false;
+    d.innerHTML='<div class="sx-p"><h4>Avant de partir 🙂</h4><p style="margin:0 0 6px;color:#555">Qu’est-ce qui te fait hésiter ? Touche ta réponse, c’est tout. C’est anonyme et ça m’aide à améliorer le cahier.</p>'+
+      OPTS.map(function(o){return '<button type="button" class="sx-o sx-c" data-c="'+o[0]+'">'+o[1]+'</button>';}).join('')+
       '<button type="button" class="sx-x">Fermer</button></div>';
     document.body.appendChild(d);
-    function choix(){return [].map.call(d.querySelectorAll('input[type=checkbox]:checked'),function(c){return c.value;});}
-    d.addEventListener('change',function(){
-      var c=choix(), send=d.querySelector('.sx-send');
-      d.querySelector('#sx-autre').style.display = c.indexOf('autre')>-1 ? 'block' : 'none';
-      d.querySelector('#sx-det').style.display = c.length ? 'block' : 'none';
-      send.disabled=!c.length; send.style.opacity=c.length?1:.45;
-    });
+    function merci(c){
+      var p=d.querySelector('.sx-p');
+      p.innerHTML='<h4>Merci 🙏</h4><p style="margin:6px 0 0">'+rep(c,lieu)+'</p>'+
+        '<textarea class="sx-t" id="sx-det" maxlength="1000" rows="3" placeholder="'+(c==='autre'?'Écris ici ce qui te bloque':'Tu veux m’en dire plus ? (facultatif)')+'"></textarea>'+
+        '<button type="button" class="sx-b sx-more" style="width:100%;border:0;font-size:16px">Envoyer mon message</button>'+
+        '<button type="button" class="sx-x">Fermer</button>';
+    }
     d.addEventListener('click',function(e){
-      if(e.target.closest('.sx-send')){
-        var c=choix(); if(!c.length) return;
-        c.forEach(function(x){ev('raison_'+x);});
-        envoyer(lieu,c,d.querySelector('#sx-autre').value,d.querySelector('#sx-det').value);
-        d.querySelector('.sx-p').innerHTML='<h4>Merci 🙏</h4><p style="margin:6px 0 0">'+rep(c[0],lieu)+'</p><button type="button" class="sx-x">Fermer</button>'; return;
+      var o=e.target.closest('.sx-c');
+      if(o && !envoye){ envoye=true; var c=o.getAttribute('data-c'); ev('raison_'+c); envoyer(lieu,[c],'','' ); d._c=c; merci(c); return; }
+      if(e.target.closest('.sx-more')){
+        var t=(d.querySelector('#sx-det').value||'').trim();
+        if(t){ envoyer(lieu,[d._c],d._c==='autre'?t:'',t); ev('raison_detail'); }
+        d.querySelector('.sx-p').innerHTML='<h4>Merci 🙏</h4><p style="margin:6px 0 0">C’est bien reçu.</p><button type="button" class="sx-x">Fermer</button>'; return;
       }
       if(e.target.closest('.sx-x')||e.target===d){ ev('sortie_fermee'); d.remove(); }
       var a=e.target.closest('a'); if(a && a.getAttribute('href')&&a.getAttribute('href').charAt(0)==='#') d.remove();
