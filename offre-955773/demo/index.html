@@ -465,7 +465,18 @@ function betaSend(choix,tel){
     new Image().src=TK+'?action=raison&v='+encodeURIComponent(v)+'&lieu=beta_ia&choix='+encodeURIComponent(choix)+'&autre=&det='+encodeURIComponent(tel||'')+'&src='+encodeURIComponent((P.get('src')||'')+'|'+(P.get('c')||''));}}catch(e){}
   demoPing('ev_beta_'+choix);
 }
+function demoRisk(){
+  var w=document.querySelector('.wrap'), c=document.querySelector('.cards'); if(!w||!c||document.getElementById('riskbox')||!TR||!T) return;
+  var r=TR.r, am=T.amount, ev=am-r.cred, fm=function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' F';};
+  var d=document.createElement('div'); d.id='riskbox';
+  d.style.cssText='margin:12px 0;padding:14px 16px;border-radius:14px;background:#eaf6ee;border:2px solid #1f8a55;color:#12351f;font-size:16px;line-height:1.4';
+  d.innerHTML = ev>0
+    ? '🛡️ <b>En suivant ce test, tu évites de risquer '+fm(ev)+'.</b> Sur '+fm(am)+' demandés, tu ne prends que '+fm(r.cred)+' de risque.'
+    : '✅ <b>Tu peux donner ces '+fm(am)+' à crédit sans trop de risque.</b> Garde quand même un écrit signé.';
+  c.parentNode.insertBefore(d,c);
+}
 function demoBeta(){
+  demoRisk();
   var w=document.querySelector('.wrap'); if(!w||document.getElementById('betabox')) return;
   var d=document.createElement('div'); d.id='betabox';
   d.style.cssText='margin:18px 0;padding:16px;border:2px dashed #c9971c;border-radius:16px;background:#fffaf0';
@@ -493,7 +504,7 @@ function demoPrefill(){
     for(var j=0;j<bs.length;j++) bs[j].className=(+bs[j].getAttribute('data-v')===T.ans[q])?'opt on':'opt';}
   var w=document.querySelector('.wrap');
   if(w){var d=document.createElement('div');
-    d.innerHTML='<div class="note"><b>Exemple :</b> Fatou, nouvelle cliente, demande <b>40 000 F</b> à crédit. Ses réponses sont déjà remplies : touche le bouton pour savoir si tu peux lui faire confiance (tu peux changer une réponse pour voir le feu bouger).</div><div class="acts"><button class="btn gold" data-a="testrun">👉 Voir le résultat</button></div>';
+    d.innerHTML='<div class="note"><b>Exemple :</b> Fatou, nouvelle cliente, demande <b>40 000 F</b> à crédit. Ses réponses sont déjà remplies : touche le bouton pour savoir si tu peux lui faire confiance.<br><b>Ensuite, essaie avec un de tes vrais clients :</b> change le nom, le montant et les réponses, et regarde le feu changer.</div><div class="acts"><button class="btn gold" data-a="testrun">👉 Voir le résultat</button></div>';
     w.insertBefore(d,w.firstChild);}
   window.scrollTo(0,0);
 }
