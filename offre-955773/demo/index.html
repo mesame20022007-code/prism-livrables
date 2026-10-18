@@ -460,10 +460,22 @@ function demoGate(quoi){
 }
 function demoWa(url){demoGate('wa');}
 /* Accès anticipé à l'assistant IA : mesure l'intérêt (prix choisi + numéro) sans rien promettre. Écrit dans la feuille « Raisons » (lieu=beta_ia). */
-function betaSend(choix,tel){
+function betaSend(choix,tel,lieu){
+  lieu=lieu||'beta_ia';
   try{var TK=(window.SUIVI_CFG||{}).track; if(TK){var P=new URLSearchParams(location.search), v=''; try{v=sessionStorage.getItem('cc_visit')||'';}catch(e){}
-    new Image().src=TK+'?action=raison&v='+encodeURIComponent(v)+'&lieu=beta_ia&choix='+encodeURIComponent(choix)+'&autre=&det='+encodeURIComponent(tel||'')+'&src='+encodeURIComponent((P.get('src')||'')+'|'+(P.get('c')||''));}}catch(e){}
-  demoPing('ev_beta_'+choix);
+    new Image().src=TK+'?action=raison&v='+encodeURIComponent(v)+'&lieu='+lieu+'&choix='+encodeURIComponent(choix)+'&autre=&det='+encodeURIComponent(tel||'')+'&src='+encodeURIComponent((P.get('src')||'')+'|'+(P.get('c')||''));}}catch(e){}
+  demoPing('ev_'+lieu+'_'+choix);
+}
+function demoTesteuse(){
+  var w=document.querySelector('.wrap'); if(!w||document.getElementById('testbox')) return;
+  var d=document.createElement('div'); d.id='testbox';
+  d.style.cssText='margin:18px 0;padding:16px;border:2px solid #1f8a55;border-radius:16px;background:#eaf6ee;color:#12351f';
+  d.innerHTML='<div style="font-weight:800;font-size:17px">🙋 Tu vends à crédit ? Essaie le vrai cahier gratuitement</div>'+
+    '<p style="margin:6px 0 10px;font-size:15px">Je cherche quelques commerçantes pour l’utiliser <b>gratuitement pendant 7 jours</b> et me dire ce qu’elles en pensent. Laisse ton numéro WhatsApp : je t’envoie le lien et le kit de réponses rapides.</p>'+
+    '<input id="test_tel" type="tel" inputmode="tel" placeholder="Ton numéro WhatsApp" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #9bbfa9;border-radius:12px;font-size:16px;background:#fff;color:#12351f">'+
+    '<button type="button" id="test_ok" style="width:100%;margin-top:8px;border:0;background:#1f8a55;color:#fff;border-radius:12px;padding:13px;font-weight:800;font-size:16px">Je veux tester gratuitement</button>'+
+    '<p id="test_merci" style="display:none;margin:10px 0 0;font-weight:700">Merci 🙏 Je t’écris sur WhatsApp très vite.</p>';
+  var anchor=document.getElementById('riskbox'); if(anchor&&anchor.nextSibling) anchor.parentNode.insertBefore(d,anchor.nextSibling); else w.appendChild(d);
 }
 function demoRisk(){
   var w=document.querySelector('.wrap'), c=document.querySelector('.cards'); if(!w||!c||document.getElementById('riskbox')||!TR||!T) return;
@@ -476,7 +488,7 @@ function demoRisk(){
   c.parentNode.insertBefore(d,c);
 }
 function demoBeta(){
-  demoRisk();
+  demoRisk(); demoTesteuse();
   var w=document.querySelector('.wrap'); if(!w||document.getElementById('betabox')) return;
   var d=document.createElement('div'); d.id='betabox';
   d.style.cssText='margin:18px 0;padding:16px;border:2px dashed #c9971c;border-radius:16px;background:#fffaf0';
@@ -494,6 +506,7 @@ document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-beta]');
   if(b){ var p=b.getAttribute('data-beta'); betaSend('prix_'+p,''); var bs=document.querySelectorAll('#betaprix button'); for(var i=0;i<bs.length;i++) bs[i].style.background=(bs[i]===b)?'#f5c542':'#fff';
     if(p==='0'){document.getElementById('betamerci').style.display='block';} else {document.getElementById('betatel').style.display='block';} return; }
+  if(e.target.id==='test_ok'){ var tt=(document.getElementById('test_tel').value||'').trim(); if(tt.replace(/\D/g,'').length<8){ document.getElementById('test_tel').style.borderColor='#c62828'; document.getElementById('test_tel').placeholder='Écris ton numéro WhatsApp'; return; } betaSend('numero',tt,'testeuse'); e.target.style.display='none'; document.getElementById('test_tel').style.display='none'; document.getElementById('test_merci').style.display='block'; return; }
   if(e.target.id==='beta_ok'){ var t=(document.getElementById('beta_tel').value||'').trim(); if(t){ betaSend('numero',t); } document.getElementById('betatel').style.display='none'; document.getElementById('betamerci').style.display='block'; }
 });
 function demoPrefill(){
