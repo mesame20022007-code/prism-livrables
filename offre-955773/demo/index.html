@@ -459,6 +459,32 @@ function demoGate(quoi){
   o.style.display='flex';
 }
 function demoWa(url){demoGate('wa');}
+/* Accès anticipé à l'assistant IA : mesure l'intérêt (prix choisi + numéro) sans rien promettre. Écrit dans la feuille « Raisons » (lieu=beta_ia). */
+function betaSend(choix,tel){
+  try{var TK=(window.SUIVI_CFG||{}).track; if(TK){var P=new URLSearchParams(location.search), v=''; try{v=sessionStorage.getItem('cc_visit')||'';}catch(e){}
+    new Image().src=TK+'?action=raison&v='+encodeURIComponent(v)+'&lieu=beta_ia&choix='+encodeURIComponent(choix)+'&autre=&det='+encodeURIComponent(tel||'')+'&src='+encodeURIComponent((P.get('src')||'')+'|'+(P.get('c')||''));}}catch(e){}
+  demoPing('ev_beta_'+choix);
+}
+function demoBeta(){
+  var w=document.querySelector('.wrap'); if(!w||document.getElementById('betabox')) return;
+  var d=document.createElement('div'); d.id='betabox';
+  d.style.cssText='margin:18px 0;padding:16px;border:2px dashed #c9971c;border-radius:16px;background:#fffaf0';
+  d.innerHTML='<div style="font-weight:800;font-size:17px">🤖 Bientôt : l’assistant IA</div>'+
+    '<p style="margin:6px 0 10px;font-size:15px">Tu colles le message de ton client, l’assistant te prépare la réponse (prix, crédit, avance, relance) en se souvenant de lui. <b>Il n’existe pas encore</b> : on prépare un accès anticipé.</p>'+
+    '<p style="margin:0 0 6px;font-size:15px"><b>Combien serais-tu prête à payer par mois ?</b></p>'+
+    '<div id="betaprix" style="display:flex;flex-wrap:wrap;gap:8px">'+['1000','3000','5000','10000','0'].map(function(p){return '<button type="button" data-beta="'+p+'" style="border:1px solid #c9971c;background:#fff;border-radius:99px;padding:9px 14px;font-weight:700;font-size:14px">'+(p==='0'?'Pas intéressée':(p.replace(/(\d)(?=(\d{3})+$)/g,'$1 ')+' F'))+'</button>';}).join('')+'</div>'+
+    '<div id="betatel" style="display:none;margin-top:12px"><label style="font-size:14px">Ton numéro WhatsApp pour être prévenue (facultatif)</label>'+
+    '<input id="beta_tel" type="tel" inputmode="tel" style="width:100%;box-sizing:border-box;margin-top:6px;padding:11px;border:1px solid #ccc;border-radius:12px;font-size:16px">'+
+    '<button type="button" id="beta_ok" style="width:100%;margin-top:8px;border:0;background:#f5c542;color:#1a1408;border-radius:12px;padding:12px;font-weight:800;font-size:16px">Me prévenir</button></div>'+
+    '<p id="betamerci" style="display:none;margin:10px 0 0;font-weight:700">Merci 🙏 c’est noté.</p>';
+  w.appendChild(d);
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-beta]');
+  if(b){ var p=b.getAttribute('data-beta'); betaSend('prix_'+p,''); var bs=document.querySelectorAll('#betaprix button'); for(var i=0;i<bs.length;i++) bs[i].style.background=(bs[i]===b)?'#f5c542':'#fff';
+    if(p==='0'){document.getElementById('betamerci').style.display='block';} else {document.getElementById('betatel').style.display='block';} return; }
+  if(e.target.id==='beta_ok'){ var t=(document.getElementById('beta_tel').value||'').trim(); if(t){ betaSend('numero',t); } document.getElementById('betatel').style.display='none'; document.getElementById('betamerci').style.display='block'; }
+});
 function demoPrefill(){
   var v={t_name:'Fatou (nouvelle cliente)',t_phone:'01 97 00 00 09',t_am:'40000',t_max:'20000'};
   for(var k in v){var e=document.getElementById(k); if(e) e.value=v[k];}
@@ -1034,7 +1060,7 @@ var ACT={
     if(!(mx>0)){toast('Écris combien tu peux perdre sans être en difficulté.');return;}
     for(var i=0;i<TQ.length;i++){ if(!T.ans.hasOwnProperty(TQ[i].k)){toast('Réponds à la question '+(i+1)+'.');return;} }
     T.name=name; T.phone=val('t_phone'); T.amount=am; S.maxLoss=mx; save();
-    TR={r:evalTest(T.ans,am,mx)}; UI.view='testres'; render();
+    TR={r:evalTest(T.ans,am,mx)}; UI.view='testres'; render(); demoBeta();
   },
   testcopy:function(){copyText(val('t_msg')); toast('Message copié.');},
   testwa:function(){demoWa('https://wa.me/'+waNumber(T.phone)+'?text='+encodeURIComponent(val('t_msg')),'_blank');},
