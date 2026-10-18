@@ -346,8 +346,8 @@ function home(){
     if(UI.filter==='paid') return s==='paid';
     return s!=='paid';
   });
-  var h='<header><div class="row"><div><h1>Mon cahier de crédit</h1><small>Démo : touche une dette pour tout voir</small></div><button class="ic" data-a="settings" aria-label="Réglages">⚙</button></div></header><div class="wrap">';
-  h+='<div class="acts" style="margin-top:14px"><button class="btn gold" data-a="dash">📊 Mon tableau de bord</button></div><div class="acts"><button class="btn sec" data-a="test">✅ Test avant de donner à crédit</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois à mes fournisseurs'+((S.owed||[]).length?' ('+F((S.owed||[]).reduce(function(t,o){return t+owedRest(o);},0))+')':'')+'</button></div><div id="instslot"></div>';
+  var h='<header><div class="row"><div><h1>Mon cahier de crédit</h1><small>Démo : essaie le test, puis touche une dette</small></div><button class="ic" data-a="settings" aria-label="Réglages">⚙</button></div></header><div class="wrap">';
+  h+='<div class="acts" style="margin-top:14px"><button class="btn gold" data-a="test">✅ Test avant de donner à crédit · 1 geste</button></div><div class="acts"><button class="btn sec" data-a="dash">📊 Mon tableau de bord</button></div><div class="acts"><button class="btn sec" data-a="owed">📦 Ce que je dois à mes fournisseurs'+((S.owed||[]).length?' ('+F((S.owed||[]).reduce(function(t,o){return t+owedRest(o);},0))+')':'')+'</button></div><div id="instslot"></div>';
   h+='<div class="cards"><div class="c big"><span>On me doit en tout</span><b>'+F(due)+'</b></div>'+
      '<div class="c"><span>En retard ('+lateN+')</span><b style="color:var(--rouge)">'+F(lateT)+'</b></div>'+
      '<div class="c"><span>Récupéré ce mois</span><b style="color:var(--vert)">'+F(monthRecovered())+'</b></div></div>';
@@ -459,6 +459,18 @@ function demoGate(quoi){
   o.style.display='flex';
 }
 function demoWa(url){demoGate('wa');}
+function demoPrefill(){
+  var v={t_name:'Fatou (nouvelle cliente)',t_phone:'01 97 00 00 09',t_am:'40000',t_max:'20000'};
+  for(var k in v){var e=document.getElementById(k); if(e) e.value=v[k];}
+  var ds=document.querySelectorAll('.opts[data-q]');
+  for(var i=0;i<ds.length;i++){var q=ds[i].getAttribute('data-q'), bs=ds[i].getElementsByTagName('button');
+    for(var j=0;j<bs.length;j++) bs[j].className=(+bs[j].getAttribute('data-v')===T.ans[q])?'opt on':'opt';}
+  var w=document.querySelector('.wrap');
+  if(w){var d=document.createElement('div');
+    d.innerHTML='<div class="note"><b>Exemple :</b> Fatou, nouvelle cliente, demande <b>40 000 F</b> à crédit. Ses réponses sont déjà remplies : touche le bouton pour savoir si tu peux lui faire confiance (tu peux changer une réponse pour voir le feu bouger).</div><div class="acts"><button class="btn gold" data-a="testrun">👉 Voir le résultat</button></div>';
+    w.insertBefore(d,w.firstChild);}
+  window.scrollTo(0,0);
+}
 document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('[data-a]'); if(t) demoPing('ev_demo_'+String(t.getAttribute('data-a')).slice(0,20));
 },true);
@@ -1009,7 +1021,7 @@ var ACT={
     S.myfull=S.myfull||r.credName; S.city=S.city||r.credCity||r.place;
     save(); UI.id=d.id; UI.view='reconview'; render();
   },
-  test:function(){T={ans:{}}; TR=null; UI.view='test'; render();},
+  test:function(){T={ans:{q1:2,q2:1,q3:2,q4:2,q5:1,q6:1,q7:1,q8:2}}; TR=null; UI.view='test'; render(); demoPrefill();},
   ans:function(el){
     var q=el.getAttribute('data-q'); T.ans[q]=+el.getAttribute('data-v');
     var sibs=el.parentNode.getElementsByTagName('button'); for(var i=0;i<sibs.length;i++) sibs[i].className='opt';
