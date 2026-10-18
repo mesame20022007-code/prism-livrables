@@ -446,7 +446,7 @@ function settings(){
 }
 
 /* ---------- MODE DÉMO ---------- */
-var BUY=(function(){var q=location.search||''; return '../'+(q?q+'&':'?')+'from=demo#offre';})();
+var BUY=(function(){var q=new URLSearchParams(location.search); return 'https://prism-parentalite.mychariow.market/prd_i4q1sko2?src='+encodeURIComponent(q.get('src')||'demo')+'&c='+encodeURIComponent(q.get('c')||'')+'&from=demo';})();
 function demoPing(n){try{if(window.suiviEv) window.suiviEv(n);}catch(e){}}
 function demoGate(quoi){
   demoPing('ev_demo_gate_'+quoi);
@@ -1105,7 +1105,7 @@ render();
 <script>window.SUIVI_CFG={track:'https://script.google.com/macros/s/AKfycbzCCnm4FV2TYd1c00YKqoVrpRUEBRc-UteVQOtHefZNEyKeH8StrKlVSCdimESLNFaO2A/exec',prefix:'cc_',clarity:'yp1g4zxpb6',pixel:'1716387339476694'};</script>
 <script src="../suivi.js"></script>
 <script src="../sortie.js"></script>
-<script>(function(){var u=(function(){var q=location.search||''; return '../'+(q?q+'&':'?')+'from=demo#offre';})();
+<script>(function(){var u=(function(){var q=new URLSearchParams(location.search); return 'https://prism-parentalite.mychariow.market/prd_i4q1sko2?src='+encodeURIComponent(q.get('src')||'demo')+'&c='+encodeURIComponent(q.get('c')||'')+'&from=demo';})();
 [].forEach.call(document.querySelectorAll('#dbuy,.dbuy2'),function(a){a.href=u; a.setAttribute('data-ev','demo_buy');});
 if(window.SORTIE_INIT) SORTIE_INIT({lieu:'demo', delai:40000});})();</script>
 </body>
