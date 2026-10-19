@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Les histoires d'Ama — PRISM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap">
+<style>
+  :root{
+    --cream:#FBF3DE; --ink:#3A2A1B; --brick:#C6552F; --indigo:#2E3A8C;
+    --gold:#E8B84B; --leaf:#5E8C3F; --paper:#FFFDF6; --line:#E7D9BC;
+    --dot1:rgba(198,85,47,.10); --dot2:rgba(46,58,140,.09); --dot3:rgba(94,140,63,.09);
+    --blob1:rgba(232,184,75,.35); --blob2:rgba(46,58,140,.14); --blob3:rgba(198,85,47,.16);
+    color-scheme:light;
+  }
+  html[data-theme="dark"]{
+    --cream:#191333; --ink:#F1E7D6; --brick:#F0805A; --indigo:#9BA9FF;
+    --gold:#F2C766; --leaf:#8FCB6D; --paper:#241C42; --line:#3B3164;
+    --dot1:rgba(240,128,90,.12); --dot2:rgba(155,169,255,.10); --dot3:rgba(143,203,109,.10);
+    --blob1:rgba(242,199,102,.16); --blob2:rgba(155,169,255,.16); --blob3:rgba(240,128,90,.14);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{background:var(--cream); color:var(--ink);
+    font-family:"Nunito",system-ui,sans-serif; overflow:hidden; overscroll-behavior:none;
+    transition:background .35s ease, color .35s ease;}
+  .book{position:fixed; inset:0; display:flex; flex-direction:column;}
+  h1,h2,.big{font-family:"Baloo 2",sans-serif;}
+
+  /* ---------- écran d'accueil : les sections ---------- */
+  #home{position:absolute; inset:0; z-index:40; overflow-y:auto; padding:2rem 1.2rem 3rem;
+    transition:opacity .3s ease, background .35s ease;
+    background-color:var(--cream);
+    background-image:
+      radial-gradient(38rem 30rem at 10% -10%, var(--blob1), transparent 60%),
+      radial-gradient(34rem 28rem at 108% 12%, var(--blob2), transparent 60%),
+      radial-gradient(30rem 26rem at 15% 118%, var(--blob3), transparent 60%),
+      radial-gradient(var(--dot1) 2.5px, transparent 2.5px),
+      radial-gradient(var(--dot2) 2.5px, transparent 2.5px),
+      radial-gradient(var(--dot3) 2.5px, transparent 2.5px);
+    background-size:auto,auto,auto, 3.4rem 3.4rem, 5.2rem 5.2rem, 4.1rem 4.1rem;
+    background-position:0 0,0 0,0 0, 0 0, 1.7rem 2.6rem, .9rem 3.3rem;
+    background-attachment:fixed;}
+  #home.hide{opacity:0; pointer-events:none;}
+  #home .kicker{text-align:center; font-family:"Baloo 2"; font-weight:600; letter-spacing:.14em;
+    text-transform:uppercase; font-size:.72rem; color:var(--brick);}
+  #home h1{text-align:center; font-weight:700; font-size:clamp(1.9rem,7vw,3rem);
+    color:var(--indigo); margin:.2rem 0 .3rem;}
+  #home .sub{text-align:center; color:var(--ink); opacity:.72; max-width:24rem; margin:0 auto 1.6rem;}
+  .tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:.9rem; max-width:36rem; margin:0 auto;}
+  .tile{cursor:pointer; border:none; border-radius:20px; padding:1.2rem .8rem;
+    background:var(--paper); box-shadow:0 3px 0 var(--line); text-align:center;
+    font-family:"Baloo 2"; font-weight:600; color:var(--ink); font-size:1rem;
+    display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    transition:transform .18s ease, box-shadow .18s ease, background .35s ease;}
+  .tile:active{transform:translateY(2px); box-shadow:0 1px 0 var(--line);}
+  .tile .ic{font-size:2.4rem; line-height:1; transition:transform .25s ease;}
+  @media (hover:hover){
+    .tile:hover{transform:translateY(-4px); box-shadow:0 7px 0 var(--line), 0 14px 22px rgba(0,0,0,.14);
+      outline:2px solid var(--gold);}
+    .tile:hover .ic{transform:scale(1.15) rotate(-4deg);}
+  }
+  .tile.soon{opacity:.55;}
+  .tile.soon::after{content:"bientôt"; font-family:"Nunito"; font-weight:700; font-size:.7rem;
+    color:var(--brick); background:#f6e7c9; padding:.1rem .5rem; border-radius:999px;}
+
+  /* ---------- sous-menu histoires ---------- */
+  #submenu{position:absolute; inset:0; z-index:35; overflow-y:auto; padding:2rem 1.2rem 3rem; display:none;
+    background-color:var(--cream);
+    background-image:
+      radial-gradient(34rem 28rem at 106% -8%, var(--blob2), transparent 60%),
+      radial-gradient(30rem 26rem at 6% 112%, var(--blob3), transparent 60%),
+      radial-gradient(var(--dot1) 2.5px, transparent 2.5px),
+      radial-gradient(var(--dot2) 2.5px, transparent 2.5px);
+    background-size:auto,auto, 3.4rem 3.4rem, 5.2rem 5.2rem;
+    background-position:0 0,0 0, 0 0, 1.7rem 2.6rem;
+    background-attachment:fixed;}
+  #submenu h2{text-align:center; color:var(--indigo); font-weight:700;
+    font-size:clamp(1.5rem,5vw,2rem); margin-bottom:1.2rem;}
+  .toc{display:flex; flex-direction:column; gap:.6rem; max-width:28rem; margin:0 auto;}
+  .toc button{cursor:pointer; font-family:"Baloo 2"; font-weight:600; font-size:1.02rem;
+    border:2px solid var(--line); background:var(--paper); color:var(--ink);
+    border-radius:16px; padding:.8rem 1rem; text-align:left; display:flex; gap:.6rem;
+    transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;}
+  .toc button:disabled{opacity:.4;}
+  @media (hover:hover){
+    .toc button:not(:disabled):hover{transform:translateX(5px); border-color:var(--brick);
+      box-shadow:0 4px 12px rgba(0,0,0,.10);}
+  }
+  .toc button .n{color:var(--brick);}
+
+  /* ---------- lecteur de pages ---------- */
+  .stage{flex:1; position:relative; overflow:hidden;}
+  .page{position:absolute; inset:0; display:flex; flex-direction:column;
+    opacity:0; pointer-events:none; transition:opacity .28s ease;}
+  .page.on{opacity:1; pointer-events:auto;}
+  .art{flex:1; position:relative; background:#F1E2C2;
+    background-size:cover; background-repeat:no-repeat; background-position:center;
+    display:flex; align-items:center; justify-content:center;}
+  .art.hasimg .blob,.art.hasimg .phtxt{display:none;}
+  .page.findpage .art{background-size:contain; background-color:#EFE7D4;}
+  .find{background:var(--paper); padding:1rem 1.1rem calc(1.1rem + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line);}
+  .find h4{font-family:"Baloo 2"; font-weight:700; color:var(--indigo); font-size:1.15rem; text-align:center;}
+  .find p{font-weight:700; text-align:center; color:var(--brick); margin-top:.25rem;
+    font-size:.95rem; line-height:1.4;}
+  .caption.print{padding-bottom:calc(1.2rem + env(safe-area-inset-bottom));}
+  .caption.print .pbtns{display:flex; flex-direction:column; gap:.6rem; margin:.9rem auto 0; max-width:26rem;}
+  .pbig{font-family:"Baloo 2"; font-weight:700; font-size:1rem; border:none; border-radius:14px;
+    padding:.9rem 1rem; background:var(--indigo); color:#fff; cursor:pointer;
+    transition:transform .16s ease, box-shadow .16s ease, filter .16s ease;}
+  .pbig.alt{background:#25D366;}
+  @media (hover:hover){
+    .pbig:hover{transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,0,0,.18); filter:brightness(1.08);}
+  }
+  .phint{font-size:.82rem; color:#6b5a44; margin-top:.7rem;}
+  .art.ph .phtxt{position:absolute; top:calc(.6rem + env(safe-area-inset-top)); right:.6rem;
+    left:auto; max-width:62%; text-align:right; font-family:"Baloo 2"; font-weight:600;
+    color:#fff; background:rgba(0,0,0,.32); padding:.4rem .85rem; border-radius:999px; font-size:.8rem;}
+  .art.ph .blob{font-size:clamp(4rem,24vw,10rem);}
+  .art .numwrap{display:flex; flex-direction:column; align-items:center; gap:1.2rem;}
+  .art .digit{font-family:"Baloo 2"; font-weight:700; color:#fff;
+    font-size:clamp(5rem,26vw,11rem); line-height:1; text-shadow:0 6px 0 rgba(0,0,0,.15);}
+  .art .row{display:flex; flex-wrap:wrap; gap:.55rem; justify-content:center;
+    max-width:78%; font-size:clamp(2rem,9vw,3.2rem);}
+  .caption{background:linear-gradient(to top,var(--paper) 80%,transparent); padding:1.3rem 1.2rem 1rem;}
+  .caption p{font-family:"Baloo 2"; font-weight:500; font-size:clamp(1.15rem,4.5vw,1.6rem);
+    line-height:1.35; max-width:34rem; margin-inline:auto; text-align:center;}
+  .caption .ask{color:var(--brick); font-weight:700; margin-top:.35rem;}
+  .caption .draw{color:var(--leaf); font-weight:700; margin-top:.35rem;}
+  .audio{display:flex; align-items:center; justify-content:center; gap:.5rem; margin:.8rem auto 0;
+    font-family:"Baloo 2"; font-weight:700; font-size:1rem; background:var(--indigo); color:#fff;
+    border:none; border-radius:999px; padding:.55rem 1.4rem; cursor:pointer;
+    transition:transform .16s ease, box-shadow .16s ease, filter .16s ease;}
+  .audio.playing{background:var(--brick);}
+  .audio svg{width:1.05rem; height:1.05rem; fill:currentColor;}
+  @media (hover:hover){
+    .audio:hover{transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.18); filter:brightness(1.08);}
+  }
+
+  /* ---------- canvas dessin ---------- */
+  #draw{position:absolute; inset:0; z-index:25; background:var(--paper); display:none; flex-direction:column;}
+  #draw canvas{flex:1; width:100%; touch-action:none; background:#fff;}
+  .tools{display:flex; align-items:center; gap:.5rem; padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom));
+    background:var(--cream); border-top:1px solid var(--line); flex-wrap:wrap;}
+  .swatch{width:2rem; height:2rem; border-radius:999px; border:3px solid #fff; box-shadow:0 0 0 1px var(--line); cursor:pointer;
+    transition:transform .15s ease;}
+  .swatch.sel{transform:scale(1.15); box-shadow:0 0 0 3px var(--indigo);}
+  @media (hover:hover){ .swatch:hover{transform:scale(1.12);} }
+  .tools button{font-family:"Baloo 2"; font-weight:700; border:2px solid var(--line);
+    background:var(--paper); color:var(--ink); border-radius:999px; padding:.4rem .9rem; cursor:pointer;
+    transition:border-color .15s ease, transform .15s ease;}
+  @media (hover:hover){ .tools button:hover{border-color:var(--brick); transform:translateY(-1px);} }
+
+  /* ---------- quiz ---------- */
+  #quiz{position:absolute; inset:0; z-index:45; display:none; flex-direction:column;
+    background-color:var(--cream);
+    background-image:
+      radial-gradient(30rem 26rem at 100% 0%, var(--blob1), transparent 60%),
+      radial-gradient(28rem 24rem at 0% 100%, var(--blob2), transparent 60%),
+      radial-gradient(var(--dot1) 2.5px, transparent 2.5px);
+    background-size:auto,auto, 3.4rem 3.4rem; background-position:0 0,0 0,0 0;
+    background-attachment:fixed;}
+  .qz-top{display:flex; align-items:center; justify-content:space-between;
+    padding:calc(.6rem + env(safe-area-inset-top)) .9rem .5rem;}
+  .qz-top button{font-family:"Baloo 2"; font-weight:700; font-size:.92rem; cursor:pointer;
+    background:var(--paper); border:2px solid var(--line); color:var(--ink); border-radius:999px;
+    padding:.4rem .95rem;}
+  .qz-progress{font-family:"Baloo 2"; font-weight:700; color:var(--brick); font-size:.9rem;}
+  .qz-body{flex:1; overflow-y:auto; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; padding:1rem 1.2rem 2rem; gap:1.1rem; text-align:center;}
+  .qz-visual{font-size:clamp(3.4rem,16vw,6rem); line-height:1; display:flex; gap:.5rem;
+    flex-wrap:wrap; justify-content:center; max-width:22rem;}
+  .qz-visual span{font-size:clamp(2rem,8vw,3rem);}
+  .qz-visual .swatch-big{width:6rem; height:6rem; border-radius:20px; box-shadow:0 4px 0 rgba(0,0,0,.12);}
+  .qz-visual .big-letter{font-family:"Baloo 2"; font-weight:800; color:var(--indigo); font-size:clamp(4.5rem,20vw,7rem);}
+  .qz-prompt{font-family:"Baloo 2"; font-weight:700; color:var(--indigo); font-size:clamp(1.2rem,4.4vw,1.6rem);
+    max-width:26rem;}
+  .qz-choices{display:grid; grid-template-columns:repeat(2,minmax(120px,1fr)); gap:.8rem; max-width:26rem; width:100%;}
+  .qz-choices button{cursor:pointer; border:none; border-radius:18px; padding:1rem .8rem;
+    background:var(--paper); box-shadow:0 3px 0 var(--line); font-family:"Baloo 2"; font-weight:700;
+    color:var(--ink); font-size:1.15rem; transition:transform .15s ease, box-shadow .15s ease, background .2s ease;}
+  .qz-choices button:active{transform:translateY(2px); box-shadow:0 1px 0 var(--line);}
+  .qz-choices button.correct{background:var(--leaf); color:#fff; box-shadow:0 3px 0 #3d6329;}
+  .qz-choices button.wrong{background:var(--brick); color:#fff; box-shadow:0 3px 0 #8a3d1f;}
+  .qz-choices button:disabled{opacity:.55;}
+  @media (hover:hover){ .qz-choices button:not(:disabled):hover{transform:translateY(-3px); box-shadow:0 6px 0 var(--line);} }
+  .qz-end{flex:1; display:none; flex-direction:column; align-items:center; justify-content:center;
+    gap:1rem; padding:2rem 1.4rem; text-align:center;}
+  .qz-end.on{display:flex;}
+  .qz-medal{font-size:5rem; line-height:1;}
+  .qz-scoretext{font-family:"Baloo 2"; font-weight:700; color:var(--indigo); font-size:1.4rem; max-width:24rem;}
+  .qz-end .pbig{max-width:20rem; width:100%;}
+
+  /* ---------- navigation ---------- */
+  .nav{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.5rem;
+    padding:.5rem .9rem calc(.4rem + env(safe-area-inset-bottom));
+    background:var(--paper); border-top:1px solid var(--line);}
+  .nav button{font-family:"Baloo 2"; font-weight:700; font-size:1.15rem; cursor:pointer;
+    background:var(--cream); border:2px solid var(--line); color:var(--ink);
+    border-radius:999px; padding:.5rem 1rem; transition:transform .15s ease, border-color .15s ease;}
+  .nav button#prev,.nav button#next{min-width:3.2rem;}
+  .nav button.auto{font-size:.95rem; padding:.5rem 1.2rem; background:var(--indigo);
+    color:#fff; border-color:var(--indigo);}
+  .nav button.auto.playing{background:var(--brick); border-color:var(--brick);}
+  .nav button:disabled{opacity:.3;}
+  @media (hover:hover){
+    .nav button:not(:disabled):hover{transform:translateY(-2px); border-color:var(--brick);}
+  }
+  .dots{flex-basis:100%; display:flex; gap:.3rem; flex-wrap:wrap; justify-content:center;}
+  .dot{width:.5rem; height:.5rem; border-radius:999px; background:var(--line);}
+  .dot.on{background:var(--brick); transform:scale(1.2);}
+  .topbar{position:absolute; top:calc(.55rem + env(safe-area-inset-top)); left:.55rem; right:.55rem;
+    z-index:60; pointer-events:none; display:flex; justify-content:space-between;}
+  .topbar button{pointer-events:auto; font-family:"Baloo 2"; font-weight:700; font-size:.92rem;
+    background:var(--paper); border:2px solid var(--line); color:var(--ink); border-radius:999px;
+    padding:.4rem .95rem; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.12);
+    transition:transform .15s ease, border-color .15s ease;}
+  .topbar button:active{transform:translateY(1px);}
+  @media (hover:hover){ .topbar button:hover{transform:translateY(-2px); border-color:var(--brick);} }
+  #btnTheme{position:absolute; top:calc(.55rem + env(safe-area-inset-top)); right:.55rem;
+    z-index:70; pointer-events:auto; font-size:1.15rem; line-height:1; width:2.6rem; height:2.6rem;
+    transition:transform .18s ease, border-color .18s ease;
+    border-radius:999px; border:2px solid var(--line); background:var(--paper); cursor:pointer;
+    box-shadow:0 2px 6px rgba(0,0,0,.12); display:flex; align-items:center; justify-content:center;}
+  #btnTheme:active{transform:translateY(1px);}
+  @media (hover:hover){ #btnTheme:hover{transform:rotate(-14deg) scale(1.08); border-color:var(--gold);} }
+  [hidden]{display:none!important;}
+  @media print{
+    body{overflow:visible;} .book{position:static;} .nav,.topbar,.audio,#home,#submenu,#draw{display:none!important;}
+    .stage{overflow:visible;} .page{position:static; opacity:1!important; page-break-after:always; min-height:90vh;}
+    .art{min-height:60vh;}
+  }
+
+/* AMA-VERROU : mode enfant verrouille */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea{-webkit-user-select:text;user-select:text}
+#amaLock{position:fixed;left:10px;bottom:10px;z-index:900;width:44px;height:44px;border-radius:50%;border:0;
+  background:rgba(76,42,117,.55);color:#fff;font-size:20px;line-height:44px;padding:0;cursor:pointer}
+.amaOv{position:fixed;inset:0;z-index:1000;background:#FDF6E3;color:#2b1d44;display:none;flex-direction:column;
+  align-items:center;justify-content:center;padding:18px;overflow:auto;font-family:inherit;text-align:center}
+.amaOv.show{display:flex}
+.amaOv h2{margin:0 0 6px;font-size:24px;color:#4C2A75}
+.amaOv p{margin:4px 0 12px;font-size:16px;max-width:420px}
+.amaDots{display:flex;gap:12px;margin:8px 0 14px;min-height:20px}
+.amaDots i{width:18px;height:18px;border-radius:50%;border:2px solid #4C2A75;display:block}
+.amaDots i.on{background:#4C2A75}
+.amaPad{display:grid;grid-template-columns:repeat(3,74px);gap:10px}
+.amaPad button,.amaBtn{border:0;border-radius:16px;background:#fff;color:#4C2A75;font-size:26px;font-weight:700;
+  height:64px;box-shadow:0 2px 0 #d9c9a8;cursor:pointer}
+.amaPad button.ok{background:#4C2A75;color:#fff}
+.amaBtn{width:100%;max-width:380px;font-size:17px;height:auto;min-height:54px;padding:12px 14px;margin:6px 0}
+.amaBtn.pri{background:#4C2A75;color:#fff}
+.amaBtn.sel{background:#D9B24A;color:#2b1d44}
+.amaRow{display:flex;gap:8px;width:100%;max-width:380px}
+.amaRow .amaBtn{margin:6px 0;font-size:15px}
+.amaErr{color:#b3261e;font-weight:700;min-height:22px;margin:0 0 6px}
+.amaLink{background:none;border:0;color:#4C2A75;text-decoration:underline;font-size:15px;margin-top:12px;cursor:pointer}
+.amaHelp{max-width:380px;text-align:left;font-size:15px;background:#fff;border-radius:14px;padding:12px 14px;margin:6px 0;display:none}
+.amaHelp.show{display:block}
+.amaShake{animation:amaShake .3s}
+@keyframes amaShake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.amaF{width:100%;max-width:380px;text-align:left;margin:6px 0}
+.amaF label{display:block;font-size:15px;font-weight:700;margin-bottom:4px}
+.amaF input{width:100%;box-sizing:border-box;font-size:18px;padding:12px;border:2px solid #d9c9a8;border-radius:12px;background:#fff;color:#2b1d44}
+
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4C2A75">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>window.__EMB__ = {};</script>
+</head>
+<body>
+<script>
+  (function(){
+    try{
+      var t = localStorage.getItem("ama_theme");
+      if(!t && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+      if(t === "dark") document.documentElement.dataset.theme = "dark";
+    }catch(e){}
+  })();
+</script>
+<div class="book">
+  <div class="topbar" hidden id="topbar">
+    <button id="btnBack">‹ Retour</button>
+  </div>
+  <button id="btnTheme" title="Changer de thème" aria-label="Changer de thème">🌙</button>
+
+  <!-- ACCUEIL -->
+  <div id="home">
+    <p class="kicker">PRISM · Mes premiers apprentissages</p>
+    <h1>Les histoires d'Ama</h1>
+    <p class="sub">Des histoires, des jeux, des chansons. On apprend un peu de tout, en s'amusant.</p>
+    <div class="tiles" id="tiles"></div>
+  </div>
+
+  <!-- SOUS-MENU HISTOIRES -->
+  <div id="submenu">
+    <h2>Choisis ton histoire</h2>
+    <div class="toc" id="toc"></div>
+  </div>
+
+  <!-- LECTEUR -->
+  <div class="stage" id="stage"></div>
+
+  <!-- CANVAS -->
+  <div id="draw">
+    <canvas id="cv"></canvas>
+    <div class="tools" id="tools">
+      <button id="drawBack">‹ Retour</button>
+      <button id="clr">🗑️ Effacer</button>
+    </div>
+  </div>
+
+  <div class="nav" id="nav" hidden>
+    <button id="prev">‹</button>
+    <button id="auto" class="auto">▶ Lecture auto</button>
+    <button id="next">›</button>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz">
+    <div class="qz-top">
+      <button id="quizBack">‹ Retour</button>
+      <div class="qz-progress" id="qzProgress"></div>
+    </div>
+    <div class="qz-body" id="qzBody">
+      <div class="qz-visual" id="qzVisual"></div>
+      <p class="qz-prompt" id="qzPrompt"></p>
+      <div class="qz-choices" id="qzChoices"></div>
+    </div>
+    <div class="qz-end" id="qzEnd">
+      <div class="qz-medal" id="qzMedal"></div>
+      <p class="qz-scoretext" id="qzScoreText"></p>
+      <button class="pbig" id="qzReplay">🔁 Rejouer</button>
+      <button class="pbig alt" id="qzHome">🏠 Retour à l'accueil</button>
+    </div>
+  </div>
+</div>
+<audio id="player" preload="none"></audio>
+
+<script>
+/* ============ HISTOIRES ============ */
+const STORIES = [
+  {id:"01",titre:"Le ballon rouge d'Ama",pages:[
+    {t:"Ama a un ballon. Il est rouge, tout rouge. C'est son préféré.",c:"#C6552F",e:"🔴"},
+    {t:"Oh non ! Le ballon roule. Il s'en va tout seul !",c:"#C6552F",e:"🏃"},
+    {t:"Ama voit quelque chose par terre. C'est rond. C'est jaune.",c:"#E8B84B",e:"🥭"},
+    {t:"Quelque chose bouge, là-bas. C'est vert.",c:"#5E8C3F",e:"🍃"},
+    {t:"Près du mur, quelque chose de grand. C'est bleu.",c:"#2E3A8C",e:"🪣"},
+    {t:"Sous l'arbre, quelque chose brille. C'est orange.",c:"#E08A2B",e:"🫐"},
+    {t:"Quelque chose court ! C'est blanc. Ça fait « cot cot ! »",c:"#8a8a8a",e:"🐔"},
+    {t:"Ama est fatiguée. Elle s'assoit sur la natte. Où est son ballon ?",c:"#6b5a44",e:"😔"},
+    {t:"Ama lève les yeux. Là, dans les fleurs rouges… quelque chose de rond. ROUGE !",c:"#C6552F",e:"🌺"},
+    {t:"Ama serre son ballon rouge très fort. « Je t'ai retrouvé ! »",c:"#C6552F",e:"🥰",ask:"Et toi ? Tu connais une chose rouge, chez toi ?"},
+  ]},
+  {id:"02",titre:"Le marché de maman",pages:[
+    {t:"Ce matin, Ama va au marché avec maman. Il y a du monde, des couleurs, du bruit.",c:"#C6552F",e:"🛒"},
+    {t:"Maman dit : « Ama, tu comptes pour moi ? » Ama adore compter.",c:"#E8B84B",e:"🙋"},
+    {t:"« Compte les tomates. » Une… deux. Deux tomates rouges.",c:"#C6552F",e:"🍅"},
+    {t:"« Et les oranges ? » Une… deux… trois. Trois oranges.",c:"#E08A2B",e:"🍊"},
+    {t:"Chez la poissonnière. Un, deux, trois, quatre, cinq. Cinq poissons.",c:"#5E8C3F",e:"🐟"},
+    {t:"« Compte les bananes. » … sept… huit ! Huit bananes.",c:"#E8B84B",e:"🍌"},
+    {t:"Le panier est plein. Compte les paquets : un… dix. Dix paquets !",c:"#8a6a3a",e:"🧺"},
+    {t:"On rentre. Le panier est lourd. Sur la route… quelque chose tombe. Plouf !",c:"#b06a3a",e:"🚶"},
+    {t:"À la maison : « Ama, recompte les oranges. » Une… deux… « Maman ! Il en manque une ! »",c:"#E08A2B",e:"🍊"},
+    {t:"Maman sourit : « Tu as bien compté. Elle est tombée sur la route. »",c:"#C6552F",e:"🤗",ask:"Et toi ? Tu sais compter jusqu'à dix ? Compte avec Ama !"},
+  ]},
+  {id:"03",titre:"La basse-cour de grand-mère",pages:[
+    {t:"Ama va chez grand-mère. Dans sa cour, il y a plein d'animaux.",c:"#8a6a3a",e:"🏡"},
+    {t:"Grand-mère dit : « On va les nourrir. Tu m'aides ? » — « Oui ! »",c:"#E8B84B",e:"🌾"},
+    {t:"Ça, c'est la poule. Elle fait : « Cot cot cot ! » Elle donne des œufs.",c:"#b06a3a",e:"🐔"},
+    {t:"Ça, c'est le coq. Il fait : « Cocorico ! » Il chante le matin.",c:"#C6552F",e:"🐓"},
+    {t:"Ça, c'est le canard. Il fait : « Coin coin ! » Il aime l'eau.",c:"#2E3A8C",e:"🦆"},
+    {t:"Ça, c'est la chèvre. Elle fait : « Bêêê ! » Elle donne du lait.",c:"#5E8C3F",e:"🐐"},
+    {t:"Ça, c'est le chien. Il fait : « Ouaf ouaf ! » Il garde la maison.",c:"#6b5a44",e:"🐕"},
+    {t:"Tout à coup : « KAKAKAKA ! » très fort. Ama sursaute. C'est quoi, ça ?",c:"#8a8a8a",e:"❓"},
+    {t:"Grand-mère rit : « C'est la pintade ! Elle crie tout le temps, très fort. »",c:"#7a7a7a",e:"🐦"},
+    {t:"Tous les animaux ont mangé. Grand-mère : « Bravo, Ama ! »",c:"#E08A2B",e:"👵",ask:"Et toi ? Comment fait le coq ? Et la chèvre ? Et la pintade ?"},
+  ]},
+  {id:"04",titre:"Ama a oublié de dire bonjour",pages:[
+    {t:"Ce matin, Ama est pressée. Elle veut vite aller jouer chez son amie Fifa.",c:"#C6552F",e:"🏃"},
+    {t:"Elle passe devant la voisine. Elle ne dit rien. La voisine fronce les sourcils.",c:"#6b5a44",e:"🙍"},
+    {t:"Tonton lui tend une mangue. Ama la prend et part sans dire « merci ».",c:"#E8B84B",e:"🥭"},
+    {t:"Chez Fifa, Ama entre sans dire « bonjour ». Fifa boude.",c:"#8a6a3a",e:"🙅"},
+    {t:"Ama sent que quelque chose ne va pas. Personne ne sourit.",c:"#6b5a44",e:"😟"},
+    {t:"Ama rentre voir maman. « Maman, tout le monde est fâché. »",c:"#7a5a44",e:"😢"},
+    {t:"Ama réfléchit… « Non. » Maman : « Les mots gentils, ça ouvre les portes. »",c:"#E8B84B",e:"💡"},
+    {t:"« Bonjour, tata Adjo ! » La voisine sourit tout de suite.",c:"#5E8C3F",e:"😊"},
+    {t:"« Merci, tonton Kossi ! » Tonton rit et lui donne une deuxième mangue.",c:"#E08A2B",e:"😄"},
+    {t:"« Bonjour Fifa, pardon. » Fifa sourit. Elles jouent enfin ensemble.",c:"#C6552F",e:"🤝",ask:"Et toi ? Est-ce que tu as dit bonjour, ce matin ?"},
+  ]},
+  {id:"05",titre:"Le voyage à Cotonou",pages:[
+    {t:"Aujourd'hui, Ama part en voyage avec papa. Ils vont à Cotonou, la grande ville.",c:"#8a6a3a",e:"🧳"},
+    {t:"Le taxi est plein. Ama a la place à la fenêtre. Elle regarde tout.",c:"#6b5a44",e:"🚕"},
+    {t:"Le village s'en va. On voit des champs, des manguiers, une petite rivière.",c:"#5E8C3F",e:"🌾"},
+    {t:"Le taxi passe sur un grand pont. En dessous, l'eau et des pirogues.",c:"#2E3A8C",e:"🌉"},
+    {t:"Cotonou ! Du bruit, des motos partout, des klaxons. Ama se bouche les oreilles.",c:"#E8B84B",e:"🛵"},
+    {t:"Des maisons hautes, très hautes. Ama lève la tête : « Elles touchent le ciel ! »",c:"#7a8a9a",e:"🏢"},
+    {t:"Le grand marché de Dantokpa. Il y a tout, et tout le monde.",c:"#C6552F",e:"🛍️"},
+    {t:"Papa dit : « Viens, je te montre quelque chose. » On entend : chhh… chhh…",c:"#E08A2B",e:"👂"},
+    {t:"La mer ! Grande, bleue, sans fin. Les vagues montent et descendent.",c:"#2E3A8C",e:"🌊"},
+    {t:"Ama met les pieds dans l'eau. Elle rit très fort.",c:"#E8B84B",e:"🏖️",ask:"Et toi ? Tu habites au village ou en ville ? Tu as déjà vu la mer ?"},
+  ]},
+  {id:"06",titre:"D'où vient la pluie ?",pages:[
+    {t:"Il fait très chaud. La terre est sèche, les feuilles pendent. Ama a soif.",c:"#E08A2B",e:"☀️"},
+    {t:"Ama demande : « Maman, d'où vient la pluie ? » Maman : « Viens, regarde bien. »",c:"#E8B84B",e:"🤔"},
+    {t:"Le soleil chauffe la rivière. Un peu d'eau disparaît. Où va-t-elle ?",c:"#2E3A8C",e:"💧"},
+    {t:"Le linge mouillé sèche au soleil. L'eau part dans l'air, on ne la voit pas.",c:"#5E8C3F",e:"👕"},
+    {t:"L'eau monte, monte, tout là-haut. Elle se cache dans les nuages.",c:"#7a8a9a",e:"☁️"},
+    {t:"Les nuages deviennent gris. Gros. Lourds. Le ciel devient sombre.",c:"#5a5a5a",e:"🌫️"},
+    {t:"Et puis… plic ! ploc ! La première goutte tombe sur le nez d'Ama.",c:"#2E3A8C",e:"💧"},
+    {t:"La pluie tombe fort ! Ama danse dessous. La jarre se remplit.",c:"#2E5A8C",e:"🌧️"},
+    {t:"Après la pluie : les feuilles sont vertes, la terre boit. Grand-mère arrose son jardin.",c:"#5E8C3F",e:"🌱"},
+    {t:"« Et l'eau de la flaque, maman ? » — « Le soleil va la reprendre, et ça recommence. »",c:"#E8B84B",e:"🔁",ask:"Et toi ? Tu aimes la pluie ? Qu'est-ce que tu fais quand il pleut ?"},
+  ]},
+  {id:"07",titre:"Ama et son petit frère",pages:[
+    {t:"Ama a un petit frère maintenant. Il s'appelle Kofi. Il est tout petit.",c:"#C6552F",e:"👶"},
+    {t:"Tout le monde regarde Kofi. « Oh, comme il est mignon ! » Et Ama, alors ?",c:"#6b5a44",e:"👀"},
+    {t:"Kofi prend le ballon d'Ama sans demander. Il le met dans sa bouche !",c:"#C6552F",e:"⚽"},
+    {t:"Kofi pleure. Maman le prend. Ama voulait montrer son dessin… tant pis.",c:"#7a5a44",e:"😭"},
+    {t:"Ama boude dans un coin. « Avant, maman jouait avec moi. »",c:"#6b5a44",e:"😤"},
+    {t:"Un jour, Kofi pleure très fort. Il n'y a personne à la maison, à part Ama.",c:"#7a5a44",e:"😢"},
+    {t:"Ama s'approche. Elle ne sait pas quoi faire. Elle lui fait une grimace rigolote.",c:"#E8B84B",e:"🤪"},
+    {t:"Kofi s'arrête de pleurer. Il regarde Ama. Et il… sourit ! Un grand sourire sans dents.",c:"#5E8C3F",e:"😁"},
+    {t:"Ama partage sa mangue avec lui. Elle lui apprend à taper dans les mains.",c:"#E08A2B",e:"🥭"},
+    {t:"Maman rentre. Kofi joue avec Ama. Maman : « Merci, ma grande. »",c:"#C6552F",e:"🤗",ask:"Et toi ? Tu as un petit frère, une petite sœur ? Tu joues avec ?"},
+  ]},
+  {id:"08",titre:"La maison ronde",pages:[
+    {t:"Grand-père construit quelque chose dans la cour. Ama vient regarder.",c:"#8a6a3a",e:"🧱"},
+    {t:"« Une petite maison, dit grand-père. Regarde bien les formes. »",c:"#b06a3a",e:"👴"},
+    {t:"Les murs font un grand rond. C'est une maison ronde ! Le rond.",c:"#C6552F",e:"⭕"},
+    {t:"La porte, c'est un rectangle. Debout, plus haut que large.",c:"#8a6a3a",e:"🚪"},
+    {t:"La petite fenêtre : un carré. Quatre côtés pareils.",c:"#2E3A8C",e:"🔲"},
+    {t:"Le toit en paille monte en pointe : un triangle.",c:"#E08A2B",e:"🔺"},
+    {t:"Ama cherche d'autres formes. La calebasse : un rond ! La natte : un rectangle !",c:"#5E8C3F",e:"🧺"},
+    {t:"Le soleil, tout là-haut : un grand rond doré.",c:"#E8B84B",e:"☀️"},
+    {t:"Ama fait sa maison à elle, par terre : des cailloux en rond, un bâton pour la porte.",c:"#8a6a3a",e:"🪨"},
+    {t:"« Regarde grand-père, ma maison ! » Grand-père sourit.",c:"#C6552F",e:"🏠",ask:"Et toi ? Trouve un rond, un carré, un triangle, près de toi !"},
+  ]},
+  {id:"09",titre:"Le grand et le petit",pages:[
+    {t:"Ama joue avec son cousin Élé. Élé est grand. Ama est plus petite.",c:"#8a6a3a",e:"📏"},
+    {t:"Élé attrape la mangue sur l'arbre. Ama ne peut pas : elle est trop petite.",c:"#E8B84B",e:"🥭"},
+    {t:"Mais Ama passe sous la table sans se baisser. Élé, lui, se cogne la tête !",c:"#C6552F",e:"🤕"},
+    {t:"Ama porte le petit seau. Élé porte le grand seau, bien plus lourd.",c:"#2E3A8C",e:"🪣"},
+    {t:"La grande calebasse tient beaucoup d'eau. La petite en tient peu.",c:"#5E8C3F",e:"🫙"},
+    {t:"Le grand chemin va loin, jusqu'au marché. Le petit chemin va juste au puits.",c:"#8a6a3a",e:"🛤️"},
+    {t:"Élé fait de grands pas. Ama fait des petits pas, vite vite pour le suivre.",c:"#E08A2B",e:"👣"},
+    {t:"Le soir, Ama tient un petit poussin dans ses mains. Il est tout doux.",c:"#E8B84B",e:"🐤"},
+    {t:"« Toi aussi, tu étais petit, Élé ? » — « Oui ! Et toi, tu vas grandir. »",c:"#7a5a44",e:"💭"},
+    {t:"Ama se met contre le mur. Maman fait un trait. « Bientôt, tu seras grande ! »",c:"#C6552F",e:"📈",ask:"Et toi ? Montre-moi quelque chose de grand… et quelque chose de petit !"},
+  ]},
+  {id:"10",titre:"La journée d'Ama",pages:[
+    {t:"Le coq chante : cocorico ! Le soleil se lève. Ama ouvre les yeux. C'est le matin.",c:"#E8B84B",e:"🌅"},
+    {t:"Ama se lave, s'habille, mange sa bouillie. Puis elle part à l'école.",c:"#E08A2B",e:"🥣"},
+    {t:"À l'école, on chante, on compte, on dessine. Le temps passe vite.",c:"#2E3A8C",e:"✏️"},
+    {t:"Le soleil est tout en haut du ciel. Il fait très chaud. C'est midi. On mange.",c:"#E8B84B",e:"☀️"},
+    {t:"Après manger, Ama fait une petite sieste sur la natte, à l'ombre.",c:"#8a6a3a",e:"😴"},
+    {t:"L'après-midi, Ama aide maman, puis joue avec ses amis dans la cour.",c:"#5E8C3F",e:"⚽"},
+    {t:"Le soleil descend. Le ciel devient orange, puis rose. C'est le soir.",c:"#E0862B",e:"🌆"},
+    {t:"Toute la famille mange ensemble. On raconte sa journée. On rit.",c:"#C6552F",e:"🍲"},
+    {t:"Ama se lave, met son pyjama. Maman raconte une histoire. Les yeux d'Ama se ferment.",c:"#2E3A8C",e:"🌙"},
+    {t:"La nuit, tout dort. Demain, le coq chantera encore, et ça recommencera.",c:"#1f2a5c",e:"⭐",ask:"Et toi ? Qu'est-ce que tu fais le matin ? Et le soir avant de dormir ?"},
+  ]},
+  {id:"11",titre:"Où est le chat ?",pages:[
+    {t:"Ama cherche son chat, Minou. « Minou ! Où es-tu caché ? »",c:"#8a6a3a",e:"🐈"},
+    {t:"Minou est SUR le mur. Tout en haut. Il regarde Ama et il cligne des yeux.",c:"#C6552F",e:"🧱"},
+    {t:"Ama tourne la tête. Maintenant, Minou est SOUS la table. Dans l'ombre.",c:"#7a5a44",e:"🪑"},
+    {t:"Hop ! Minou saute DANS le panier vide. On ne voit que ses oreilles.",c:"#E8B84B",e:"🧺"},
+    {t:"Minou ressort. Il se met DEVANT la porte. Il attend qu'on l'ouvre.",c:"#2E3A8C",e:"🚪"},
+    {t:"Ama s'approche. Minou file et se cache DERRIÈRE la grande jarre.",c:"#5E8C3F",e:"🏺"},
+    {t:"Ama s'assoit, fatiguée. Et Minou vient se coucher À CÔTÉ d'elle.",c:"#E08A2B",e:"🤍"},
+    {t:"Minou monte ENTRE les bras d'Ama. Il ronronne : rrr… rrr…",c:"#C6552F",e:"🥰"},
+    {t:"« Tu étais partout, Minou ! Sur, sous, dans, devant, derrière ! »",c:"#8a6a3a",e:"🔎"},
+    {t:"Minou ferme les yeux, bien au chaud contre Ama. Il ne se cache plus.",c:"#2E3A8C",e:"😽",ask:"Et toi ? Mets ta main SUR ta tête… SOUS la table… DERRIÈRE ton dos !"},
+  ]},
+  {id:"12",titre:"Le corps d'Ama",pages:[
+    {t:"Ama se regarde dans l'eau du seau. « Bonjour, moi ! » Elle se voit en entier.",c:"#2E3A8C",e:"🪞"},
+    {t:"Sur sa tête, ses cheveux, tressés par maman, avec des perles qui font clic-clic.",c:"#C6552F",e:"👧"},
+    {t:"Ses yeux voient le papillon. Ses oreilles entendent le tam-tam. Son nez sent le pain chaud.",c:"#E8B84B",e:"👀"},
+    {t:"Sa bouche parle, chante, et mange la mangue. Miam !",c:"#E08A2B",e:"👄"},
+    {t:"Ses deux mains : pour tenir, pour dessiner, pour dire au revoir. Coucou !",c:"#5E8C3F",e:"✋"},
+    {t:"Ses dix doigts. Ama les compte : un, deux, trois… dix ! Pile dix.",c:"#E8B84B",e:"🖐️"},
+    {t:"Son ventre fait « grrr » quand elle a faim. Il est content quand elle a mangé.",c:"#b06a3a",e:"🍽️"},
+    {t:"Ses jambes et ses pieds : pour marcher, courir, sauter, et danser fort !",c:"#2E3A8C",e:"🦵"},
+    {t:"Quand Ama court, son cœur bat vite : boum, boum, boum. Elle le sent dans sa poitrine.",c:"#C6552F",e:"❤️"},
+    {t:"Le soir, tout le corps d'Ama est fatigué. Il a bien travaillé. Bonne nuit, le corps !",c:"#1f2a5c",e:"😴",ask:"Et toi ? Montre ta tête, tes mains, tes pieds, ton ventre !"},
+  ]},
+  {id:"13",titre:"Ama a peur du noir",pages:[
+    {t:"C'est l'heure de dormir. Maman éteint la lampe. La chambre devient toute noire.",c:"#1f2a5c",e:"🌑"},
+    {t:"Dans le noir, le pagne sur la chaise ressemble à un gros monstre. Ama a peur.",c:"#3a2a5c",e:"👻"},
+    {t:"« Maman ! » Maman revient, s'assoit sur le lit. « Je suis là. Qu'est-ce qu'il y a ? »",c:"#7a5a44",e:"🫂"},
+    {t:"Maman rallume un peu. « Regarde : ce n'est pas un monstre. C'est ton pagne. »",c:"#E8B84B",e:"💡"},
+    {t:"« Le noir, ça cache les choses, mais ça ne les change pas. Ta chambre est la même. »",c:"#2E3A8C",e:"🛏️"},
+    {t:"« Quand tu as peur, respire tout doucement avec moi. On souffle : fffff… »",c:"#5E8C3F",e:"😮‍💨"},
+    {t:"Maman pose une petite veilleuse. Une lumière douce, comme une étoile.",c:"#E0862B",e:"🕯️"},
+    {t:"Ama serre son doudou. Elle écoute : dehors, les grillons chantent. C'est calme.",c:"#2E3A8C",e:"🦗"},
+    {t:"« La nuit, tout le monde dort : les poules, le chien, les voisins. Toi aussi. »",c:"#1f2a5c",e:"🌙"},
+    {t:"Ama ferme les yeux. Elle n'a plus peur. Le noir, c'est juste la maison qui dort.",c:"#3a2a5c",e:"😌",ask:"Et toi ? Qu'est-ce qui t'aide à ne plus avoir peur, le soir ?"},
+  ]},
+  {id:"14",titre:"Chacun son travail",pages:[
+    {t:"Ama se promène dans le village avec papa. « Regarde tous ces gens qui travaillent. »",c:"#8a6a3a",e:"🚶"},
+    {t:"La boulangère sort le pain chaud du four. C'est elle qui nourrit le quartier le matin.",c:"#E08A2B",e:"🍞"},
+    {t:"La couturière pousse sa machine : tac-tac-tac. Elle coud les beaux pagnes.",c:"#7A4CA8",e:"🧵"},
+    {t:"Le menuisier scie le bois. Il fabrique les tabourets et les lits.",c:"#b06a3a",e:"🪚"},
+    {t:"Le maître écrit au tableau. Il apprend à lire aux grands enfants.",c:"#2E3A8C",e:"🏫"},
+    {t:"L'infirmière soigne un bébé au dispensaire. Elle fait le vaccin, tout doucement.",c:"#5E8C3F",e:"🩺"},
+    {t:"Le paysan revient du champ. Son panier est plein de maïs et de gombo.",c:"#E8B84B",e:"🌽"},
+    {t:"Le zémidjan, sur sa moto, emmène les gens d'un bout à l'autre de la ville.",c:"#C6552F",e:"🛵"},
+    {t:"« Et toi, papa, c'est quoi ton travail ? » Papa explique, et Ama écoute bien.",c:"#8a6a3a",e:"👨"},
+    {t:"« Quand je serai grande, je ferai quoi ? » Papa sourit : « Ce que tu aimeras faire. »",c:"#E08A2B",e:"🌟",ask:"Et toi ? Tu veux faire quel métier quand tu seras grand ?"},
+  ]},
+  {id:"15",titre:"La graine d'Ama",pages:[
+    {t:"Grand-mère donne une petite graine à Ama. « Tiens. Prends-en soin. »",c:"#5E8C3F",e:"🫘"},
+    {t:"Ama fait un petit trou dans la terre. Elle pose la graine. Elle remet la terre dessus.",c:"#8a6a3a",e:"🕳️"},
+    {t:"« Maintenant ? » — « Maintenant, on arrose. Un peu. Et on attend. »",c:"#2E3A8C",e:"💧"},
+    {t:"Le lendemain, Ama regarde. Rien. Juste de la terre. « Sois patiente », dit grand-mère.",c:"#b06a3a",e:"⏳"},
+    {t:"Ama arrose. Elle attend. Elle arrose. Elle attend. Toujours rien.",c:"#E08A2B",e:"🚿"},
+    {t:"Un matin… une petite pointe verte sort de la terre ! « Grand-mère, viens voir ! »",c:"#5E8C3F",e:"🌱"},
+    {t:"Chaque jour, la tige monte un peu. Une feuille. Puis deux. Puis trois.",c:"#4E9A46",e:"🌿"},
+    {t:"La plante devient plus haute qu'Ama ! Le vent la fait danser.",c:"#5E8C3F",e:"🌾"},
+    {t:"Une fleur s'ouvre, jaune comme le soleil. Une abeille vient la visiter.",c:"#F0C33C",e:"🌻"},
+    {t:"Plus tard, la fleur donne des graines. Ama en garde une, pour recommencer.",c:"#8a6a3a",e:"🌰",ask:"Et toi ? Tu as déjà planté une graine ? Qu'est-ce qui pousse près de chez toi ?"},
+  ]},
+];
+
+/* ============ AUTRES SECTIONS ============ */
+const COLORS = [
+  ["rouge","#D64533","🍅"],["bleu","#2E5FB0","🫐"],["jaune","#F0C33C","🌻"],["vert","#4E9A46","🍃"],
+  ["orange","#E0862B","🍊"],["violet","#7A4CA8","🍆"],["rose","#E68BB0","🌸"],["marron","#7A5230","🥔"],
+  ["noir","#2B2B2B","🌑"],["blanc","#F4F1E6","🥚"],
+];
+const NUM = [["un",1],["deux",2],["trois",3],["quatre",4],["cinq",5],["six",6],["sept",7],["huit",8],["neuf",9],["dix",10]];
+const ALPHA = ["A B C D E F","G H I J K L","M N O P Q R","S T U V","W X Y Z"];
+const LETTRES = ["A","B","C","D","E","F","G","H","I","J","L","M","N","O","P","R","S","T","U","V"];
+const OBJETS = [
+  ["une banane","🍌"],["une pomme","🍎"],["un chat","🐱"],["un chien","🐶"],["un poisson","🐟"],
+  ["un oiseau","🐦"],["une maison","🏠"],["une voiture","🚗"],["le soleil","☀️"],["la lune","🌙"],
+  ["une étoile","⭐"],["un arbre","🌳"],["une poule","🐔"],["une vache","🐄"],["un mouton","🐑"],
+  ["un éléphant","🐘"],["un lion","🦁"],["un ballon","⚽"],["une fleur","🌸"],["un papillon","🦋"],
+];
+const CHERCHE = [
+  ["ct01","La rue du quartier","Ama et sa robe bleue · le garçon au maillot jaune qui court · la dame au panier de tomates sur la tête · le vendeur de pain · le zémidjan à la moto rouge · le petit chien · le chat sur le mur · l'enfant qui pleure · les 2 jumeaux habillés pareil"],
+  ["ct02","Le grand marché","Ama · la marchande de poissons · le bébé sur le dos de sa maman · le monsieur au grand chapeau · la fille qui mange une mangue · le voleur de banane (chut !) · le chat sous l'étal · les 3 paniers d'oranges · le parapluie rouge"],
+  ["ct03","La fête au village","Ama qui danse · le joueur de tam-tam · la grand-mère assise · l'enfant sur les épaules de son papa · la dame en pagne jaune · le garçon qui souffle dans une trompette · le chien qui dort · les 5 ballons · la marmite géante"],
+];
+const COMPTINES = [
+  ["Une souris verte","Une souris verte, qui courait dans l'herbe. Je l'attrape par la queue, je la montre à ces messieurs. Ces messieurs me disent : trempez-la dans l'huile, trempez-la dans l'eau, ça fera un escargot tout chaud."],
+  ["Bateau sur l'eau","Bateau sur l'eau, la rivière, la rivière. Bateau sur l'eau, la rivière au bord de l'eau. Le bateau a chaviré, et tous les enfants sont tombés dans l'eau. Plouf !"],
+  ["Ainsi font font font","Ainsi font, font, font, les petites marionnettes. Ainsi font, font, font, trois p'tits tours et puis s'en vont."],
+  ["Pomme de reinette","Pomme de reinette et pomme d'api, tapis, tapis rouge. Pomme de reinette et pomme d'api, tapis, tapis gris."],
+  ["Frère Jacques","Frère Jacques, Frère Jacques, dormez-vous, dormez-vous ? Sonnez les matines, sonnez les matines. Ding, ding, dong."],
+  ["Petit escargot","Petit escargot porte sur son dos sa maisonnette. Aussitôt qu'il pleut, il est tout heureux, il sort sa tête."],
+  ["Do ré mi la perdrix","Do ré mi, la perdrix, mi fa sol, elle s'envole, fa mi ré, dans le pré, mi ré do, tombe à l'eau !"],
+  ["Un éléphant qui se balançait","Un éléphant qui se balançait sur une toile, une toile, une toile d'araignée. C'était un jeu tellement amusant que tout à coup, badaboum !"],
+  ["Sur le pont d'Avignon","Sur le pont d'Avignon, on y danse, on y danse. Sur le pont d'Avignon, on y danse tous en rond."],
+  ["Meunier tu dors","Meunier, tu dors, ton moulin va trop vite. Meunier, tu dors, ton moulin va trop fort."],
+  ["Alouette","Alouette, gentille alouette, alouette, je te plumerai. Je te plumerai la tête, je te plumerai la tête. Et la tête ! Et la tête ! Alouette ! Alouette !"],
+  ["Il pleut il pleut bergère","Il pleut, il pleut, bergère, rentre tes blancs moutons. Allons sous ma chaumière, bergère, vite allons."],
+  ["Une poule sur un mur","Une poule sur un mur, qui picore du pain dur. Picoti, picota, lève la queue et puis s'en va."],
+  ["Ah les crocodiles","Un crocodile, s'en allant à la guerre, disait au revoir à ses petits enfants. Ah les crocodiles, les crocodiles, les crocodiles, sur les bords du Nil, ils sont partis, n'en parlons plus."],
+  ["Dansons la capucine","Dansons la capucine, y'a pas de pain chez nous. Y'en a chez la voisine, mais ce n'est pas pour nous. You !"],
+];
+
+const EMB = window.__EMB__ || {};
+const $ = s => document.querySelector(s);
+const home=$("#home"), submenu=$("#submenu"), stage=$("#stage"), nav=$("#nav"), dots=$("#dots"),
+      player=$("#player"), topbar=$("#topbar"), draw=$("#draw");
+const asrc = k => EMB[k] || null;              // audio embarqué -> data URI, sinon null
+const afile = (k,rel) => EMB[k] || rel;        // embarqué sinon chemin relatif
+let pages=[], p=0, kind="", memkey="", ctx=null;
+let playing=false, drawFrom=null;
+
+/* ---------- thème clair / sombre ---------- */
+const btnTheme = $("#btnTheme");
+function applyTheme(t){
+  if(t==="dark"){ document.documentElement.dataset.theme="dark"; btnTheme.textContent="☀️"; }
+  else { delete document.documentElement.dataset.theme; btnTheme.textContent="🌙"; }
+}
+applyTheme(document.documentElement.dataset.theme==="dark" ? "dark" : "light");
+btnTheme.addEventListener("click", ()=>{
+  const next = document.documentElement.dataset.theme==="dark" ? "light" : "dark";
+  applyTheme(next);
+  try{ localStorage.setItem("ama_theme", next); }catch(e){}
+});
+
+/* ---------- accueil ---------- */
+const SECTIONS=[
+  {id:"histoires",t:"Les histoires",ic:"📖",go:openSubmenu},
+  {id:"compter",t:"Je compte 1 à 10",ic:"🔢",go:()=>openPages(numberPages(),"compter","section")},
+  {id:"couleurs",t:"Les couleurs",ic:"🎨",go:()=>openPages(colorPages(),"couleurs","section")},
+  {id:"alphabet",t:"L'alphabet",ic:"🔤",go:()=>openPages(alphaPages(),"alphabet","section")},
+  {id:"comptines",t:"Les comptines",ic:"🎵",go:()=>openPages(comptinePages(),"comptines","comptine")},
+  {id:"cherche",t:"Cherche et trouve",ic:"🔍",go:()=>openPages(cherchePages(),"cherche","cherche")},
+  {id:"dessin",t:"Cahier à dessin",ic:"✏️",go:()=>openDraw("home")},
+  {id:"quiz",t:"Le grand quiz",ic:"❓",go:openQuiz},
+  {id:"imprimer",t:"Version à imprimer",ic:"🖨️",go:openPrint},
+];
+SECTIONS.forEach(s=>{
+  const b=document.createElement("button");
+  b.className="tile"; b.innerHTML=`<span class="ic">${s.ic}</span>${s.t}`;
+  b.onclick=s.go; $("#tiles").appendChild(b);
+});
+
+STORIES.forEach((s,i)=>{
+  const b=document.createElement("button");
+  b.innerHTML=`<span class="n">${i+1}.</span> ${s.titre}`;
+  b.onclick=()=>openPages(storyPages(s),"h_"+s.id,"story");
+  $("#toc").appendChild(b);
+});
+function openSubmenu(){ stopAll(); kind="submenu"; memkey="submenu";
+  home.classList.add("hide"); submenu.style.display="block";
+  topbar.hidden=false; nav.hidden=true; draw.style.display="none"; }
+
+/* ---------- constructeurs de pages ---------- */
+function artHTML(color,inner,phLabel){
+  return `<div class="art ${phLabel?'ph':''}" style="background-color:${color}">
+    ${phLabel?`<span class="phtxt">${phLabel}</span>`:''}${inner}</div>`;
+}
+function playBtn(label){ return `<button class="audio"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> ${label||"Écouter"}</button>`; }
+
+function storyPages(s){
+  const out = s.pages.map((pg,i)=>{
+    const key=`${s.id}_p${String(i+1).padStart(2,"0")}`;
+    const extra=(pg.ask?`<br><span class="ask">${pg.ask}</span>`:'');
+    return {
+      audio: afile("a_"+key, `audio/${key}.mp3`),
+      img:   afile("i_"+key, `img/${key}.jpg`),
+      ph:`p${i+1}`, c:pg.c, e:pg.e,
+      html:`<div class="caption"><p>${pg.t}${extra}</p>${playBtn()}</div>`,
+    };
+  });
+  out.push({ c:"#5E8C3F", e:s.pages.at(-1).e, ph:null,
+    html:`<div class="caption"><p>À toi ! <span class="draw">Dessine « ${s.titre} » sur ton cahier, ou avec le doigt.</span></p>
+      <button class="audio go-draw">✏️ Ouvrir le cahier à dessin</button></div>` });
+  return out;
+}
+function numberPages(){
+  return NUM.map(([mot,n],i)=>({
+    c:COLORS[n-1][1], e:null,
+    audio: i===0 ? afile("a_sec_compter","audio/sec_compter.mp3") : null,
+    html:`<div class="art" style="background-color:${COLORS[n-1][1]}"><div class="numwrap">
+      <span class="digit">${n}</span>
+      <div class="row">${COLORS[n-1][2].repeat(n)}</div></div></div>
+      <div class="caption"><p><b>${n}</b> — ${mot}</p>${i===0?playBtn("Compter avec Éloïse"):''}</div>`,
+    raw:true
+  }));
+}
+function colorPages(){
+  return COLORS.map(([nom,hex,em],i)=>({
+    c:hex, e:null,
+    audio: i===0 ? afile("a_sec_couleurs","audio/sec_couleurs.mp3") : null,
+    html:`<div class="art" style="background-color:${hex}"><span class="blob">${em}</span></div>
+      <div class="caption"><p style="text-transform:capitalize">${nom}</p>${i===0?playBtn("Les couleurs avec Éloïse"):''}</div>`,
+    raw:true
+  }));
+}
+function alphaPages(){
+  const cols=["#C6552F","#2E3A8C","#5E8C3F","#E08A2B","#7A4CA8"];
+  return ALPHA.map((ligne,i)=>({
+    c:cols[i], e:null,
+    audio: i===0 ? afile("a_sec_alphabet","audio/sec_alphabet.mp3") : null,
+    html:`<div class="art" style="background-color:${cols[i]}"><span class="big" style="color:#fff;font-size:clamp(3rem,15vw,7rem);letter-spacing:.1em">${ligne}</span></div>
+      <div class="caption"><p>${ligne}</p>${i===0?playBtn("L'alphabet avec Éloïse"):''}</div>`,
+    raw:true
+  }));
+}
+const CHEZ_TOI = [
+  ["🏠","Dans ta maison","quelque chose de rouge · quelque chose de rond · une cuillère · une chaussure · quelque chose de doux · quelque chose qui fait du bruit"],
+  ["🌳","Dehors, autour de toi","une feuille · un caillou · quelque chose de vert · un oiseau · quelque chose de plus grand que toi · une fourmi"],
+  ["👵","Dans ta famille","quelqu'un qui porte des lunettes · les plus grandes chaussures · quelqu'un qui sourit · quelque chose que grand-mère aime · deux choses pareilles"],
+];
+function cherchePages(){
+  const scenes = CHERCHE.map(([key,titre,liste])=>({
+    img: afile("i_"+key,`img/${key}.jpg`), ph:titre, c:"#8a6a3a", e:"🔍",
+    html:`<div class="find"><h4>${titre}</h4><p>Trouve : ${liste}</p></div>`,
+    find:true
+  }));
+  const chezToi = CHEZ_TOI.map(([em,titre,liste])=>({
+    c:"#5E8C3F", e:em,
+    html:`<div class="art" style="background-color:#5E8C3F"><span class="blob">${em}</span></div>
+      <div class="caption"><p><b>${titre}</b><br><span class="ask">Trouve : ${liste}</span></p></div>`,
+    raw:true
+  }));
+  return scenes.concat(chezToi);
+}
+function comptinePages(){
+  return COMPTINES.map(([titre,txt],i)=>{
+    const n=String(i+1).padStart(2,"0");
+    return {
+      c:"#E8B84B", e:"🎵",
+      audio: afile("a_comptine_"+n, `audio/comptine_${n}.mp3`),
+      html:`<div class="art" style="background-color:#E8B84B"><span class="blob">🎵</span></div>
+        <div class="caption"><p><b>${titre}</b><br>${txt}</p>${playBtn("Écouter puis chanter")}</div>`,
+      raw:true
+    };
+  });
+}
+
+/* ---------- lecteur ---------- */
+function openPages(list,mk,kd){
+  stopAll();
+  pages=list; kind=kd; memkey=mk; stage.innerHTML="";
+  pages.forEach((pg,i)=>{
+    const el=document.createElement("div"); el.className="page"+(pg.find?" findpage":"");
+    if(pg.raw||pg.find){
+      el.innerHTML = pg.find
+        ? artHTML(pg.c,`<span class="blob">${pg.e}</span>`,pg.ph)+pg.html
+        : pg.html;
+    } else {
+      el.innerHTML = artHTML(pg.c, pg.e?`<span class="blob">${pg.e}</span>`:"", pg.ph) + pg.html;
+    }
+    if(pg.img){
+      const t=new Image();
+      t.onload=()=>{ const a=el.querySelector(".art"); if(!a) return;
+        a.classList.remove("ph"); a.classList.add("hasimg");
+        a.style.backgroundImage=`url("${String(pg.img).replace(/"/g,'\\"')}")`;
+        el.querySelectorAll(".phtxt,.blob").forEach(x=>x.remove()); };
+      t.src=pg.img;
+    }
+    stage.appendChild(el);
+  });
+  dots.innerHTML=pages.map(()=>`<span class="dot"></span>`).join("");
+  home.classList.add("hide"); submenu.style.display="none"; draw.style.display="none";
+  topbar.hidden=false; nav.hidden=false;
+  $("#auto").hidden = (kind!=="story");
+  let saved=0; try{ saved=+localStorage.getItem("ama_"+memkey)||0; }catch(e){}
+  p=(saved>0 && saved<pages.length)?saved:0;
+  playing=false; render();
+}
+function render(){
+  [...stage.children].forEach((el,i)=>el.classList.toggle("on",i===p));
+  [...dots.children].forEach((d,i)=>d.classList.toggle("on",i===p));
+  $("#prev").disabled = p===0;
+  $("#next").disabled = p===pages.length-1;
+  try{ localStorage.setItem("ama_"+memkey,p); }catch(e){}
+  stopClip();
+  if(playing) playCurrent();
+}
+function go(d){
+  const n=p+d;
+  if(n<0||n>=pages.length) return;
+  p=n; render();
+}
+function goToHome(){ stopAll(); kind="home"; memkey="";
+  submenu.style.display="none"; draw.style.display="none"; nav.hidden=true;
+  topbar.hidden=true; home.classList.remove("hide"); }
+function goBack(){
+  stopAll();
+  if(kind==="story"){ openSubmenu(); }      // page d'histoire -> liste des histoires
+  else { goToHome(); }                        // liste, section, cherche, comptines, print -> accueil
+}
+
+/* ---------- audio d'une page (clip) ---------- */
+function curBtn(){ const pg=stage.children[p]; return pg?pg.querySelector(".audio"):null; }
+function setBtn(b,on){ if(!b) return;
+  b.classList.toggle("playing",on);
+  b.innerHTML = on
+    ? `<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg> Pause`
+    : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> ${kind==="comptine"?"Écouter puis chanter":"Écouter"}`;
+}
+function stopClip(){ player.pause(); try{player.currentTime=0;}catch(e){}
+  document.querySelectorAll(".audio.playing").forEach(b=>setBtn(b,false)); }
+function stopAll(){ playing=false; $("#auto").classList.remove("playing");
+  $("#auto").innerHTML="▶ Lecture auto"; stopClip(); }
+function playCurrent(){
+  const pg=pages[p]; const b=curBtn();
+  if(!pg||!pg.audio){ if(playing) autoAdvance(); return; }
+  player.src=pg.audio;
+  player.play().then(()=>setBtn(b,true))
+    .catch(()=>{ if(b) b.innerHTML="🔇 audio bientôt"; if(playing) autoAdvance(); });
+}
+function autoAdvance(){
+  setTimeout(()=>{ if(!playing) return;
+    if(p<pages.length-1){ go(1); } else { stopAll(); }
+  }, 500);
+}
+player.onended=()=>{
+  document.querySelectorAll(".audio.playing").forEach(b=>setBtn(b,false));
+  if(playing) autoAdvance();
+};
+stage.addEventListener("click",e=>{
+  const g=e.target.closest(".go-draw"); if(g){ openDraw("story"); return; }
+  const b=e.target.closest(".audio"); if(!b) return;
+  if(b.classList.contains("playing")){ player.pause(); setBtn(b,false); return; }
+  stopClip(); playCurrent();
+});
+$("#auto").onclick=()=>{
+  playing=!playing;
+  $("#auto").classList.toggle("playing",playing);
+  $("#auto").innerHTML = playing ? "⏸ Pause" : "▶ Lecture auto";
+  if(playing) playCurrent(); else stopClip();
+};
+
+/* ---------- quiz ---------- */
+const quiz=$("#quiz"), qzBody=$("#qzBody"), qzEnd=$("#qzEnd"), qzVisual=$("#qzVisual"),
+      qzPrompt=$("#qzPrompt"), qzChoices=$("#qzChoices"), qzProgress=$("#qzProgress");
+let QUIZ=[], qzIndex=0, qzScore=0, qzLock=false;
+
+function shuffled(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pickOthers(pool, correct, n, key){
+  const others = shuffled(pool.filter(x=>(key?key(x):x)!==(key?key(correct):correct)));
+  return others.slice(0, n);
+}
+
+function buildQuizCouleur(c){
+  const [nom,hex] = c;
+  const distract = pickOthers(COLORS, c, 3, x=>x[0]).map(x=>x[0]);
+  return {
+    visual: `<div class="swatch-big" style="background:${hex}"></div>`,
+    prompt: "Quelle est cette couleur ?",
+    choices: shuffled([nom, ...distract]),
+    correct: nom,
+  };
+}
+function buildQuizNombre(n){
+  const [mot,val] = n;
+  const emoji = "🍎";
+  const distractVals = shuffled(NUM.map(x=>x[1]).filter(v=>v!==val)).slice(0,3);
+  return {
+    visual: Array(val).fill(`<span>${emoji}</span>`).join(""),
+    prompt: "Combien y a-t-il de pommes ?",
+    choices: shuffled([val, ...distractVals]).map(String),
+    correct: String(val),
+  };
+}
+function buildQuizLettre(l){
+  const distract = pickOthers(LETTRES, l, 3).map(x=>x);
+  return {
+    visual: "",
+    prompt: `Touche la lettre ${l}.`,
+    choices: shuffled([l, ...distract]),
+    correct: l,
+    bigChoice: true,
+  };
+}
+function buildQuizObjet(o){
+  const [nom,em] = o;
+  const distract = pickOthers(OBJETS, o, 3, x=>x[0]).map(x=>x[0]);
+  return {
+    visual: `<div>${em}</div>`,
+    prompt: "Comment s'appelle ceci ?",
+    choices: shuffled([nom, ...distract]),
+    correct: nom,
+  };
+}
+function generateQuiz(){
+  const qs = [];
+  COLORS.forEach(c=>qs.push(buildQuizCouleur(c)));
+  NUM.forEach(n=>qs.push(buildQuizNombre(n)));
+  LETTRES.slice(0,13).forEach(l=>qs.push(buildQuizLettre(l)));
+  OBJETS.slice(0,17).forEach(o=>qs.push(buildQuizObjet(o)));
+  return shuffled(qs);
+}
+
+function openQuiz(){
+  stopAll(); home.classList.add("hide"); submenu.style.display="none";
+  topbar.hidden=true; nav.hidden=true; draw.style.display="none";
+  quiz.style.display="flex"; qzEnd.classList.remove("on"); qzBody.style.display="flex";
+  QUIZ = generateQuiz(); qzIndex=0; qzScore=0;
+  renderQuizQuestion();
+}
+function renderQuizQuestion(){
+  qzLock=false;
+  const q = QUIZ[qzIndex];
+  qzProgress.textContent = `Question ${qzIndex+1}/${QUIZ.length}`;
+  qzVisual.innerHTML = q.visual;
+  qzPrompt.textContent = q.prompt;
+  qzChoices.innerHTML = "";
+  q.choices.forEach(ch=>{
+    const b=document.createElement("button");
+    if(q.bigChoice) b.style.fontSize="1.7rem";
+    b.textContent = ch;
+    b.onclick = ()=>answerQuiz(b, ch, q.correct);
+    qzChoices.appendChild(b);
+  });
+}
+function answerQuiz(btn, chosen, correct){
+  if(qzLock) return; qzLock=true;
+  const ok = chosen===correct;
+  if(ok) qzScore++;
+  [...qzChoices.children].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct) b.classList.add("correct");
+    else if(b===btn) b.classList.add("wrong");
+  });
+  setTimeout(()=>{
+    qzIndex++;
+    if(qzIndex < QUIZ.length) renderQuizQuestion(); else endQuiz();
+  }, 900);
+}
+function endQuiz(){
+  qzBody.style.display="none"; qzEnd.classList.add("on");
+  const pct = Math.round(100*qzScore/QUIZ.length);
+  const medal = pct>=90 ? "🏆" : pct>=70 ? "🥇" : pct>=50 ? "🥈" : "🌟";
+  $("#qzMedal").textContent = medal;
+  $("#qzScoreText").textContent = `Bravo ! Tu as trouvé ${qzScore} bonnes réponses sur ${QUIZ.length}.`;
+}
+$("#quizBack").onclick = ()=>{ quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
+$("#qzHome").onclick = ()=>{ quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
+$("#qzReplay").onclick = ()=>{ qzEnd.classList.remove("on"); qzBody.style.display="flex";
+  QUIZ = generateQuiz(); qzIndex=0; qzScore=0; renderQuizQuestion(); };
+
+/* ---------- version à imprimer ---------- */
+function openPrint(){
+  stopAll(); home.classList.add("hide"); submenu.style.display="none";
+  draw.style.display="none"; nav.hidden=true; topbar.hidden=false;
+  kind="print"; memkey="print";
+  stage.innerHTML=`<div class="page on"><div class="art" style="background-color:#2E3A8C">
+    <span class="blob">🖨️</span></div>
+    <div class="caption print">
+      <p><b>La version papier</b><br>Le même livre en PDF A4, sans tablette :
+      les histoires, les jeux, les pages à colorier et à dessiner.</p>
+      <div class="pbtns">
+        <button id="pdlBtn" class="pbig">⬇️ Télécharger le PDF sur cet appareil</button>
+        <button id="pwaBtn" class="pbig alt">📲 Envoyer le PDF par WhatsApp</button>
+      </div>
+      <p class="phint">Ouvre le PDF puis « Imprimer ». Format A4, prêt pour l'imprimante.</p>
+    </div></div>`;
+  $("#pdlBtn").onclick=downloadPdf;
+  $("#pwaBtn").onclick=sharePdf;
+}
+function pdfBlob(){
+  const d = EMB["pdf_imprimable"];
+  if(!d) return null;
+  const b64 = d.split(",")[1] || d;
+  const bin = atob(b64); const arr = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:"application/pdf"});
+}
+const PDF_NAME = "Les histoires d'Ama - a imprimer.pdf";
+function downloadPdf(){
+  const blob=pdfBlob();
+  if(!blob){
+    /* PDF non embarqué : il est livré à côté du HTML dans le dossier. */
+    const a=document.createElement("a");
+    a.href=encodeURI(PDF_NAME); a.download=PDF_NAME; a.target="_blank";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>{ window.open(encodeURI(PDF_NAME),"_blank"); },300);
+    return;
+  }
+  const u=URL.createObjectURL(blob); const a=document.createElement("a");
+  a.href=u; a.download=PDF_NAME; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ a.remove(); URL.revokeObjectURL(u); },1500);
+}
+async function sharePdf(){
+  const blob=pdfBlob();
+  if(blob && navigator.canShare){
+    const file=new File([blob],PDF_NAME,{type:"application/pdf"});
+    if(navigator.canShare({files:[file]})){
+      try{ await navigator.share({files:[file],title:"Les histoires d'Ama",
+        text:"Le livre d'Ama à imprimer pour l'enfant."}); return; }catch(e){ if(e.name==="AbortError") return; }
+    }
+  }
+  downloadPdf();
+  setTimeout(()=>window.open("https://wa.me/?text="+encodeURIComponent(
+    "Je t'envoie « Les histoires d'Ama » à imprimer — le PDF vient d'être téléchargé, joins-le ici."),"_blank"),400);
+}
+
+/* ---------- cahier à dessin ---------- */
+function openDraw(from){
+  stopAll(); drawFrom = from || "home";
+  home.classList.add("hide"); submenu.style.display="none"; nav.hidden=true;
+  draw.style.display="flex"; topbar.hidden=false;
+  kind="draw"; memkey="draw";
+  const cv=$("#cv"); const r=cv.getBoundingClientRect();
+  cv.width=r.width*devicePixelRatio; cv.height=r.height*devicePixelRatio;
+  ctx=cv.getContext("2d"); ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=8; ctx.strokeStyle=curColor;
+}
+function exitDraw(){
+  draw.style.display="none";
+  if(drawFrom==="story"){ stopAll(); submenu.style.display="block"; topbar.hidden=false; }
+  else { home.classList.remove("hide"); topbar.hidden=true; }
+}
+let curColor="#2E3A8C", drawing=false;
+const palette=["#2E3A8C","#D64533","#F0C33C","#4E9A46","#E0862B","#7A4CA8","#2B2B2B","#7A5230"];
+palette.forEach((hex,i)=>{
+  const s=document.createElement("span"); s.className="swatch"+(i===0?" sel":"");
+  s.style.background=hex; s.onclick=()=>{ curColor=hex; if(ctx) ctx.strokeStyle=hex;
+    document.querySelectorAll(".swatch").forEach(x=>x.classList.remove("sel")); s.classList.add("sel"); };
+  $("#tools").insertBefore(s,$("#clr"));
+});
+$("#clr").onclick=()=>{ const cv=$("#cv"); ctx&&ctx.clearRect(0,0,cv.width,cv.height); };
+$("#drawBack").onclick=exitDraw;
+(function(){
+  const cv=$("#cv");
+  const pos=e=>{ const r=cv.getBoundingClientRect(); const t=e.touches?e.touches[0]:e;
+    return [t.clientX-r.left, t.clientY-r.top]; };
+  const start=e=>{ if(!ctx) return; drawing=true; const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(x,y); e.preventDefault(); };
+  const move=e=>{ if(!drawing||!ctx) return; const [x,y]=pos(e); ctx.lineTo(x,y); ctx.stroke(); e.preventDefault(); };
+  const end=()=>{ drawing=false; };
+  cv.addEventListener("pointerdown",start); cv.addEventListener("pointermove",move);
+  window.addEventListener("pointerup",end); cv.addEventListener("pointerleave",end);
+})();
+
+/* ---------- nav + retour ---------- */
+$("#prev").onclick=()=>go(-1);
+$("#next").onclick=()=>go(1);
+$("#btnBack").onclick=()=>{
+  if(kind==="draw"){ exitDraw(); return; }
+  goBack();
+};
+document.addEventListener("keydown",e=>{ if(nav.hidden) return;
+  if(e.key==="ArrowRight") go(1); if(e.key==="ArrowLeft") go(-1); });
+let x0=null;
+stage.addEventListener("touchstart",e=>{ x0=e.touches[0].clientX; },{passive:true});
+stage.addEventListener("touchend",e=>{ if(x0==null) return;
+  const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)>50) go(dx<0?1:-1); },{passive:true});
+</script>
+<!-- AMA-VERROU -->
+<button id="amaLock" aria-label="Espace parent" title="Espace parent">🔒</button>
+<div class="amaOv" id="amaWel" role="dialog" aria-modal="true">
+  <h2>Verrou parent</h2>
+  <p>Tu peux protéger le livre : ton enfant ne pourra pas changer les réglages ni quitter les histoires sans toi. C'est facultatif.</p>
+  <button class="amaBtn pri" id="amaWelYes">🔒 Créer un code parent (conseillé)</button>
+  <button class="amaBtn" id="amaWelNo">Continuer sans verrou</button>
+  <p style="font-size:14px">Tu pourras le créer plus tard avec le bouton 🔓 en bas à gauche.</p>
+</div>
+<div class="amaOv" id="amaPin" role="dialog" aria-modal="true">
+  <h2 id="amaPinT"></h2><p id="amaPinS"></p>
+  <div class="amaDots" id="amaDots"></div>
+  <div class="amaErr" id="amaErr"></div>
+  <div class="amaPad" id="amaPad"></div>
+  <button class="amaLink" id="amaForgot" hidden>Code oublié ?</button>
+  <button class="amaLink" id="amaCancel" hidden>Annuler</button>
+</div>
+<div class="amaOv" id="amaForm" role="dialog" aria-modal="true">
+  <h2 id="amaFT"></h2><p id="amaFS"></p>
+  <div id="amaFF" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>
+  <div class="amaErr" id="amaFE"></div>
+  <button class="amaBtn pri" id="amaFOk" style="max-width:260px">Valider</button>
+  <button class="amaLink" id="amaFCancel" hidden>Annuler</button>
+  <button class="amaLink" id="amaFForgot" hidden>Question oubliée ? Je réponds aux 3 questions</button>
+</div>
+<div class="amaOv" id="amaPanel" role="dialog" aria-modal="true">
+  <h2>Espace parent</h2>
+  <p id="amaPanelIntro"></p>
+  <p style="margin:0"><b>Temps de jeu par jour</b></p>
+  <div class="amaRow" id="amaLimits"></div>
+  <p id="amaUsed" style="font-size:14px;margin:0 0 6px"></p>
+  <button class="amaBtn" id="amaReset">↻ Redonner du temps aujourd'hui</button>
+  <button class="amaBtn" id="amaPdf">⬇️ Télécharger le PDF à imprimer</button>
+  <button class="amaBtn" id="amaWa">📲 Envoyer le PDF par WhatsApp</button>
+  <button class="amaBtn" id="amaOff" hidden>📶 Garder le livre sans internet (Wi-Fi conseillé)</button>
+  <button class="amaBtn" id="amaHelpBtn">📌 Empêcher l'enfant de quitter l'appli</button>
+  <div class="amaHelp" id="amaHelp">
+    <b>Android :</b> Paramètres → Sécurité (ou Écran de verrouillage) → <b>Épinglage d'écran</b>, active-le. Ouvre le livre, appuie sur le bouton « Aperçu » (carré), touche l'icône du livre en haut, puis <b>Épingler</b>. Pour sortir : maintiens « Retour » et « Aperçu » ensemble.<br><br>
+    <b>iPhone / iPad :</b> Réglages → Accessibilité → <b>Accès guidé</b>, active-le. Ouvre le livre et appuie 3 fois sur le bouton latéral.<br><br>
+    Les noms des menus changent un peu selon la marque du téléphone. Ce réglage est la seule façon sûre d'empêcher de quitter l'appli : le code parent bloque les menus du livre, mais pas les boutons du téléphone.
+  </div>
+  <button class="amaBtn" id="amaNewPin">🔑 Changer le code</button>
+  <button class="amaBtn" id="amaQBtn">❓ Questions de sécurité</button>
+  <button class="amaBtn" id="amaEnable" hidden>🔒 Activer le verrou parent</button>
+  <button class="amaBtn pri" id="amaClose">Retour au livre (mode enfant)</button>
+</div>
+<div class="amaOv" id="amaTime" role="dialog" aria-modal="true">
+  <h2>C'est fini pour aujourd'hui 🌙</h2>
+  <p>À demain pour de nouvelles histoires !</p>
+  <button class="amaBtn pri" id="amaTimeParent" style="max-width:260px">Parent</button>
+</div>
+<script>
+/* AMA-VERROU v2 : mode enfant (code parent + questions de securite facultatives, minuteur, sortie protegee) */
+(function(){
+  const $=s=>document.querySelector(s);
+  const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+  const set=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+  const hash=s=>{let a=0xdeadbeef,b=0x41c6ce57;s="ama-prism-"+s;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);
+    a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677);}
+    a=Math.imul(a^(a>>>16),2246822507)^Math.imul(b^(b>>>13),3266489909);
+    b=Math.imul(b^(b>>>16),2246822507)^Math.imul(a^(a>>>13),3266489909);
+    return String(4294967296*(2097151&b)+(a>>>0));};
+  const norm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]/g,"");
+  const QS=["Dans quelle ville ou quel village ta mère est-elle née ?","Comment s'appelait ton école primaire ?","Quel était ton surnom quand tu étais enfant ?"];
+  const hasLock=()=>!!get("ama_pin");
+  const qOn=()=>get("ama_q")==="1";
+  const ovs={wel:$("#amaWel"),pin:$("#amaPin"),form:$("#amaForm"),panel:$("#amaPanel"),time:$("#amaTime")};
+  const show=(o,on)=>ovs[o].classList.toggle("show",on!==false);
+  const anyAsk=()=>ovs.pin.classList.contains("show")||ovs.form.classList.contains("show")||ovs.wel.classList.contains("show");
+  function refreshLockBtn(){ $("#amaLock").textContent=hasLock()?"🔒":"🔓"; }
+
+  /* ---- clavier du code ---- */
+  let buf="", maxLen=4, onDone=null;
+  const pad=$("#amaPad");
+  ["1","2","3","4","5","6","7","8","9","⌫","0","OK"].forEach(k=>{
+    const b=document.createElement("button"); b.textContent=k; if(k==="OK") b.className="ok";
+    b.onclick=()=>key(k); pad.appendChild(b);
+  });
+  function dots(){ const d=$("#amaDots"); d.innerHTML="";
+    const n=maxLen===4?4:Math.max(buf.length,3);
+    for(let i=0;i<n;i++){ const x=document.createElement("i"); if(i<buf.length) x.className="on"; d.appendChild(x);} }
+  function key(k){
+    if(k==="⌫"){ buf=buf.slice(0,-1); }
+    else if(k==="OK"){ submit(); return; }
+    else if(buf.length<(maxLen===4?4:6)){ buf+=k; }
+    $("#amaErr").textContent=""; dots();
+    if(maxLen===4 && buf.length===4) setTimeout(submit,120);
+  }
+  function submit(){ if(!buf.length||!onDone) return; const v=buf; buf=""; dots(); onDone(v); }
+  function shake(id){ const d=$(id); d.classList.remove("amaShake"); void d.offsetWidth; d.classList.add("amaShake"); }
+  function askPin(o){
+    maxLen=o.len||4; buf=""; $("#amaPinT").textContent=o.title; $("#amaPinS").textContent=o.sub||"";
+    $("#amaErr").textContent=""; $("#amaForgot").hidden=!o.forgot; $("#amaCancel").hidden=!o.cancelable;
+    onDone=v=>{ const r=o.cb(v); if(r===false){ $("#amaErr").textContent=o.err||"Ce n'est pas le bon code"; shake("#amaDots"); } };
+    $("#amaCancel").onclick=()=>{ show("pin",false); if(o.onCancel) o.onCancel(); };
+    $("#amaForgot").onclick=()=>forgot();
+    dots(); show("pin");
+  }
+
+  /* ---- formulaire a champs texte (questions) ---- */
+  function askForm(o){ /* o:{title,sub,fields:[{q}],cancelable,okLabel,ok(values)->bool,err,onCancel,forgot} */
+    $("#amaFT").textContent=o.title; $("#amaFS").textContent=o.sub||""; $("#amaFE").textContent="";
+    const box=$("#amaFF"); box.innerHTML="";
+    o.fields.forEach((f,i)=>{ const w=document.createElement("div"); w.className="amaF";
+      w.innerHTML='<label></label><input type="text" autocomplete="off" autocapitalize="off">';
+      w.querySelector("label").textContent=f.q; box.appendChild(w); });
+    $("#amaFOk").textContent=o.okLabel||"Valider";
+    $("#amaFCancel").hidden=!o.cancelable; $("#amaFCancel").textContent=o.cancelLabel||"Annuler";
+    $("#amaFForgot").hidden=!o.forgot;
+    $("#amaFOk").onclick=()=>{ const vals=[...box.querySelectorAll("input")].map(x=>x.value);
+      const r=o.ok(vals); if(r===false){ $("#amaFE").textContent=o.err||"Ce n'est pas la bonne réponse"; shake("#amaFT"); } };
+    $("#amaFCancel").onclick=()=>{ show("form",false); if(o.onCancel) o.onCancel(); };
+    $("#amaFForgot").onclick=()=>forgotQ();
+    show("form"); const first=box.querySelector("input"); if(first) setTimeout(()=>first.focus(),50);
+  }
+
+  /* ---- creation du code puis des questions (facultatives) ---- */
+  function setupPin(next,cancelable,onCancel){
+    askPin({title:"Choisis un code parent",sub:"4 chiffres. Ton enfant ne doit pas le connaître.",cancelable:cancelable,onCancel:onCancel,
+      cb:v=>{ if(v.length!==4) return false; const first=v;
+        askPin({title:"Confirme ton code",sub:"Tape le même code une 2e fois.",err:"Les deux codes sont différents",
+          cancelable:cancelable,onCancel:onCancel,
+          cb:w=>{ if(w!==first){ setTimeout(()=>setupPin(next,cancelable,onCancel),700); return false; }
+            set("ama_pin",hash(first)); show("pin",false); refreshLockBtn(); if(next) next(); return true; }});
+        return true; }});
+  }
+  function setupQ(next){
+    askForm({title:"Questions de sécurité (facultatif)",
+      sub:"Plus sûr : ton enfant connaît peut-être ton code, mais pas ces réponses. À chaque ouverture de l'espace parent, on te posera 1 de ces 3 questions en plus du code.",
+      fields:QS.map(q=>({q:q})),okLabel:"Enregistrer mes réponses",cancelable:true,cancelLabel:"Passer, sans questions",
+      onCancel:()=>{ if(next) next(); },
+      err:"Réponds aux 3 questions (au moins 2 lettres chacune).",
+      ok:v=>{ if(v.some(x=>norm(x).length<2)) return false;
+        v.forEach((x,i)=>set("ama_qh"+i,hash("q"+i+norm(x)))); set("ama_q","1"); show("form",false); if(next) next(); return true; }});
+  }
+  function removeQ(){ set("ama_q","0"); }
+
+  /* ---- ouverture de l'espace parent ---- */
+  function oneQuestion(then){
+    const i=Math.floor(Math.random()*3);
+    askForm({title:"Question de sécurité",sub:"Pour confirmer que c'est toi.",fields:[{q:QS[i]}],cancelable:true,
+      forgot:true,
+      ok:v=>{ if(hash("q"+i+norm(v[0]))===get("ama_qh"+i)){ show("form",false); then(); return true; } return false; }});
+  }
+  function unlock(then,title,sub){
+    if(!hasLock()){ then(); return; }
+    askPin({title:title||"Code parent",sub:sub||"Pour entrer dans l'espace parent",cancelable:true,forgot:true,
+      cb:v=>{ if(hash(v)===get("ama_pin")){ show("pin",false); if(qOn()) oneQuestion(then); else then(); return true; } return false; }});
+  }
+  /* ---- code oublie ---- */
+  function forgot(){
+    if(qOn()){ forgotQ(); return; }
+    const a=12+Math.floor(Math.random()*18), b=13+Math.floor(Math.random()*17), res=String(a*b);
+    askPin({title:"Question pour adulte",sub:"Combien font "+a+" × "+b+" ?",len:6,cancelable:true,
+      cb:v=>{ if(v===res){ set("ama_pin",""); show("pin",false); setupPin(()=>{},false); return true; } return false; },
+      err:"Ce n'est pas la bonne réponse"});
+  }
+  function forgotQ(){
+    show("pin",false);
+    askForm({title:"Code oublié",sub:"Réponds à tes 3 questions de sécurité pour choisir un nouveau code.",fields:QS.map(q=>({q:q})),
+      cancelable:true,okLabel:"Valider",
+      ok:v=>{ for(let i=0;i<3;i++){ if(hash("q"+i+norm(v[i]))!==get("ama_qh"+i)) return false; }
+        set("ama_pin",""); show("form",false); setupPin(()=>{},false); return true; }});
+  }
+
+  /* ---- minuteur par jour ---- */
+  const dayKey=()=>{const d=new Date();return "ama_used_"+d.getFullYear()+(d.getMonth()+1)+d.getDate();};
+  let used=+get(dayKey())||0, limit=+get("ama_limit")||0, lastT=Date.now();
+  function limitText(){ const l=limit?limit+" min":"illimité"; const m=Math.floor(used/60);
+    $("#amaUsed").textContent="Aujourd'hui : "+m+" min utilisées · limite : "+l; }
+  setInterval(()=>{
+    const now=Date.now(), dt=Math.min(5,(now-lastT)/1000); lastT=now;
+    if(document.hidden||anyAsk()||ovs.panel.classList.contains("show")) return;
+    used+=dt; if(Math.round(used)%10===0) set(dayKey(),String(Math.round(used)));
+    if(limit && used>=limit*60 && !ovs.time.classList.contains("show")){
+      const a=document.getElementById("player"); if(a){a.pause();}
+      show("time"); }
+  },1000);
+  $("#amaTimeParent").onclick=()=>unlock(()=>openPanel(),"Code parent","Pour donner plus de temps");
+
+  /* ---- espace parent ---- */
+  function openPanel(){
+    const L=$("#amaLimits"); L.innerHTML="";
+    [[0,"Illimité"],[10,"10 min"],[20,"20 min"],[30,"30 min"]].forEach(([m,t])=>{
+      const b=document.createElement("button"); b.className="amaBtn"+(limit===m?" sel":""); b.textContent=t;
+      b.onclick=()=>{ limit=m; set("ama_limit",String(m)); openPanel(); }; L.appendChild(b); });
+    $("#amaPanelIntro").textContent=hasLock()?"Seul toi connais le code. Ton enfant reste dans les histoires."
+      :"Le livre n'est pas verrouillé. Tu peux activer un code parent ci-dessous.";
+    $("#amaNewPin").hidden=!hasLock(); $("#amaQBtn").hidden=!hasLock(); $("#amaEnable").hidden=hasLock();
+    $("#amaQBtn").textContent=qOn()?"❓ Modifier mes questions de sécurité":"❓ Ajouter des questions de sécurité";
+    $("#amaOff").hidden=!(/^https?:$/.test(location.protocol) && window.caches);
+    limitText(); refreshLockBtn(); show("panel"); }
+  $("#amaClose").onclick=()=>{ show("panel",false); show("time",false);
+    if(limit && used>=limit*60){ show("time"); } };
+  $("#amaReset").onclick=()=>{ used=0; set(dayKey(),"0"); show("time",false); limitText(); };
+  $("#amaPdf").onclick=()=>{ if(typeof downloadPdf==="function") downloadPdf(); };
+  $("#amaWa").onclick=()=>{ if(typeof sharePdf==="function") sharePdf(); };
+  $("#amaHelpBtn").onclick=()=>$("#amaHelp").classList.toggle("show");
+  $("#amaEnable").onclick=()=>{ show("panel",false);
+    setupPin(()=>setupQ(()=>{ openPanel(); $("#amaHelp").classList.add("show"); }),true,()=>openPanel()); };
+  $("#amaNewPin").onclick=()=>{ show("panel",false); setupPin(()=>openPanel(),true,()=>openPanel()); };
+  $("#amaQBtn").onclick=()=>{ show("panel",false); setupQ(()=>openPanel()); };
+  $("#amaLock").onclick=()=>unlock(()=>openPanel());
+
+  /* ---- hors connexion (version en ligne) ---- */
+  $("#amaOff").onclick=async()=>{
+    const b=$("#amaOff"); b.disabled=true;
+    try{
+      const list=await (await fetch("assets.json",{cache:"no-store"})).json();
+      const c=await caches.open("ama-media-v1"); let n=0;
+      for(const u of list){ try{ if(!(await c.match(u))) await c.add(new Request(u,{cache:"reload"})); }catch(e){}
+        n++; b.textContent="📶 Téléchargement "+Math.round(100*n/list.length)+" %"; }
+      b.textContent="✅ Livre prêt sans internet";
+    }catch(e){ b.textContent="Échec : réessaie avec le Wi-Fi"; b.disabled=false; }
+  };
+
+  /* le PDF n'est plus accessible a l'enfant : on retire la tuile « imprimer » */
+  document.querySelectorAll("#tiles .tile").forEach(t=>{ if(/imprimer/i.test(t.textContent)) t.remove(); });
+
+  /* ---- sortie protegee (seulement si un code existe) ---- */
+  window.__amaExit=false;
+  try{ history.pushState({ama:1},""); }catch(e){}
+  window.addEventListener("popstate",()=>{
+    if(window.__amaExit||!hasLock()) return;
+    try{ history.pushState({ama:1},""); }catch(e){}
+    if(anyAsk()) return;
+    unlock(()=>{ window.__amaExit=true; try{ history.go(-2); }catch(e){} },"Code parent pour quitter","Le livre est verrouillé pour l'enfant");
+  });
+  window.addEventListener("beforeunload",e=>{ if(hasLock()&&!window.__amaExit){ e.preventDefault(); e.returnValue=""; } });
+  document.addEventListener("contextmenu",e=>{ if(hasLock()) e.preventDefault(); });
+  document.addEventListener("dragstart",e=>e.preventDefault());
+  let fs=false;
+  document.addEventListener("pointerdown",()=>{ if(fs||!hasLock()) return; fs=true;
+    const el=document.documentElement; try{ (el.requestFullscreen||el.webkitRequestFullscreen||function(){}).call(el); }catch(e){} });
+
+  /* ---- premier lancement : verrou facultatif ---- */
+  refreshLockBtn();
+  $("#amaWelNo").onclick=()=>{ set("ama_lock","off"); show("wel",false); };
+  $("#amaWelYes").onclick=()=>{ show("wel",false);
+    setupPin(()=>setupQ(()=>{ openPanel(); $("#amaHelp").classList.add("show"); }),true,()=>show("wel")); };
+  if(!hasLock() && get("ama_lock")!=="off") show("wel");
+})();
+</script>
+<script>if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</body>
+</html>
