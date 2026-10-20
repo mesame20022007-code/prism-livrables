@@ -1,5 +1,5 @@
 /* Histoires d'Ama : hors connexion. Pages = reseau d'abord ; images/audios = cache d'abord ; gere les requetes Range (audio). */
-var V='ama-v1', M='ama-media-v1';
+var V='ama-v2', M='ama-media-v2';
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(V).then(function(c){return c.addAll(['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png']);}).then(function(){return self.skipWaiting();}));
 });

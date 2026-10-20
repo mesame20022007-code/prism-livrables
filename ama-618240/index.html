@@ -268,6 +268,15 @@
 @keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
 
 
+#btnPen,#btnErase{position:absolute; top:calc(.55rem + env(safe-area-inset-top)); z-index:70; width:2.6rem; height:2.6rem; border-radius:999px;
+  border:2px solid var(--line); background:var(--paper); display:none; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.12)}
+#btnPen{right:3.4rem} #btnErase{right:6.2rem}
+body.pen-on #btnPen{background:var(--gold); border-color:var(--brick)}
+canvas.pen{position:absolute; inset:0; width:100%; height:100%; z-index:5; touch-action:none; pointer-events:none}
+body.pen-on .page.on canvas.pen{pointer-events:auto; cursor:crosshair}
+
+
 /* AMA-VERROU : mode enfant verrouille */
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 input,textarea{-webkit-user-select:text;user-select:text}
@@ -321,6 +330,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <button id="btnBack">‹ Retour</button>
   </div>
   <button id="btnTheme" title="Changer de thème" aria-label="Changer de thème">🌙</button>
+  <button id="btnPen" title="Crayon" aria-label="Crayon">✏️</button><button id="btnErase" title="Effacer" aria-label="Effacer">🧽</button>
 
   <!-- ACCUEIL -->
   <div id="home">
@@ -415,7 +425,7 @@ const STORIES = [
     {t:"« Ça, c'est le canard », dit grand-mère. « Il fait : coin… coin ! Et lui, ce qu'il aime, c'est l'eau. Regarde comme il se dandine. » Répète : coin… coin !",c:"#2E3A8C",e:"🦆"},
     {t:"« Et la chèvre », dit grand-mère, « elle fait : bêêê ! Elle nous donne du lait. Mais attention, elle mange tout ce qu'elle trouve ! » Répète : bêêê !",c:"#5E8C3F",e:"🐐"},
     {t:"« Lui, c'est le chien de grand-mère », dit grand-mère. « Il fait : ouaf ! ouaf ! La nuit, c'est lui qui garde la maison. » Répète : ouaf… ouaf !",c:"#6b5a44",e:"🐕"},
-    {t:"Tout à coup… KA ! KA ! KA ! KA ! Un cri très fort, tout près ! Ama sursaute et se cache derrière grand-mère. « Grand-mère ! C'est quoi, ce bruit ? »",c:"#8a8a8a",e:"❓"},
+    {t:"Tout à coup… KA ! KA ! KA ! KA ! Un cri très fort, tout près ! Ama sursaute et se bouche les oreilles. « Grand-mère ! C'est quoi, ce bruit ? »",c:"#8a8a8a",e:"❓"},
     {t:"Grand-mère rit très fort. « N'aie pas peur, Ama. Ça, c'est la pintade ! Regarde, elle est grise avec des petits points blancs. Elle crie comme ça toute la journée : kakakaka ! » Répète, si tu oses : kakakaka !",c:"#7a7a7a",e:"🐦"},
     {t:"La calebasse est vide. Tous les animaux ont bien mangé. Grand-mère pose la main sur la tête d'Ama. « Bravo, ma petite. Tu connais tous les animaux de la cour, maintenant. »",c:"#E08A2B",e:"👵",ask:"Et toi ? Comment fait le coq ? Et la chèvre ? Et la pintade ? Fais les cris avec Ama !"},
   ]},
@@ -424,7 +434,7 @@ const STORIES = [
     {t:"Ama passe devant tata Adjo, la voisine, qui balaie devant sa porte. D'habitude, Ama dit : « Bonjour, tata ! » Mais aujourd'hui… rien. Tata Adjo lève la tête et fronce les sourcils.",c:"#6b5a44",e:"🙍"},
     {t:"Au coin de la rue, tonton Kossi vend des fruits. Il tend une belle mangue à Ama, comme d'habitude. Ama la prend… et elle repart en courant. Sans un mot. Tonton reste là, la main tendue.",c:"#E8B84B",e:"🥭"},
     {t:"Ama arrive chez Fifa. Elle pousse la porte, elle entre… sans frapper, sans dire bonjour. Fifa est en train de jouer. Elle regarde Ama et elle croise les bras. Elle boude un peu.",c:"#8a6a3a",e:"🙅"},
-    {t:"Ama s'assoit à côté de Fifa. Mais Fifa ne veut pas jouer. Ama repense à tata Adjo qui fronçait les sourcils. À tonton Kossi, la main tendue. Quelque chose ne va pas… mais quoi ?",c:"#6b5a44",e:"😟"},
+    {t:"Ama reste debout près de Fifa. Mais Fifa ne veut pas jouer. Ama repense à tata Adjo qui fronçait les sourcils. À tonton Kossi, la main tendue. Quelque chose ne va pas… mais quoi ?",c:"#6b5a44",e:"😟"},
     {t:"Ama rentre à la maison, tête basse. « Maman… tout le monde est fâché contre moi aujourd'hui. Je n'ai rien fait de mal ! » Maman s'assoit près d'elle. « Dis-moi, Ama : ce matin, tu as dit bonjour ? »",c:"#7a5a44",e:"😢"},
     {t:"Ama réfléchit très fort. Bonjour à tata… non. Merci à tonton… non. Bonjour à Fifa… non. « Non, maman. J'ai oublié. » Maman sourit. « Tu vois ? Les mots gentils, Ama, c'est comme une clé. Ça ouvre les portes, et ça ouvre les coeurs. Vas-y. »",c:"#E8B84B",e:"💡"},
     {t:"Ama repart dans la rue. Devant la porte de la voisine, elle s'arrête. « Bonjour, tata Adjo ! Pardon pour ce matin. » Tout de suite, tata Adjo sourit. « Bonjour, ma fille ! Ça fait plaisir. »",c:"#5E8C3F",e:"😊"},
@@ -652,7 +662,7 @@ STORIES.forEach((s,i)=>{
 });
 function openSubmenu(){ stopAll(); kind="submenu"; memkey="submenu";
   home.classList.add("hide"); submenu.style.display="block";
-  topbar.hidden=false; nav.hidden=true; draw.style.display="none"; }
+  topbar.hidden=false; nav.hidden=true; draw.style.display="none"; pushView(); }
 
 /* ---------- constructeurs de pages ---------- */
 function artHTML(color,inner,phLabel){
@@ -680,30 +690,30 @@ function storyPages(s){
 function numberPages(){
   return NUM.map(([mot,n],i)=>({
     c:COLORS[n-1][1], e:null,
-    audio: i===0 ? afile("a_sec_compter","audio/sec_compter.mp3") : null,
+    audio:`audio/compter/n_${n}.mp3`,
     html:`<div class="art" style="background-color:${COLORS[n-1][1]}"><div class="numwrap">
       <span class="digit">${n}</span>
       <div class="row">${COLORS[n-1][2].repeat(n)}</div></div></div>
-      <div class="caption"><p><b>${n}</b> — ${mot}</p>${i===0?playBtn("Compter avec Éloïse"):''}</div>`,
+      <div class="caption"><p><b>${n}</b> — ${mot}</p>${playBtn("Écouter")}</div>`,
     raw:true
   }));
 }
 function colorPages(){
-  return COLORS.map(([nom,hex,em],i)=>({
+  return COLORS.map(([nom,hex,em])=>({
     c:hex, e:null,
-    audio: i===0 ? afile("a_sec_couleurs","audio/sec_couleurs.mp3") : null,
+    audio:`audio/couleurs/c_${slug(nom)}.mp3`,
     html:`<div class="art" style="background-color:${hex}"><span class="blob">${em}</span></div>
-      <div class="caption"><p style="text-transform:capitalize">${nom}</p>${i===0?playBtn("Les couleurs avec Éloïse"):''}</div>`,
+      <div class="caption"><p style="text-transform:capitalize">${nom}</p>${playBtn("Écouter")}</div>`,
     raw:true
   }));
 }
 function alphaPages(){
   const cols=["#C6552F","#2E3A8C","#5E8C3F","#E08A2B","#7A4CA8"];
-  return ALPHA.map((ligne,i)=>({
-    c:cols[i], e:null,
-    audio: i===0 ? afile("a_sec_alphabet","audio/sec_alphabet.mp3") : null,
-    html:`<div class="art" style="background-color:${cols[i]}"><span class="big" style="color:#fff;font-size:clamp(3rem,15vw,7rem);letter-spacing:.1em">${ligne}</span></div>
-      <div class="caption"><p>${ligne}</p>${i===0?playBtn("L'alphabet avec Éloïse"):''}</div>`,
+  return ALPHA_ITEMS.map(([L,mot,em],i)=>({
+    c:cols[i%5], e:null,
+    audio:`audio/alphabet/l_${L}.mp3`,
+    html:`<div class="art" style="background-color:${cols[i%5]}"><span class="big" style="color:#fff;font-size:clamp(5rem,28vw,10rem);line-height:1">${L}</span><span class="blob" style="position:absolute;right:1.2rem;bottom:1rem;font-size:4rem">${em}</span></div>
+      <div class="caption"><p><b>${L}</b> comme ${mot}</p>${playBtn("Écouter")}</div>`,
     raw:true
   }));
 }
@@ -733,7 +743,7 @@ function comptinePages(){
       c:"#E8B84B", e:"🎵",
       audio: afile("a_comptine_"+n, `audio/comptine_${n}.mp3`),
       html:`<div class="art" style="background-color:#E8B84B"><span class="blob">🎵</span></div>
-        <div class="caption"><p><b>${titre}</b><br>${txt}</p>${playBtn("Écouter puis chanter")}</div>`,
+        <div class="caption"><p><b>${titre}</b><br>${txt}</p>${playBtn("Écouter")}</div>`,
       raw:true
     };
   });
@@ -765,10 +775,10 @@ function openPages(list,mk,kd){
   dots.innerHTML=pages.map(()=>`<span class="dot"></span>`).join("");
   home.classList.add("hide"); submenu.style.display="none"; draw.style.display="none";
   topbar.hidden=false; nav.hidden=false;
-  $("#auto").hidden = (kind!=="story");
+  $("#auto").hidden = !(kind==="story"||kind==="section"||kind==="comptine");
   let saved=0; try{ saved=+localStorage.getItem("ama_"+memkey)||0; }catch(e){}
   p=(saved>0 && saved<pages.length)?saved:0;
-  playing=false; render();
+  playing=false; render(); pushView();
 }
 function render(){
   [...stage.children].forEach((el,i)=>el.classList.toggle("on",i===p));
@@ -800,7 +810,7 @@ function setBtn(b,on){ if(!b) return;
   b.classList.toggle("playing",on);
   b.innerHTML = on
     ? `<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg> Pause`
-    : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> ${kind==="comptine"?"Écouter puis chanter":"Écouter"}`;
+    : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Écouter`;
 }
 function stopClip(){ player.pause(); try{player.currentTime=0;}catch(e){} clearHl();
   document.querySelectorAll(".audio.playing").forEach(b=>setBtn(b,false)); }
@@ -863,20 +873,62 @@ player.addEventListener("timeupdate",()=>{
   ws.forEach(w=>{ const a=acc/tot; acc+=w.textContent.length+1; const b=acc/tot; w.classList.toggle("on",frac>=a&&frac<b); w.classList.toggle("done",frac>=b); });
 });
 /* étoiles et autocollants */
-const STICKERS=[
-  ["h_01","🎈","Le ballon rouge"],["h_02","🛒","Le marché"],["h_03","🐔","La basse-cour"],["h_04","👋","Bonjour !"],["h_05","🚌","Le voyage"],
-  ["h_06","🌧️","La pluie"],["h_07","👶","Le petit frère"],["h_08","🏠","La maison ronde"],["h_09","📏","Grand et petit"],["h_10","☀️","La journée d'Ama"],
-  ["h_11","🐱","Où est le chat ?"],["h_12","🧍","Le corps d'Ama"],["h_13","🌙","La peur du noir"],["h_14","🧵","Chacun son travail"],["h_15","🌱","La graine"],
-  ["compter","🔢","Je compte"],["couleurs","🎨","Les couleurs"],["alphabet","🔤","L'alphabet"],["comptines","🎵","Les comptines"],["cherche","🔍","Cherche et trouve"],
-  ["quiz","🏆","Champion du quiz"],["quiz_parfait","🌟","Quiz parfait"]
-];
+const ALPHA_ITEMS=[["A","ananas","🍍"],["B","banane","🍌"],["C","canard","🦆"],["D","dromadaire","🐪"],["E","éléphant","🐘"],["F","fleur","🌸"],["G","girafe","🦒"],
+  ["H","hibou","🦉"],["I","île","🏝️"],["J","jus","🧃"],["K","kiwi","🥝"],["L","lion","🦁"],["M","mangue","🥭"],["N","noix de coco","🥥"],["O","oiseau","🐦"],
+  ["P","poule","🐔"],["Q","quatre","4️⃣"],["R","riz","🍚"],["S","soleil","☀️"],["T","tomate","🍅"],["U","un","1️⃣"],["V","vache","🐄"],["W","wagon","🚃"],
+  ["X","xylophone","🎶"],["Y","yaourt","🥛"],["Z","zèbre","🦓"]];
+const STORY_EMO={"01":"🎈","02":"🛒","03":"🐔","04":"👋","05":"🚌","06":"🌧️","07":"👶","08":"🏠","09":"📏","10":"☀️","11":"🐱","12":"🧍","13":"🌙","14":"🧵","15":"🌱"};
+const STICKERS=(function(){ const a=[];
+  STORIES.forEach(s=>a.push(["h_"+s.id,STORY_EMO[s.id]||"📖",s.titre]));
+  const KEY=["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
+  NUM.forEach(([mot,n],i)=>a.push(["compter_"+i,KEY[i],"Le "+n]));
+  const CE=["🔴","🔵","🟡","🟢","🟠","🟣","💗","🟤","⚫","⚪"];
+  COLORS.forEach(([nom],i)=>a.push(["couleurs_"+i,CE[i],"Le "+nom]));
+  ALPHA_ITEMS.forEach(([L,mot,em],i)=>a.push(["alphabet_"+i,em,L+" comme "+mot]));
+  COMPTINES.forEach(([t],i)=>a.push(["comptines_"+i,"🎵",t]));
+  CHERCHE.forEach(([k,t],i)=>a.push(["cherche_"+i,"🔍",t]));
+  CHEZ_TOI.forEach(([em,t],i)=>a.push(["cherche_"+(CHERCHE.length+i),em,t]));
+  a.push(["cherche_crayon","✏️","Crayon magique"],["dessin_1","🖍️","Premier dessin"],["quiz","🏆","Champion du quiz"],["quiz_parfait","🌟","Quiz parfait"]);
+  [10,25,50,100,250,500].forEach(n=>a.push(["etoiles_"+n,"⭐",n+" étoiles"]));
+  [3,7,14,30].forEach(n=>a.push(["jours_"+n,"📅",n+" jours avec Ama"]));
+  return a; })();
 function getSt(){ try{ return JSON.parse(localStorage.getItem("ama_stickers")||"[]"); }catch(e){ return []; } }
 function setSt(a){ try{ localStorage.setItem("ama_stickers",JSON.stringify(a)); }catch(e){} }
 function getStars(){ try{ return +localStorage.getItem("ama_stars")||0; }catch(e){ return 0; } }
-function addStar(){ try{ localStorage.setItem("ama_stars",String(getStars()+1)); }catch(e){} }
+function addStar(){ let n=getStars()+1; try{ localStorage.setItem("ama_stars",String(n)); }catch(e){}
+  if([10,25,50,100,250,500].indexOf(n)>=0) setTimeout(()=>unlockSticker("etoiles_"+n),1800); }
 function unlockSticker(id){ const s=STICKERS.find(x=>x[0]===id); if(!s) return; const have=getSt(); if(have.includes(id)) return;
   have.push(id); setSt(have); celebrate(s[1],"Nouvel autocollant : "+s[2], id.indexOf("h_")===0||id.indexOf("quiz")===0); }
-function onShown(){ if(pages.length>1 && p===pages.length-1 && (kind==="story"||kind==="section"||kind==="comptine"||kind==="cherche")) unlockSticker(memkey); }
+function onShown(){
+  if(kind==="story" && pages.length>1 && p===pages.length-1) unlockSticker(memkey);
+  if(kind==="cherche") unlockSticker("cherche_"+p);
+  if(typeof penOn!=="undefined" && penOn) penCanvas(true);
+}
+player.addEventListener("ended",()=>{ if(kind==="section"||kind==="comptine") unlockSticker(memkey+"_"+p); });
+function touchDay(){ try{ const d=new Date(), k=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  const days=JSON.parse(localStorage.getItem("ama_days")||"[]"); if(days.indexOf(k)<0){ days.push(k); localStorage.setItem("ama_days",JSON.stringify(days)); }
+  [3,7,14,30].forEach(n=>{ if(days.length>=n) setTimeout(()=>unlockSticker("jours_"+n),2500); }); }catch(e){} }
+setTimeout(touchDay,1500);
+function pushView(){ if(window.__navPush) window.__navPush(); }
+function uiBack(fn){ if(window.__navDepth && window.__navDepth()>0) history.back(); else fn(); }
+/* crayon : entourer ce qu'on a trouvé (cherche-et-trouve et histoires) */
+let penOn=false;
+function penCanvas(create){ const pg=stage.children[p]; if(!pg) return null; const host=pg.querySelector(".art"); if(!host) return null;
+  let cv=host.querySelector("canvas.pen");
+  if(!cv && create){ cv=document.createElement("canvas"); cv.className="pen"; host.appendChild(cv);
+    const r=host.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+    cv.width=Math.max(10,Math.round(r.width*dpr)); cv.height=Math.max(10,Math.round(r.height*dpr));
+    const c=cv.getContext("2d"); c.lineCap="round"; c.lineJoin="round"; c.lineWidth=7*dpr; c.strokeStyle="#E53935"; let dr=false;
+    const pos=e=>{ const b=cv.getBoundingClientRect(); return [(e.clientX-b.left)*cv.width/b.width,(e.clientY-b.top)*cv.height/b.height]; };
+    cv.addEventListener("pointerdown",e=>{ if(!document.body.classList.contains("pen-on")) return; dr=true; const q=pos(e); c.beginPath(); c.moveTo(q[0],q[1]); c.lineTo(q[0]+0.1,q[1]); c.stroke(); try{cv.setPointerCapture(e.pointerId);}catch(_){} e.preventDefault(); });
+    cv.addEventListener("pointermove",e=>{ if(!dr) return; const q=pos(e); c.lineTo(q[0],q[1]); c.stroke(); e.preventDefault(); });
+    const end=()=>{ if(dr){ dr=false; unlockSticker("cherche_crayon"); } };
+    cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end); }
+  return cv; }
+function penSet(on){ penOn=on; document.body.classList.toggle("pen-on",on); if(on) penCanvas(true); }
+$("#btnPen").onclick=()=>penSet(!penOn);
+$("#btnErase").onclick=()=>{ const cv=penCanvas(false); if(cv) cv.getContext("2d").clearRect(0,0,cv.width,cv.height); };
+setInterval(()=>{ const vis=!nav.hidden; $("#btnPen").style.display=vis?"flex":"none"; $("#btnErase").style.display=(vis&&penOn)?"flex":"none"; if(!vis&&penOn) penSet(false); },400);
 function confetti(){ const c=$("#confetti"); c.innerHTML=""; const E=["🎉","⭐","✨","🎈","💛"];
   for(let i=0;i<26;i++){ const s=document.createElement("span"); s.textContent=E[i%E.length]; s.style.left=(Math.random()*100)+"vw";
     s.style.animationDelay=(Math.random()*0.5)+"s"; s.style.fontSize=(18+Math.random()*20)+"px"; c.appendChild(s); }
@@ -885,12 +937,12 @@ function celebrate(emoji,label,voice){ const t=$("#toast"); t.innerHTML='<div cl
   t.classList.add("on"); sfx("fan"); confetti(); if(voice) speak("audio/quiz/ok_sticker.mp3");
   setTimeout(()=>t.classList.remove("on"),2600); }
 function openAlbum(){ stopAll(); home.classList.add("hide"); submenu.style.display="none"; draw.style.display="none"; nav.hidden=true; topbar.hidden=true;
-  renderAlbum(); $("#album").style.display="flex"; }
+  renderAlbum(); $("#album").style.display="flex"; pushView(); }
 function renderAlbum(){ const have=getSt(); const g=$("#albumGrid"); g.innerHTML="";
   STICKERS.forEach(a=>{ const ok=have.includes(a[0]); const d=document.createElement("div"); d.className="stk"+(ok?" ok":"");
     d.innerHTML='<span class="e">'+(ok?a[1]:"❔")+'</span><span class="n">'+(ok?a[2]:"À gagner")+'</span>'; g.appendChild(d); });
   $("#albumCount").textContent=have.length+" / "+STICKERS.length+" autocollants · ⭐ "+getStars()+" étoiles"; }
-$("#albumBack").onclick=()=>{ $("#album").style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
+$("#albumBack").onclick=()=>uiBack(()=>{ $("#album").style.display="none"; home.classList.remove("hide"); topbar.hidden=true; });
 
 /* ---------- quiz ---------- */
 const quiz=$("#quiz"), qzBody=$("#qzBody"), qzEnd=$("#qzEnd"), qzVisual=$("#qzVisual"),
@@ -940,7 +992,7 @@ function openQuiz(){
   stopAll(); home.classList.add("hide"); submenu.style.display="none";
   topbar.hidden=true; nav.hidden=true; draw.style.display="none";
   quiz.style.display="flex"; qzEnd.classList.remove("on"); qzBody.style.display="flex";
-  qzStart();
+  qzStart(); pushView();
 }
 function idleHint(q){ if(qzLock) return; qzStopFn=speak(q.pa); [...qzChoices.children].forEach(b=>b.classList.add("hint")); qzIdle=setTimeout(()=>idleHint(q),12000); }
 function renderQuizQuestion(){
@@ -987,8 +1039,8 @@ function endQuiz(){
   sfx("fan"); speak("audio/quiz/fin.mp3");
   setTimeout(()=>{ if(pct>=70) unlockSticker("quiz"); if(pct===100) unlockSticker("quiz_parfait"); }, 2600);
 }
-$("#quizBack").onclick = ()=>{ qzStop(); quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
-$("#qzHome").onclick = ()=>{ qzStop(); quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
+$("#quizBack").onclick = ()=>uiBack(()=>{ qzStop(); quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; });
+$("#qzHome").onclick = ()=>uiBack(()=>{ qzStop(); quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; });
 $("#qzAlbum").onclick = ()=>{ qzStop(); quiz.style.display="none"; openAlbum(); };
 $("#qzReplay").onclick = ()=>{ qzEnd.classList.remove("on"); qzBody.style.display="flex"; qzStart(); };
 
@@ -1057,7 +1109,7 @@ function openDraw(from){
   const cv=$("#cv"); const r=cv.getBoundingClientRect();
   cv.width=r.width*devicePixelRatio; cv.height=r.height*devicePixelRatio;
   ctx=cv.getContext("2d"); ctx.scale(devicePixelRatio,devicePixelRatio);
-  ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=8; ctx.strokeStyle=curColor;
+  ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=8; ctx.strokeStyle=curColor; pushView();
 }
 function exitDraw(){
   draw.style.display="none";
@@ -1073,14 +1125,14 @@ palette.forEach((hex,i)=>{
   $("#tools").insertBefore(s,$("#clr"));
 });
 $("#clr").onclick=()=>{ const cv=$("#cv"); ctx&&ctx.clearRect(0,0,cv.width,cv.height); };
-$("#drawBack").onclick=exitDraw;
+$("#drawBack").onclick=()=>uiBack(exitDraw);
 (function(){
   const cv=$("#cv");
   const pos=e=>{ const r=cv.getBoundingClientRect(); const t=e.touches?e.touches[0]:e;
     return [t.clientX-r.left, t.clientY-r.top]; };
   const start=e=>{ if(!ctx) return; drawing=true; const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(x,y); e.preventDefault(); };
   const move=e=>{ if(!drawing||!ctx) return; const [x,y]=pos(e); ctx.lineTo(x,y); ctx.stroke(); e.preventDefault(); };
-  const end=()=>{ drawing=false; };
+  const end=()=>{ if(drawing) unlockSticker("dessin_1"); drawing=false; };
   cv.addEventListener("pointerdown",start); cv.addEventListener("pointermove",move);
   window.addEventListener("pointerup",end); cv.addEventListener("pointerleave",end);
 })();
@@ -1088,16 +1140,16 @@ $("#drawBack").onclick=exitDraw;
 /* ---------- nav + retour ---------- */
 $("#prev").onclick=()=>go(-1);
 $("#next").onclick=()=>go(1);
-$("#btnBack").onclick=()=>{
+$("#btnBack").onclick=()=>uiBack(()=>{
   if(kind==="draw"){ exitDraw(); return; }
   goBack();
-};
+});
 document.addEventListener("keydown",e=>{ if(nav.hidden) return;
   if(e.key==="ArrowRight") go(1); if(e.key==="ArrowLeft") go(-1); });
 let x0=null;
 stage.addEventListener("touchstart",e=>{ x0=e.touches[0].clientX; },{passive:true});
 stage.addEventListener("touchend",e=>{ if(x0==null) return;
-  const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)>50) go(dx<0?1:-1); },{passive:true});
+  const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)>50 && !document.body.classList.contains("pen-on")) go(dx<0?1:-1); },{passive:true});
 </script>
 <!-- AMA-JEU -->
 <!-- AMA-VERROU -->
@@ -1309,7 +1361,7 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
     const b=$("#amaOff"); b.disabled=true;
     try{
       const list=await (await fetch("assets.json",{cache:"no-store"})).json();
-      const c=await caches.open("ama-media-v1"); let n=0;
+      const c=await caches.open("ama-media-v2"); let n=0;
       for(const u of list){ try{ if(!(await c.match(u))) await c.add(new Request(u,{cache:"reload"})); }catch(e){}
         n++; b.textContent="📶 Téléchargement "+Math.round(100*n/list.length)+" %"; }
       b.textContent="✅ Livre prêt sans internet";
@@ -1321,12 +1373,26 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
 
   /* ---- sortie protegee (seulement si un code existe) ---- */
   window.__amaExit=false;
+  let depth=0, fromPop=false;
   try{ history.pushState({ama:1},""); }catch(e){}
+  window.__navDepth=()=>depth;
+  window.__navPush=()=>{ if(fromPop) return; try{ history.pushState({ama:1},""); depth++; }catch(e){} };
+  function backOne(){
+    if(quiz.style.display==="flex"){ qzStop(); quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; return; }
+    if($("#album").style.display==="flex"){ $("#album").style.display="none"; home.classList.remove("hide"); topbar.hidden=true; return; }
+    if(draw.style.display==="flex"){ exitDraw(); return; }
+    if(home.classList.contains("hide")){ goBack(); }
+  }
   window.addEventListener("popstate",()=>{
-    if(window.__amaExit||!hasLock()) return;
-    try{ history.pushState({ama:1},""); }catch(e){}
-    if(anyAsk()) return;
-    unlock(()=>{ window.__amaExit=true; try{ history.go(-2); }catch(e){} },"Code parent pour quitter","Le livre est verrouillé pour l'enfant");
+    if(window.__amaExit) return;
+    if(ovs.panel.classList.contains("show")){ try{ history.pushState({ama:1},""); }catch(e){} show("panel",false); return; }
+    if(anyAsk()){ try{ history.pushState({ama:1},""); }catch(e){} return; }
+    if(depth>0){ depth--; fromPop=true; try{ backOne(); }catch(e){} fromPop=false; return; }
+    /* niveau accueil : avec un code on ne quitte pas sans lui, sans code on laisse sortir */
+    if(hasLock()){
+      try{ history.pushState({ama:1},""); }catch(e){}
+      unlock(()=>{ window.__amaExit=true; try{ history.go(-2); }catch(e){} },"Code parent pour quitter","Le livre est verrouillé pour l'enfant");
+    } else { window.__amaExit=true; try{ history.back(); }catch(e){} }
   });
   window.addEventListener("beforeunload",e=>{ if(hasLock()&&!window.__amaExit){ e.preventDefault(); e.returnValue=""; } });
   document.addEventListener("contextmenu",e=>{ if(hasLock()) e.preventDefault(); });
