@@ -236,6 +236,38 @@
     .art{min-height:60vh;}
   }
 
+/* AMA-JEU */
+.wd{border-radius:6px;padding:0 1px;transition:background .12s}
+.wd.on{background:#ffe08a;color:#2b1d44}
+.wd.done{opacity:.72}
+.qz-stars{font-family:"Baloo 2"; font-weight:800; color:var(--brick); font-size:1.05rem; transition:transform .2s}
+.qz-stars.pop{animation:starpop .45s}
+@keyframes starpop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.qz-choices button.hint{animation:hintp 1s ease-in-out 3}
+@keyframes hintp{50%{transform:scale(1.06)}}
+.qz-choices button.shake{animation:shk .4s}
+@keyframes shk{20%{transform:translateX(-8px)}60%{transform:translateX(8px)}}
+#album{position:absolute; inset:0; z-index:46; display:none; flex-direction:column; background:var(--cream); overflow-y:auto}
+#album .atop{display:flex; align-items:center; justify-content:space-between; padding:calc(.6rem + env(safe-area-inset-top)) .9rem .4rem}
+#album .atop button{font-family:"Baloo 2"; font-weight:700; font-size:.92rem; cursor:pointer; background:var(--paper); border:2px solid var(--line); color:var(--ink); border-radius:999px; padding:.4rem .95rem}
+#album h2{font-family:"Baloo 2"; color:var(--indigo); margin:.2rem 1rem; font-size:1.5rem}
+#albumCount{font-family:"Baloo 2"; font-weight:700; color:var(--brick); margin:0 1rem .6rem}
+#albumGrid{display:grid; grid-template-columns:repeat(3,1fr); gap:.7rem; padding:0 .9rem 5rem}
+.stk{background:var(--paper); border:2px dashed var(--line); border-radius:18px; padding:.8rem .3rem; text-align:center; opacity:.65}
+.stk.ok{border:2px solid var(--gold); opacity:1; box-shadow:0 3px 0 var(--line)}
+.stk .e{display:block; font-size:2.4rem; line-height:1.1}
+.stk .n{display:block; font-family:"Baloo 2"; font-weight:700; font-size:.78rem; color:var(--ink); margin-top:.25rem}
+#toast{position:fixed; left:50%; top:30%; transform:translate(-50%,-30%) scale(.6); z-index:960; opacity:0; pointer-events:none;
+  background:var(--paper); border:3px solid var(--gold); border-radius:26px; padding:1rem 1.4rem; text-align:center; transition:all .35s}
+#toast.on{opacity:1; transform:translate(-50%,-30%) scale(1)}
+#toast .tbig{font-size:4rem; line-height:1}
+#toast .tlab{font-family:"Baloo 2"; font-weight:800; color:var(--indigo); font-size:1.15rem; margin-top:.3rem}
+#confetti{position:fixed; inset:0; z-index:955; pointer-events:none; overflow:hidden; display:none}
+#confetti.on{display:block}
+#confetti span{position:absolute; top:-40px; animation:fall 2.4s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+
+
 /* AMA-VERROU : mode enfant verrouille */
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 input,textarea{-webkit-user-select:text;user-select:text}
@@ -327,7 +359,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <div id="quiz">
     <div class="qz-top">
       <button id="quizBack">‹ Retour</button>
-      <div class="qz-progress" id="qzProgress"></div>
+      <div class="qz-progress" id="qzProgress"></div><div class="qz-stars" id="qzStars">⭐ 0</div>
     </div>
     <div class="qz-body" id="qzBody">
       <div class="qz-visual" id="qzVisual"></div>
@@ -338,10 +370,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
       <div class="qz-medal" id="qzMedal"></div>
       <p class="qz-scoretext" id="qzScoreText"></p>
       <button class="pbig" id="qzReplay">🔁 Rejouer</button>
+      <button class="pbig alt" id="qzAlbum">⭐ Voir mon album</button>
       <button class="pbig alt" id="qzHome">🏠 Retour à l'accueil</button>
     </div>
   </div>
 </div>
+<div id="album"><div class="atop"><button id="albumBack">‹ Retour</button></div>
+  <h2>Mon album d'autocollants</h2><div id="albumCount"></div><div id="albumGrid"></div></div>
+<div id="toast"></div><div id="confetti"></div>
 <audio id="player" preload="none"></audio>
 
 <script>
@@ -599,6 +635,7 @@ const SECTIONS=[
   {id:"cherche",t:"Cherche et trouve",ic:"🔍",go:()=>openPages(cherchePages(),"cherche","cherche")},
   {id:"dessin",t:"Cahier à dessin",ic:"✏️",go:()=>openDraw("home")},
   {id:"quiz",t:"Le grand quiz",ic:"❓",go:openQuiz},
+  {id:"album",t:"Mon album",ic:"⭐",go:openAlbum},
   {id:"imprimer",t:"Version à imprimer",ic:"🖨️",go:openPrint},
 ];
 SECTIONS.forEach(s=>{
@@ -627,12 +664,12 @@ function playBtn(label){ return `<button class="audio"><svg viewBox="0 0 24 24">
 function storyPages(s){
   const out = s.pages.map((pg,i)=>{
     const key=`${s.id}_p${String(i+1).padStart(2,"0")}`;
-    const extra=(pg.ask?`<br><span class="ask">${pg.ask}</span>`:'');
+    const extra=(pg.ask?`<br><span class="ask">${wrapWords(pg.ask)}</span>`:'');
     return {
       audio: afile("a_"+key, `audio/${key}.mp3`),
       img:   afile("i_"+key, `img/${key}.jpg`),
       ph:`p${i+1}`, c:pg.c, e:pg.e,
-      html:`<div class="caption"><p>${pg.t}${extra}</p>${playBtn()}</div>`,
+      html:`<div class="caption"><p>${wrapWords(pg.t)}${extra}</p>${playBtn()}</div>`,
     };
   });
   out.push({ c:"#5E8C3F", e:s.pages.at(-1).e, ph:null,
@@ -739,6 +776,7 @@ function render(){
   $("#prev").disabled = p===0;
   $("#next").disabled = p===pages.length-1;
   try{ localStorage.setItem("ama_"+memkey,p); }catch(e){}
+  onShown();
   stopClip();
   if(playing) playCurrent();
 }
@@ -764,7 +802,7 @@ function setBtn(b,on){ if(!b) return;
     ? `<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg> Pause`
     : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> ${kind==="comptine"?"Écouter puis chanter":"Écouter"}`;
 }
-function stopClip(){ player.pause(); try{player.currentTime=0;}catch(e){}
+function stopClip(){ player.pause(); try{player.currentTime=0;}catch(e){} clearHl();
   document.querySelectorAll(".audio.playing").forEach(b=>setBtn(b,false)); }
 function stopAll(){ playing=false; $("#auto").classList.remove("playing");
   $("#auto").innerHTML="▶ Lecture auto"; stopClip(); }
@@ -797,6 +835,63 @@ $("#auto").onclick=()=>{
   if(playing) playCurrent(); else stopClip();
 };
 
+
+/* ---------- AMA-JEU : sons, voix, mots qui s'éclairent, autocollants ---------- */
+const qa = new Audio(); window.__qa = qa;
+let AC=null;
+function sfx(t){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume();
+  const now=AC.currentTime;
+  const tone=(f,t0,d,type,vol)=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type=type||"sine"; o.frequency.setValueAtTime(f,now+t0);
+    g.gain.setValueAtTime(0.0001,now+t0); g.gain.exponentialRampToValueAtTime(vol||0.25,now+t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,now+t0+d);
+    o.connect(g); g.connect(AC.destination); o.start(now+t0); o.stop(now+t0+d+0.05); };
+  if(t==="ding"){ tone(880,0,0.18); tone(1320,0.12,0.3); }
+  else if(t==="bong"){ tone(260,0,0.28,"triangle",0.2); tone(200,0.1,0.35,"triangle",0.16); }
+  else if(t==="pop"){ tone(500,0,0.12); tone(800,0.08,0.18); }
+  else if(t==="fan"){ [523,659,784,1047].forEach((f,i)=>tone(f,i*0.13,0.3)); }
+ }catch(e){} }
+function speak(src,cb){ let done=false;
+  const fin=()=>{ if(done) return; done=true; qa.onended=null; qa.onerror=null; if(cb) cb(); };
+  try{ qa.pause(); qa.src=src; qa.onended=fin; qa.onerror=fin; const pr=qa.play(); if(pr&&pr.catch) pr.catch(()=>setTimeout(fin,900)); }
+  catch(e){ setTimeout(fin,900); }
+  return ()=>{ done=true; qa.onended=null; qa.onerror=null; try{qa.pause();}catch(e){} }; }
+function wrapWords(t){ return String(t).split(/(\s+)/).map(x=>/\S/.test(x)?'<span class="wd">'+x+'</span>':x).join(""); }
+function clearHl(){ document.querySelectorAll(".wd.on,.wd.done").forEach(w=>w.classList.remove("on","done")); }
+player.addEventListener("timeupdate",()=>{
+  if(kind!=="story") return; const pg=stage.children[p]; if(!pg||!player.duration||player.paused) return;
+  const ws=[...pg.querySelectorAll(".caption .wd")]; if(!ws.length) return;
+  const tot=ws.reduce((a,w)=>a+w.textContent.length+1,0); const frac=Math.min(1,(player.currentTime+0.1)/player.duration); let acc=0;
+  ws.forEach(w=>{ const a=acc/tot; acc+=w.textContent.length+1; const b=acc/tot; w.classList.toggle("on",frac>=a&&frac<b); w.classList.toggle("done",frac>=b); });
+});
+/* étoiles et autocollants */
+const STICKERS=[
+  ["h_01","🎈","Le ballon rouge"],["h_02","🛒","Le marché"],["h_03","🐔","La basse-cour"],["h_04","👋","Bonjour !"],["h_05","🚌","Le voyage"],
+  ["h_06","🌧️","La pluie"],["h_07","👶","Le petit frère"],["h_08","🏠","La maison ronde"],["h_09","📏","Grand et petit"],["h_10","☀️","La journée d'Ama"],
+  ["h_11","🐱","Où est le chat ?"],["h_12","🧍","Le corps d'Ama"],["h_13","🌙","La peur du noir"],["h_14","🧵","Chacun son travail"],["h_15","🌱","La graine"],
+  ["compter","🔢","Je compte"],["couleurs","🎨","Les couleurs"],["alphabet","🔤","L'alphabet"],["comptines","🎵","Les comptines"],["cherche","🔍","Cherche et trouve"],
+  ["quiz","🏆","Champion du quiz"],["quiz_parfait","🌟","Quiz parfait"]
+];
+function getSt(){ try{ return JSON.parse(localStorage.getItem("ama_stickers")||"[]"); }catch(e){ return []; } }
+function setSt(a){ try{ localStorage.setItem("ama_stickers",JSON.stringify(a)); }catch(e){} }
+function getStars(){ try{ return +localStorage.getItem("ama_stars")||0; }catch(e){ return 0; } }
+function addStar(){ try{ localStorage.setItem("ama_stars",String(getStars()+1)); }catch(e){} }
+function unlockSticker(id){ const s=STICKERS.find(x=>x[0]===id); if(!s) return; const have=getSt(); if(have.includes(id)) return;
+  have.push(id); setSt(have); celebrate(s[1],"Nouvel autocollant : "+s[2], id.indexOf("h_")===0||id.indexOf("quiz")===0); }
+function onShown(){ if(pages.length>1 && p===pages.length-1 && (kind==="story"||kind==="section"||kind==="comptine"||kind==="cherche")) unlockSticker(memkey); }
+function confetti(){ const c=$("#confetti"); c.innerHTML=""; const E=["🎉","⭐","✨","🎈","💛"];
+  for(let i=0;i<26;i++){ const s=document.createElement("span"); s.textContent=E[i%E.length]; s.style.left=(Math.random()*100)+"vw";
+    s.style.animationDelay=(Math.random()*0.5)+"s"; s.style.fontSize=(18+Math.random()*20)+"px"; c.appendChild(s); }
+  c.classList.add("on"); setTimeout(()=>{ c.classList.remove("on"); c.innerHTML=""; },2800); }
+function celebrate(emoji,label,voice){ const t=$("#toast"); t.innerHTML='<div class="tbig">'+emoji+'</div><div class="tlab">'+label+'</div>';
+  t.classList.add("on"); sfx("fan"); confetti(); if(voice) speak("audio/quiz/ok_sticker.mp3");
+  setTimeout(()=>t.classList.remove("on"),2600); }
+function openAlbum(){ stopAll(); home.classList.add("hide"); submenu.style.display="none"; draw.style.display="none"; nav.hidden=true; topbar.hidden=true;
+  renderAlbum(); $("#album").style.display="flex"; }
+function renderAlbum(){ const have=getSt(); const g=$("#albumGrid"); g.innerHTML="";
+  STICKERS.forEach(a=>{ const ok=have.includes(a[0]); const d=document.createElement("div"); d.className="stk"+(ok?" ok":"");
+    d.innerHTML='<span class="e">'+(ok?a[1]:"❔")+'</span><span class="n">'+(ok?a[2]:"À gagner")+'</span>'; g.appendChild(d); });
+  $("#albumCount").textContent=have.length+" / "+STICKERS.length+" autocollants · ⭐ "+getStars()+" étoiles"; }
+$("#albumBack").onclick=()=>{ $("#album").style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
+
 /* ---------- quiz ---------- */
 const quiz=$("#quiz"), qzBody=$("#qzBody"), qzEnd=$("#qzEnd"), qzVisual=$("#qzVisual"),
       qzPrompt=$("#qzPrompt"), qzChoices=$("#qzChoices"), qzProgress=$("#qzProgress");
@@ -808,67 +903,50 @@ function pickOthers(pool, correct, n, key){
   return others.slice(0, n);
 }
 
-function buildQuizCouleur(c){
+function slug(s){ return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,""); }
+function nChoices(i){ return i<3?2:(i<6?3:4); }
+function buildQuizCouleur(c,i){
   const [nom,hex] = c;
-  const distract = pickOthers(COLORS, c, 3, x=>x[0]).map(x=>x[0]);
-  return {
-    visual: `<div class="swatch-big" style="background:${hex}"></div>`,
-    prompt: "Quelle est cette couleur ?",
-    choices: shuffled([nom, ...distract]),
-    correct: nom,
-  };
+  const distract = pickOthers(COLORS, c, nChoices(i)-1, x=>x[0]).map(x=>x[0]);
+  return { sec:"Les couleurs", visual:`<div class="swatch-big" style="background:${hex}"></div>`, prompt:"Quelle est cette couleur ?",
+    choices:shuffled([nom, ...distract]), correct:nom, pa:"audio/quiz/p_couleur.mp3", xa:`audio/quiz/x_couleur_${slug(nom)}.mp3` };
 }
-function buildQuizNombre(n){
+function buildQuizNombre(n,i){
   const [mot,val] = n;
-  const emoji = "🍎";
-  const distractVals = shuffled(NUM.map(x=>x[1]).filter(v=>v!==val)).slice(0,3);
-  return {
-    visual: Array(val).fill(`<span>${emoji}</span>`).join(""),
-    prompt: "Combien y a-t-il de pommes ?",
-    choices: shuffled([val, ...distractVals]).map(String),
-    correct: String(val),
-  };
+  const distractVals = shuffled(NUM.map(x=>x[1]).filter(v=>v!==val)).slice(0,nChoices(i)-1);
+  return { sec:"Les nombres", visual:Array(val).fill(`<span>🍎</span>`).join(""), prompt:"Combien y a-t-il de pommes ?",
+    choices:shuffled([val, ...distractVals]).map(String), correct:String(val), pa:"audio/quiz/p_pommes.mp3", xa:`audio/quiz/x_nombre_${val}.mp3` };
 }
-function buildQuizLettre(l){
-  const distract = pickOthers(LETTRES, l, 3).map(x=>x);
-  return {
-    visual: "",
-    prompt: `Touche la lettre ${l}.`,
-    choices: shuffled([l, ...distract]),
-    correct: l,
-    bigChoice: true,
-  };
+function buildQuizLettre(l,i){
+  const distract = pickOthers(LETTRES, l, nChoices(i)-1);
+  return { sec:"Les lettres", visual:"", prompt:`Touche la lettre ${l}.`, choices:shuffled([l, ...distract]), correct:l, bigChoice:true,
+    pa:`audio/quiz/p_lettre_${l}.mp3`, xa:`audio/quiz/x_lettre_${l}.mp3` };
 }
-function buildQuizObjet(o){
+function buildQuizObjet(o,i){
   const [nom,em] = o;
-  const distract = pickOthers(OBJETS, o, 3, x=>x[0]).map(x=>x[0]);
-  return {
-    visual: `<div>${em}</div>`,
-    prompt: "Comment s'appelle ceci ?",
-    choices: shuffled([nom, ...distract]),
-    correct: nom,
-  };
+  const distract = pickOthers(OBJETS, o, nChoices(i)-1, x=>x[0]).map(x=>x[0]);
+  return { sec:"Les objets", visual:`<div>${em}</div>`, prompt:"Comment s'appelle ceci ?", choices:shuffled([nom, ...distract]), correct:nom,
+    pa:"audio/quiz/p_objet.mp3", xa:`audio/quiz/x_objet_${slug(nom)}.mp3` };
 }
 function generateQuiz(){
-  const qs = [];
-  COLORS.forEach(c=>qs.push(buildQuizCouleur(c)));
-  NUM.forEach(n=>qs.push(buildQuizNombre(n)));
-  LETTRES.slice(0,13).forEach(l=>qs.push(buildQuizLettre(l)));
-  OBJETS.slice(0,17).forEach(o=>qs.push(buildQuizObjet(o)));
-  return shuffled(qs);
+  return [ ...shuffled(COLORS).map((x,i)=>buildQuizCouleur(x,i)), ...shuffled(NUM).map((x,i)=>buildQuizNombre(x,i)),
+           ...shuffled(LETTRES.slice(0,13)).map((x,i)=>buildQuizLettre(x,i)), ...shuffled(OBJETS.slice(0,17)).map((x,i)=>buildQuizObjet(x,i)) ];
 }
-
+let qzIdle=null, qzStopFn=null, qzStars=0;
+function qzClear(){ clearTimeout(qzIdle); if(qzStopFn){ qzStopFn(); qzStopFn=null; } }
+function qzStop(){ qzClear(); try{ qa.pause(); }catch(e){} }
+function qzStart(){ QUIZ = generateQuiz(); qzIndex=0; qzScore=0; qzStars=0; $("#qzStars").textContent="⭐ 0"; renderQuizQuestion(); }
 function openQuiz(){
   stopAll(); home.classList.add("hide"); submenu.style.display="none";
   topbar.hidden=true; nav.hidden=true; draw.style.display="none";
   quiz.style.display="flex"; qzEnd.classList.remove("on"); qzBody.style.display="flex";
-  QUIZ = generateQuiz(); qzIndex=0; qzScore=0;
-  renderQuizQuestion();
+  qzStart();
 }
+function idleHint(q){ if(qzLock) return; qzStopFn=speak(q.pa); [...qzChoices.children].forEach(b=>b.classList.add("hint")); qzIdle=setTimeout(()=>idleHint(q),12000); }
 function renderQuizQuestion(){
-  qzLock=false;
+  qzLock=false; qzClear();
   const q = QUIZ[qzIndex];
-  qzProgress.textContent = `Question ${qzIndex+1}/${QUIZ.length}`;
+  qzProgress.textContent = `${q.sec} · ${qzIndex+1}/${QUIZ.length}`;
   qzVisual.innerHTML = q.visual;
   qzPrompt.textContent = q.prompt;
   qzChoices.innerHTML = "";
@@ -879,32 +957,40 @@ function renderQuizQuestion(){
     b.onclick = ()=>answerQuiz(b, ch, q.correct);
     qzChoices.appendChild(b);
   });
+  setTimeout(()=>{ if(!qzLock && QUIZ[qzIndex]===q) qzStopFn=speak(q.pa); },300);
+  qzIdle=setTimeout(()=>idleHint(q),10000);
 }
 function answerQuiz(btn, chosen, correct){
-  if(qzLock) return; qzLock=true;
-  const ok = chosen===correct;
-  if(ok) qzScore++;
+  if(qzLock) return; qzLock=true; qzClear();
+  const q = QUIZ[qzIndex]; const ok = chosen===correct;
   [...qzChoices.children].forEach(b=>{
-    b.disabled=true;
+    b.disabled=true; b.classList.remove("hint");
     if(b.textContent===correct) b.classList.add("correct");
     else if(b===btn) b.classList.add("wrong");
   });
-  setTimeout(()=>{
-    qzIndex++;
-    if(qzIndex < QUIZ.length) renderQuizQuestion(); else endQuiz();
-  }, 900);
+  let clip;
+  if(ok){ qzScore++; qzStars++; addStar(); const st=$("#qzStars"); st.textContent="⭐ "+qzStars; st.classList.remove("pop"); void st.offsetWidth; st.classList.add("pop");
+    sfx("ding"); clip=`audio/quiz/ok_${1+Math.floor(Math.random()*5)}.mp3`; }
+  else { sfx("bong"); btn.classList.add("shake"); clip=q.xa; }
+  let moved=false, tm=null;
+  const next=()=>{ if(moved) return; moved=true; clearTimeout(tm);
+    setTimeout(()=>{ qzIndex++; if(qzIndex < QUIZ.length) renderQuizQuestion(); else endQuiz(); }, ok?500:900); };
+  tm=setTimeout(next, ok?2600:7000);
+  setTimeout(()=>{ qzStopFn=speak(clip,next); }, ok?250:550);
 }
 function endQuiz(){
-  qzBody.style.display="none"; qzEnd.classList.add("on");
+  qzClear(); qzBody.style.display="none"; qzEnd.classList.add("on");
   const pct = Math.round(100*qzScore/QUIZ.length);
   const medal = pct>=90 ? "🏆" : pct>=70 ? "🥇" : pct>=50 ? "🥈" : "🌟";
   $("#qzMedal").textContent = medal;
-  $("#qzScoreText").textContent = `Bravo ! Tu as trouvé ${qzScore} bonnes réponses sur ${QUIZ.length}.`;
+  $("#qzScoreText").textContent = `Bravo ! ${qzScore} bonnes réponses sur ${QUIZ.length}. Tu as gagné ${qzStars} étoiles !`;
+  sfx("fan"); speak("audio/quiz/fin.mp3");
+  setTimeout(()=>{ if(pct>=70) unlockSticker("quiz"); if(pct===100) unlockSticker("quiz_parfait"); }, 2600);
 }
-$("#quizBack").onclick = ()=>{ quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
-$("#qzHome").onclick = ()=>{ quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
-$("#qzReplay").onclick = ()=>{ qzEnd.classList.remove("on"); qzBody.style.display="flex";
-  QUIZ = generateQuiz(); qzIndex=0; qzScore=0; renderQuizQuestion(); };
+$("#quizBack").onclick = ()=>{ qzStop(); quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
+$("#qzHome").onclick = ()=>{ qzStop(); quiz.style.display="none"; home.classList.remove("hide"); topbar.hidden=true; };
+$("#qzAlbum").onclick = ()=>{ qzStop(); quiz.style.display="none"; openAlbum(); };
+$("#qzReplay").onclick = ()=>{ qzEnd.classList.remove("on"); qzBody.style.display="flex"; qzStart(); };
 
 /* ---------- version à imprimer ---------- */
 function openPrint(){
@@ -1013,6 +1099,7 @@ stage.addEventListener("touchstart",e=>{ x0=e.touches[0].clientX; },{passive:tru
 stage.addEventListener("touchend",e=>{ if(x0==null) return;
   const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)>50) go(dx<0?1:-1); },{passive:true});
 </script>
+<!-- AMA-JEU -->
 <!-- AMA-VERROU -->
 <button id="amaLock" aria-label="Espace parent" title="Espace parent">🔒</button>
 <div class="amaOv" id="amaWel" role="dialog" aria-modal="true">
@@ -1188,7 +1275,7 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
     if(document.hidden||anyAsk()||ovs.panel.classList.contains("show")) return;
     used+=dt; if(Math.round(used)%10===0) set(dayKey(),String(Math.round(used)));
     if(limit && used>=limit*60 && !ovs.time.classList.contains("show")){
-      const a=document.getElementById("player"); if(a){a.pause();}
+      const a=document.getElementById("player"); if(a){a.pause();} try{ if(window.__qa) window.__qa.pause(); }catch(e){}
       show("time"); }
   },1000);
   $("#amaTimeParent").onclick=()=>unlock(()=>openPanel(),"Code parent","Pour donner plus de temps");
