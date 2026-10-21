@@ -311,6 +311,20 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .amaF label{display:block;font-size:15px;font-weight:700;margin-bottom:4px}
 .amaF input{width:100%;box-sizing:border-box;font-size:18px;padding:12px;border:2px solid #d9c9a8;border-radius:12px;background:#fff;color:#2b1d44}
 
+
+#amaInst{z-index:1100}
+#amaInst .amaStep{display:flex;gap:12px;align-items:flex-start;text-align:left;background:#fff;border-radius:16px;padding:12px 14px;margin:6px 0;max-width:400px;width:100%;box-sizing:border-box}
+#amaInst .amaNum{flex:none;width:34px;height:34px;border-radius:50%;background:#4C2A75;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:18px}
+#amaInst .amaStep b{color:#4C2A75}
+#amaInst .amaKey{display:inline-block;min-width:28px;padding:0 8px;border-radius:8px;background:#EFE6FA;border:1px solid #cdb9ea;font-weight:800;text-align:center}
+#amaInst .amaWarn{background:#FFF1D6;border:2px solid #E8B84B;border-radius:14px;padding:10px 14px;max-width:400px;text-align:left;margin:6px 0;font-size:15px}
+#amaInst .amaOk{background:#E4F5E1;border:2px solid #5E8C3F;border-radius:14px;padding:10px 14px;max-width:400px;margin:6px 0;font-size:16px}
+#amaInstBar{position:fixed;left:50%;transform:translateX(-50%);top:10px;z-index:850;background:#4C2A75;color:#fff;border-radius:999px;
+  padding:8px 8px 8px 16px;display:none;align-items:center;gap:10px;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:92vw}
+#amaInstBar.show{display:flex}
+#amaInstBar button{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+#amaInstGo{background:#E8B84B;color:#2b1d44}
+#amaInstX{background:rgba(255,255,255,.18);color:#fff;padding:8px 12px!important}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4C2A75">
@@ -1363,6 +1377,7 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
   <p style="margin:0"><b>Temps de jeu par jour</b></p>
   <div class="amaRow" id="amaLimits"></div>
   <p id="amaUsed" style="font-size:14px;margin:0 0 6px"></p>
+  <button class="amaBtn" id="amaInstBtn">📲 Mettre le livre sur l'écran d'accueil</button>
   <button class="amaBtn" id="amaReset">↻ Redonner du temps aujourd'hui</button>
   <button class="amaBtn" id="amaPdf">⬇️ Télécharger le PDF à imprimer</button>
   <button class="amaBtn" id="amaWa">📲 Envoyer le PDF par WhatsApp</button>
@@ -1587,6 +1602,79 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
   $("#amaWelYes").onclick=()=>{ show("wel",false);
     setupPin(()=>setupQ(()=>{ openPanel(); $("#amaHelp").classList.add("show"); }),true,()=>show("wel")); };
   if(!hasLock() && get("ama_lock")!=="off") show("wel");
+})();
+</script>
+<!-- AMA-INSTALL -->
+<div class="amaOv" id="amaInst" role="dialog" aria-modal="true">
+  <h2>📲 Le livre sur ton écran d'accueil</h2>
+  <p id="amaInstIntro">Tu l'ouvres d'un seul toucher, comme une application. Rien à télécharger depuis une boutique.</p>
+  <div id="amaInstBody"></div>
+  <button class="amaBtn" id="amaInstCopy" style="max-width:400px">📋 Copier le lien du livre</button>
+  <button class="amaBtn pri" id="amaInstClose" style="max-width:400px">J'ai compris</button>
+</div>
+<div id="amaInstBar" role="region" aria-label="Installer le livre"><span>📲 Mets le livre sur ton écran d'accueil</span><button id="amaInstGo">Voir comment</button><button id="amaInstX" aria-label="Fermer">✕</button></div>
+<script>
+/* AMA-INSTALL : guide d'ajout a l'ecran d'accueil */
+(function(){
+  const $=s=>document.querySelector(s);
+  const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+  const set=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+  const ua=navigator.userAgent||"";
+  const standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+  const inApp=/FBAN|FBAV|FB_IAB|FBIOS|Instagram|TikTok|musical_ly|Snapchat|Line\/|MicroMessenger|GSA\//i.test(ua);
+  const ios=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const android=/Android/i.test(ua);
+  const web=/^https?:$/.test(location.protocol);
+  const safari=ios&&/Safari/.test(ua)&&!/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua)&&!inApp;
+  let deferred=null;
+  addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferred=e; });
+  addEventListener("appinstalled",()=>{ set("ama_inst_done","1"); bar(false); });
+  const step=(n,html)=>'<div class="amaStep"><div class="amaNum">'+n+'</div><div>'+html+'</div></div>';
+  const key=t=>'<span class="amaKey">'+t+'</span>';
+  function build(){
+    let h="";
+    if(standalone||get("ama_inst_done")==="1"){
+      h='<div class="amaOk">✅ <b>Le livre est déjà sur ton écran d\'accueil.</b><br>Cherche l\'icône « Histoires d\'Ama » parmi tes applications.</div>';
+    } else if(inApp){
+      h='<div class="amaWarn">⚠️ Tu as ouvert le livre <b>dans Facebook, Instagram ou TikTok</b>. Ici, on ne peut pas l\'ajouter à l\'écran d\'accueil.</div>'
+       +step(1,'Touche les <b>trois points</b> '+key('⋯')+' ou '+key('⋮')+' (en haut ou en bas de l\'écran).')
+       +step(2,'Choisis <b>« Ouvrir dans le navigateur »</b> (Chrome sur Android, Safari sur iPhone).')
+       +step(3,'Le livre s\'ouvre dans le navigateur. Reviens ici : ce guide te montrera la suite.')
+       +'<p style="font-size:14px;max-width:400px">Autre moyen : copie le lien ci-dessous, ouvre Chrome ou Safari, et colle-le dans la barre d\'adresse.</p>';
+    } else if(ios){
+      h=(safari?'':'<div class="amaWarn">Sur iPhone, c\'est plus simple avec <b>Safari</b>. Si tu es dans un autre navigateur, le bouton Partager '+key('⬆︎')+' fonctionne aussi.</div>')
+       +step(1,'Touche le bouton <b>Partager</b> '+key('⬆︎')+' (le carré avec une flèche, en bas de l\'écran, ou en haut à droite).')
+       +step(2,'Fais défiler le menu vers le haut et touche <b>« Sur l\'écran d\'accueil »</b>.')
+       +step(3,'Touche <b>« Ajouter »</b> en haut à droite. L\'icône apparaît sur ton écran.');
+    } else if(android){
+      h=(deferred?'<button class="amaBtn pri" id="amaInstNow" style="max-width:400px">📲 Installer le livre maintenant</button><p style="font-size:14px;margin-top:2px">Ou suis les étapes :</p>':'')
+       +step(1,'Touche les <b>trois points</b> '+key('⋮')+' en haut à droite de Chrome.')
+       +step(2,'Touche <b>« Ajouter à l\'écran d\'accueil »</b> (ou <b>« Installer l\'application »</b>).')
+       +step(3,'Touche <b>« Installer »</b> ou <b>« Ajouter »</b>. L\'icône apparaît avec tes applications.');
+    } else {
+      h='<div class="amaWarn">Ouvre ce lien <b>sur ton téléphone</b> (Chrome sur Android, Safari sur iPhone) pour l\'ajouter à l\'écran d\'accueil.</div>';
+    }
+    $("#amaInstBody").innerHTML=h;
+    const now=$("#amaInstNow");
+    if(now) now.onclick=async()=>{ try{ deferred.prompt(); const r=await deferred.userChoice; if(r&&r.outcome==="accepted") set("ama_inst_done","1"); }catch(e){} deferred=null; open(); };
+  }
+  function open(){ build(); $("#amaInst").classList.add("show"); }
+  function bar(on){ $("#amaInstBar").classList.toggle("show",on); }
+  $("#amaInstClose").onclick=()=>{ $("#amaInst").classList.remove("show"); };
+  $("#amaInstCopy").onclick=async()=>{
+    const url=location.href.split("#")[0].split("?")[0];
+    try{ await navigator.clipboard.writeText(url); $("#amaInstCopy").textContent="✅ Lien copié"; }
+    catch(e){ prompt("Copie ce lien :",url); }
+    setTimeout(()=>{ $("#amaInstCopy").textContent="📋 Copier le lien du livre"; },2500);
+  };
+  const b=$("#amaInstBtn"); if(b) b.onclick=open;
+  $("#amaInstGo").onclick=()=>{ set("ama_inst_seen","1"); bar(false); open(); };
+  $("#amaInstX").onclick=()=>{ set("ama_inst_seen","1"); bar(false); };
+  /* barre : une seule fois, sur la version en ligne, si le livre n'est pas deja installe */
+  if(web && !standalone && get("ama_inst_seen")!=="1" && get("ama_inst_done")!=="1"){
+    setTimeout(()=>{ const ov=document.querySelector(".amaOv.show"); if(!ov) bar(true); else setTimeout(()=>{ if(!document.querySelector(".amaOv.show")) bar(true); },6000); },3500);
+  }
+  window.amaOpenInstall=open;
 })();
 </script>
 <script>if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
