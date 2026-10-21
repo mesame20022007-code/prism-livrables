@@ -1381,7 +1381,7 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
   <button class="amaBtn" id="amaReset">↻ Redonner du temps aujourd'hui</button>
   <button class="amaBtn" id="amaPdf">⬇️ Télécharger le PDF à imprimer</button>
   <button class="amaBtn" id="amaWa">📲 Envoyer le PDF par WhatsApp</button>
-  <button class="amaBtn" id="amaOff" hidden>📶 Garder le livre sans internet (Wi-Fi conseillé)</button>
+  <button class="amaBtn" id="amaOff" hidden>📶 Garder le livre sans internet (environ 85 Mo, en Wi-Fi)</button>
   <button class="amaBtn" id="amaHelpBtn">📌 Empêcher l'enfant de quitter l'appli</button>
   <div class="amaHelp" id="amaHelp">
     <b>Android :</b> Paramètres → Sécurité (ou Écran de verrouillage) → <b>Épinglage d'écran</b>, active-le. Ouvre le livre, appuie sur le bouton « Aperçu » (carré), touche l'icône du livre en haut, puis <b>Épingler</b>. Pour sortir : maintiens « Retour » et « Aperçu » ensemble.<br><br>
@@ -1553,6 +1553,7 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
 
   /* ---- hors connexion (version en ligne) ---- */
   $("#amaOff").onclick=async()=>{
+    if(!confirm("Le téléchargement fait environ 85 Mo. Fais-le en Wi-Fi pour ne pas consommer ton forfait. Continuer ?")) return;
     const b=$("#amaOff"); b.disabled=true;
     try{
       const list=await (await fetch("assets.json",{cache:"no-store"})).json();
