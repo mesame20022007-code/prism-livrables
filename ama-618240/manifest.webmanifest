@@ -1,7 +1,7 @@
 {
  "name": "Les histoires d'Ama",
  "short_name": "Histoires d'Ama",
- "description": "Histoires, comptines et jeux pour les tout-petits. Livre protégé par un code parent.",
+ "description": "Histoires et jeux pour les tout-petits. Livre protégé par un code parent.",
  "lang": "fr",
  "start_url": "./index.html",
  "scope": "./",

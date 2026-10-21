@@ -761,7 +761,6 @@ const SECTIONS=[
   {id:"compter",t:"Je compte 1 à 10",ic:"🔢",go:()=>openPages(numberPages(),"compter","section")},
   {id:"couleurs",t:"Les couleurs",ic:"🎨",go:()=>openPages(colorPages(),"couleurs","section")},
   {id:"alphabet",t:"L'alphabet",ic:"🔤",go:()=>openPages(alphaPages(),"alphabet","section")},
-  {id:"comptines",t:"Les comptines",ic:"🎵",go:()=>openPages(comptinePages(),"comptines","comptine")},
   {id:"cherche",t:"Cherche et trouve",ic:"🔍",go:()=>openPages(cherchePages(),"cherche","cherche")},
   {id:"dessin",t:"Cahier à dessin",ic:"✏️",go:()=>openDraw("home")},
   {id:"quiz",t:"Le grand quiz",ic:"❓",go:openQuiz},
@@ -1005,7 +1004,6 @@ const STICKERS=(function(){ const a=[];
   const CE=["🔴","🔵","🟡","🟢","🟠","🟣","💗","🟤","⚫","⚪"];
   COLORS.forEach(([nom],i)=>a.push(["couleurs_"+i,CE[i],"Le "+nom]));
   ALPHA_ITEMS.forEach(([L,mot,em],i)=>a.push(["alphabet_"+i,em,L+" comme "+mot]));
-  COMPTINES.forEach(([t],i)=>a.push(["comptines_"+i,"🎵",t]));
   CHERCHE.forEach(([k,t],i)=>a.push(["cherche_"+i,"🔍",t]));
   CHEZ_TOI.forEach(([em,t],i)=>a.push(["cherche_"+(CHERCHE.length+i),em,t]));
   a.push(["cherche_crayon","✏️","Crayon magique"],["dessin_1","🖍️","Premier dessin"],["quiz","🏆","Champion du quiz"],["quiz_parfait","🌟","Quiz parfait"]);
