@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les histoires d'Ama — le livre-jeu pour ton enfant (2 à 6 ans)</title>
+<meta name="description" content="15 histoires illustrées et racontées, des comptines et des jeux pour les enfants de 2 à 6 ans. Sans publicité, sans inconnus, avec un temps de jeu que tu fixes.">
+<meta name="theme-color" content="#4C2A75">
+<style>
+:root{--v:#4C2A75;--v2:#6a3fa0;--g:#D9B24A;--cr:#FDF6E3;--cr2:#f6ebcf;--tx:#2b1d44;--br:#C6552F;--ok:#2e8b57;--no:#b3261e}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--cr);color:var(--tx);line-height:1.5;font-size:17px}
+img{max-width:100%;display:block}
+a{color:var(--v)}
+.w{max-width:760px;margin:0 auto;padding:0 18px}
+section{padding:34px 0}
+h1{font-size:32px;line-height:1.15;margin:8px 0 12px;color:var(--v)}
+h2{font-size:26px;line-height:1.2;margin:0 0 12px;color:var(--v)}
+h3{font-size:19px;margin:0 0 6px}
+p{margin:0 0 12px}
+.kick{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--br);font-weight:700}
+.btn{display:block;text-align:center;border:0;border-radius:16px;background:var(--v);color:#fff;font-size:18px;font-weight:700;padding:15px 18px;text-decoration:none;cursor:pointer;width:100%}
+.btn.g{background:var(--g);color:#2b1d44}
+.btn.o{background:#fff;color:var(--v);border:2px solid var(--v)}
+.btn+.btn{margin-top:10px}
+.small{font-size:14px;color:#5a4a78}
+.card{background:#fff;border-radius:18px;padding:16px 18px;box-shadow:0 2px 0 #e6d7b3}
+.bar{position:sticky;top:0;z-index:50;background:var(--v);color:#fff}
+.bar .w{display:flex;justify-content:space-between;align-items:center;padding-top:10px;padding-bottom:10px}
+.bar b{font-size:16px}
+.bar a{background:var(--g);color:#2b1d44;text-decoration:none;font-weight:700;border-radius:12px;padding:8px 14px;font-size:15px}
+.hero img{border-radius:20px;margin:14px auto;max-width:340px;box-shadow:0 8px 24px rgba(76,42,117,.25)}
+.say{border-left:5px solid var(--g);background:#fff;border-radius:0 16px 16px 0;padding:14px 16px;margin:12px 0}
+.say b{color:var(--v)}
+.facts{display:grid;gap:10px}
+.fact{background:var(--v);color:#fff;border-radius:16px;padding:14px 16px}
+.fact b{display:block;font-size:19px;margin-bottom:4px;color:var(--g)}
+.fact a{color:#e9dcff;font-size:13px}
+.me{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.me img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--g)}
+.proof{display:grid;gap:12px}
+.proof img{border-radius:14px;border:1px solid #e6d7b3}
+.tag{display:inline-block;background:#fff3cd;border-radius:10px;padding:3px 10px;font-size:13px;font-weight:700}
+.step{margin:14px 0}
+.vslot{border-radius:18px;overflow:hidden;position:relative;background:#2b1d44}
+.vslot img,.vslot video{width:100%;aspect-ratio:4/3;object-fit:cover}
+.vslot .play{position:absolute;inset:0;margin:auto;width:70px;height:70px;border-radius:50%;border:0;background:rgba(253,246,227,.92);color:var(--v);font-size:28px;display:none}
+.vslot.hasv .play{display:block}
+.more{background:none;border:0;color:var(--v);font-weight:700;text-decoration:underline;font-size:16px;padding:8px 0;cursor:pointer}
+.mdesc{display:none;padding-bottom:6px}
+.mdesc.open{display:block}
+table.cmp{width:100%;border-collapse:separate;border-spacing:0;font-size:15.5px;background:#fff;border-radius:16px;overflow:hidden}
+.cmp th,.cmp td{padding:11px 10px;text-align:left;vertical-align:top;border-bottom:1px solid #f0e4c4}
+.cmp th{background:var(--v);color:#fff;font-size:15px}
+.cmp th:nth-child(3){background:var(--ok)}
+.cmp td:nth-child(2){background:#fff4f2}
+.cmp td:nth-child(3){background:#eefaf2}
+.calc select,.calc input,.lead input,.rev input,.rev textarea{width:100%;font-size:18px;padding:13px;border:2px solid #d9c9a8;border-radius:12px;background:#fff;color:var(--tx)}
+.res{background:#fff;border-radius:14px;padding:14px;margin-top:10px;display:none}
+.res.on{display:block}
+.price{text-align:center}
+.price .old{text-decoration:line-through;color:#8a7aa6;font-size:22px}
+.price .new{font-size:46px;font-weight:800;color:var(--v);line-height:1}
+.price .cd{font-weight:700;color:var(--br);margin:6px 0}
+.gar{background:#eefaf2;border-radius:14px;padding:12px 14px;border:1px solid #bfe3cb}
+.stars{display:flex;gap:6px;margin:6px 0 10px}
+.stars button{font-size:30px;background:none;border:0;cursor:pointer;opacity:.35}
+.stars button.on{opacity:1}
+details{background:#fff;border-radius:14px;padding:12px 14px;margin:8px 0}
+summary{font-weight:700;cursor:pointer}
+footer{background:var(--v);color:#e9dcff;padding:26px 0 40px;font-size:14.5px}
+footer a{color:#fff}
+.ok{color:var(--ok);font-weight:700}
+.no{color:var(--no);font-weight:700}
+.hide{display:none}
+#inapp{display:none;background:#fff3cd;padding:10px 14px;font-size:14.5px;text-align:center}
+
+.vslot{aspect-ratio:16/9;background:#2b1d44}
+.vslot video{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;display:block}
+.vslot .play{inset:auto!important;left:10px;bottom:10px;margin:0!important;width:auto!important;height:auto!important;border-radius:999px!important;padding:8px 16px;font-size:16px!important;font-weight:700;background:rgba(253,246,227,.95)!important}
+.vslot .snd{position:absolute;right:8px;bottom:8px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(253,246,227,.92);font-size:20px;cursor:pointer}
+#tour .step{margin:10px 0 18px}
+#tour h3{margin-top:8px}
+#stick{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;box-shadow:0 -4px 16px rgba(0,0,0,.15);padding:8px 14px;display:none;gap:10px;align-items:center}
+#stick.on{display:flex}
+#stick .pr{flex:1;line-height:1.15}
+#stick .pr s{color:#8a7aa6;font-size:13px}
+#stick .pr b{font-size:19px;color:var(--v);display:block}
+#stick a{flex:none;width:auto;padding:12px 16px;font-size:16px;border-radius:14px}
+body{padding-bottom:70px}
+</style>
+</head>
+<body>
+<div id="inapp">📌 Tu es dans l'application Facebook. Pour le meilleur affichage, touche les 3 points puis « Ouvrir dans Chrome ».</div>
+<div class="bar"><div class="w"><b>📖 Les histoires d'Ama</b><a href="#offre" data-ev="barre_acheter">Je le veux</a></div></div>
+
+<!-- 1. ACCROCHE -->
+<section class="hero" data-s="hero"><div class="w">
+  <div class="kick">PRISM Éducation · Pour les 2 à 6 ans</div>
+  <h1>Tu choisis ce que ton enfant regarde et écoute.</h1>
+  <p>30 histoires illustrées et racontées, des jeux et des autocollants. <b>Sans publicité, sans inconnus</b>, avec un temps de jeu que <b>tu</b> fixes.</p>
+  <img src="img/cover.webp" alt="Les histoires d'Ama" width="340" height="340">
+  <a class="btn" href="#tour" data-ev="cta_voir">Voir le livre en 30 secondes</a>
+  <a class="btn o" href="#gratuit" data-ev="cta_gratuit">Recevoir 2 histoires gratuites sur WhatsApp</a>
+</div></section>
+
+<!-- CONFIANCE -->
+<section style="padding:14px 0" data-s="confiance"><div class="w">
+  <div class="card" style="padding:12px 14px">
+    <div>✅ <b>Écris-moi avant de payer</b> sur WhatsApp : je réponds moi-même.</div>
+    <div>✅ <b>Paiement sécurisé</b> par Chariow (Mobile Money, carte).</div>
+    <div>✅ <b>Un vrai problème avec le livre ?</b> Remboursé sous 5 jours.</div>
+    <div>✅ <b>Promotion de lancement</b> : 2 500 F au lieu de 9 000 F, sans code à taper.</div>
+  </div>
+</div></section>
+
+<!-- MOI -->
+<section data-s="moi"><div class="w">
+  <h2>Pourquoi ce livre existe</h2>
+  <p style="background:#fff;border-radius:14px;padding:14px 16px;font-size:18px">« J'ai créé ce livre pour vous proposer <b>une alternative aux moyens de divertissement actuels : une alternative avec du contrôle</b>. »</p>
+  <p>Un livre qui reflète davantage la vie ouest-africaine : le marché, la cour de grand-mère, la salutation, la famille. Pour que ton enfant se reconnaisse et découvre ce qui se fait chez nous.</p>
+  <div class="me"><img src="img/elysee.webp" alt="Elysée ABLET" width="96" height="96"><div><b>Elysée ABLET</b><br><span class="small">Étudiant à Pigier Bénin · créateur du livre</span></div></div>
+  <p>Pas besoin de me croire sur parole. Voici une preuve que tu peux vérifier :</p>
+  <div class="proof">
+    <div>
+      <video controls playsinline preload="metadata" poster="video/poster.jpg" style="display:block;width:100%;max-width:300px;margin:0 auto 8px;border-radius:14px;background:#000"><source src="video/pigier_extrait.mp4" type="video/mp4"></video>
+      <p class="small">Extrait de la vidéo TikTok de Pigier Bénin (compte <b>@pigierbeninofficiel</b>), où je réponds à la question de l'école. Les autres personnes sont floutées. Tu peux retrouver la vidéo entière sur le compte de l'école.</p>
+    </div>
+    <div><img src="img/carte.webp" alt="Carte d'apprenant Pigier Bénin 2025-2026 (matricule et date de naissance masqués)" loading="lazy"><p class="small">Ma carte d'apprenant Pigier Bénin, année 2025-2026. J'ai masqué mon matricule et ma date de naissance.</p></div>
+    <p><a href="https://www.linkedin.com/in/elys%C3%A9e-ablet-3974283a0" target="_blank" rel="noopener">Mon profil LinkedIn (Elysée ABLET)</a></p>
+  </div>
+</div></section>
+
+<!-- 2. CE QUE J'AI VU -->
+<section data-s="vu"><div class="w">
+  <h2>Ce que j'ai vu, et qui m'a fait réfléchir</h2>
+  <div class="say"><b>Chez une tante.</b> Un petit a été puni parce qu'il avait dit des choses bizarres. Elle criait qu'il avait appris ça à l'école. Mais juste à côté, à la télé, ses frères regardaient un programme prévu pour les enfants… dans lequel des enfants disaient eux aussi des choses bizarres.</div>
+  <div class="say"><b>Chez une amie.</b> Sa petite sœur a lâché un mot très déplacé. Mon amie m'a dit : « Elle ne sait même pas d'où ça vient : elle l'a entendu quand maman et ses sœurs regardaient des programmes pour adultes. »</div>
+  <p>Un enfant de 2 à 6 ans retient tout ce qu'il entend. Il ne sait pas encore faire le tri. Le tri, c'est à nous de le faire. Et on ne peut pas le faire quand c'est l'écran qui choisit à notre place.</p>
+  <p><b>Tu n'es plus obligé de laisser tes jeunes enfants devant des programmes que tu ne contrôles pas.</b> Tu as de quoi leur donner à la place.</p>
+  <p class="small">Les enfants de 4 à 6 ans regardent la télévision près de 3 heures par jour en moyenne (Kantar, Africascope Kids 2019 et 2022).</p>
+</div></section>
+
+<!-- 5. LE LIVRE (clips horizontaux) -->
+<section id="tour" style="background:var(--cr2);padding-bottom:20px" data-s="tour"><div class="w">
+  <h2>Voilà ce que ton enfant reçoit</h2>
+  <div class="step" data-step>
+    <div class="vslot"><video muted playsinline preload="none" poster="video/clip1.jpg" aria-label="Un code parent que toi seul connais"><source src="video/clip1.mp4" type="video/mp4"></video>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+    <h3>Un code parent que toi seul connais</h3><p class="small" style="margin:0 0 2px">Tu choisis un code à 4 chiffres, et 3 questions de sécurité si tu veux. Ton enfant ne change pas les réglages sans toi.</p>
+    <button class="more">En savoir plus</button>
+    <div class="mdesc"><p>Le code est facultatif mais conseillé. Si ton enfant le connaît, les 3 questions de sécurité (le village de ta mère, ton école primaire, ton surnom d'enfant) protègent l'espace parent en plus. Si tu oublies le code, tu y réponds et tu en choisis un nouveau.</p><p class='small'>Le code bloque les menus du livre, pas les boutons du téléphone. Pour qu'il ne quitte pas le livre, active l'épinglage d'écran (Android) ou l'accès guidé (iPhone) : les étapes sont dans le livre.</p></div></div>
+  <div class="step" data-step>
+    <div class="vslot"><video muted playsinline preload="none" poster="video/clip2.jpg" aria-label="Tu fixes le temps de jeu par jour"><source src="video/clip2.mp4" type="video/mp4"></video>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+    <h3>Tu fixes le temps de jeu par jour</h3><p class="small" style="margin:0 0 2px">10, 20 ou 30 minutes. Le livre se ferme quand le temps est fini.</p>
+    <button class="more">En savoir plus</button>
+    <div class="mdesc"><p>Dans l'espace parent, tu choisis le temps maximum par jour. Quand il est écoulé, l'écran dit « C'est fini pour aujourd'hui, à demain ». Tu peux redonner du temps d'un seul geste, avec ton code.</p><p>Tu y trouves aussi : le PDF à imprimer (397 pages à colorier), le téléchargement pour jouer sans internet (environ 85 Mo, en Wi-Fi) et un guide pour mettre le livre sur l'écran d'accueil du téléphone.</p></div></div>
+  <div class="step" data-step>
+    <div class="vslot"><video muted playsinline preload="none" poster="video/clip3.jpg" aria-label="30 histoires, au choix de l'enfant"><source src="video/clip3.mp4" type="video/mp4"></video>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+    <h3>30 histoires, au choix de l'enfant</h3><p class="small" style="margin:0 0 2px">Marché, cour de grand-mère, pluie, fête : des histoires de chez nous.</p>
+    <button class="more">En savoir plus</button>
+    <div class="mdesc"><p>Chaque histoire a 10 pages illustrées, lues à voix haute. Elles parlent de partager, d'accueillir, d'écouter les grands, de dire la vérité, de s'entraider, d'économiser l'eau, de perdre sans pleurer. Dans chacune se cache une notion : compter, les jours de la semaine, les saisons, plein et vide, lent et rapide, les lettres de son prénom.</p><p>Plus de 9 000 mots lus, environ 1 heure d'écoute, sans publicité et sans autre vidéo qui s'enchaîne.</p></div></div>
+  <div class="step" data-step>
+    <div class="vslot"><video muted playsinline preload="none" poster="video/clip4.jpg" aria-label="Une voix douce, le texte s'éclaire"><source src="video/clip4.mp4" type="video/mp4"></video>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+    <h3>Une voix douce, le texte s'éclaire</h3><p class="small" style="margin:0 0 2px">L'enfant suit les mots pendant que l'histoire est racontée.</p>
+    <button class="more">En savoir plus</button>
+    <div class="mdesc"><p>Le texte affiché est exactement celui que l'enfant entend, et chaque mot s'éclaire au moment où il est dit. Il peut écouter seul pendant que tu cuisines, ou avec toi. La lecture automatique enchaîne les pages ; un bouton « écouter » relit une page à la demande.</p><p>Les nombres de 1 à 10, les couleurs et l'alphabet ont aussi leur voix : un bouton « écouter » sur chaque chiffre, chaque couleur, chaque lettre.</p></div></div>
+  <div class="step" data-step>
+    <div class="vslot"><video muted playsinline preload="none" poster="video/clip5.jpg" aria-label="Des autocollants à gagner"><source src="video/clip5.mp4" type="video/mp4"></video>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+    <h3>Des autocollants à gagner</h3><p class="small" style="margin:0 0 2px">91 à collectionner : histoires, nombres, couleurs, lettres, quiz.</p>
+    <button class="more">En savoir plus</button>
+    <div class="mdesc"><p>Chaque histoire écoutée, chaque jeu réussi donne un autocollant pour l'album, et des étoiles. Rien ne se gagne en tapant au hasard : il faut écouter, répondre ou jouer.</p><p>Il y a aussi 3 grands cherche-et-trouve avec un crayon pour entourer, un quiz de 50 questions où la voix explique la bonne réponse quand l'enfant se trompe, et un cahier à dessin.</p></div></div>
+</div></section>
+
+<!-- 6. COMPARATIF -->
+<section data-s="compare"><div class="w">
+  <h2>Sans le livre / avec le livre</h2>
+  <table class="cmp">
+    <tr><th></th><th>Télé, vidéos en ligne</th><th>Le livre d'Ama</th></tr>
+    <tr><td><b>Le temps</b></td><td>Illimité, les vidéos s'enchaînent</td><td class="ok">Tu fixes 10, 20 ou 30 min</td></tr>
+    <tr><td><b>Le contenu</b></td><td>Tu ne sais pas ce qui vient ensuite</td><td class="ok">30 histoires que tu connais</td></tr>
+    <tr><td><b>Publicités</b></td><td>Oui</td><td class="ok">Aucune</td></tr>
+    <tr><td><b>Inconnus</b></td><td>Possible sur certaines plateformes</td><td class="ok">Aucun</td></tr>
+    <tr><td><b>Il apprend ?</b></td><td>Pas toujours</td><td class="ok">Mots, nombres, lettres, quiz</td></tr>
+    <tr><td><b>Le prix</b></td><td>Abonnement chaque mois + données internet</td><td class="ok">Une seule fois</td></tr>
+  </table>
+  <p class="small" style="margin-top:8px">À titre de repère : un décodeur Canal+ HD coûte 5 000 F à l'entrée au Bénin (rentrée 2026), et les forfaits internet « illimités » partent de 15 100 F pour 30 jours.</p>
+</div></section>
+
+<!-- 8. OFFRE -->
+<section id="offre" data-s="offre"><div class="w">
+  <h2>Le livre complet</h2>
+  <div class="card price">
+    <div class="old" id="old">9 000 F</div>
+    <div class="new" id="new">2 500 F</div>
+    <div class="cd" id="cd">Prix de lancement</div>
+    <p class="small">Une seule fois. Pas d'abonnement.</p>
+    <a class="btn g" id="buy" href="#" data-ev="checkout">Je veux le livre pour mon enfant</a>
+  </div>
+  <div class="gar" style="margin-top:12px"><b>🔒 Garantie :</b> si le livre a un vrai problème (il ne s'ouvre pas, un audio manque, une erreur dans une histoire) et qu'on ne peut pas le régler en 48 heures, tu es remboursé par Mobile Money sous 5 jours.</div>
+  <p class="small" style="margin-top:10px">Tu reçois tout de suite un fichier avec ton lien d'accès. Ouvre-le dans Chrome. Une question ? <a href="#" id="wa1" data-ev="wa">Écris-moi sur WhatsApp</a>.</p>
+</div></section>
+
+<!-- 9. AVIS -->
+<section style="background:var(--cr2)" data-s="avis"><div class="w">
+  <h2>Je débute : pas encore d'avis à te montrer</h2>
+  <p>C'est la vérité. Le livre est nouveau. Plutôt que d'inventer des avis, je te montre qui je suis (ma carte d'étudiant plus haut) et je te laisse juger sur pièces avec les clips ci-dessus et les 2 histoires gratuites.</p>
+  <p>Quand tu auras essayé, dis-moi franchement ce que tu en penses. <b>Pas besoin d'e-mail.</b> Je lis chaque message et je ne publie que ce qui est vrai, avec ton accord.</p>
+  <div class="card rev">
+    <div class="stars" id="stars"><button data-n="1">★</button><button data-n="2">★</button><button data-n="3">★</button><button data-n="4">★</button><button data-n="5">★</button></div>
+    <textarea id="avisTxt" rows="3" placeholder="Ton avis, en quelques mots (ce qui a plu, ce qui manque)"></textarea>
+    <input id="avisNom" type="text" placeholder="Ton prénom (facultatif)" style="margin-top:8px">
+    <button class="btn" id="avisBtn" style="margin-top:10px">Envoyer mon avis</button>
+    <div class="small" id="avisOk" style="display:none;margin-top:8px">Merci, c'est reçu. Je te lis ce soir.</div>
+  </div>
+</div></section>
+
+<!-- 10. GRATUIT -->
+<section id="gratuit" data-s="gratuit"><div class="w lead">
+  <h2>Essaie avant d'acheter : 2 histoires gratuites</h2>
+  <p>Laisse ton numéro WhatsApp : je t'envoie 2 histoires d'Ama avec leur voix, pour que ton enfant les écoute. Pas de spam : je t'écris moi-même, une seule fois pour te les envoyer.</p>
+  <input id="tel" type="tel" inputmode="tel" placeholder="Ton numéro WhatsApp (ex : 01 97 00 00 00)">
+  <button class="btn" id="telBtn" style="margin-top:10px">Recevoir les 2 histoires</button>
+  <div class="small" id="telOk" style="display:none;margin-top:10px">C'est noté ! <a id="waGo" href="#" target="_blank" rel="noopener">Touche ici pour me dire « Ama » sur WhatsApp</a> : je t'envoie les histoires dès que je vois ton message.</div>
+</div></section>
+
+<!-- 11. FAQ -->
+<section style="background:var(--cr2)" data-s="faq"><div class="w">
+  <h2>Questions fréquentes</h2>
+  <details><summary>Pour quel âge ?</summary><p>De 2 à 6 ans. À 2 ans, ton enfant regarde les images et écoute la voix avec toi. Le quiz et les lettres viennent vers 4-5 ans.</p></details>
+  <details><summary>Il me faut internet ?</summary><p>Pour la première ouverture, oui. Ensuite tu touches « Garder le livre sans internet » (environ 85 Mo, à faire en Wi-Fi) et ça marche sans réseau.</p></details>
+  <details><summary>Je peux mettre le livre sur l'écran d'accueil ?</summary><p>Oui. Le livre contient un guide en 3 étapes (Android et iPhone) pour l'ajouter comme une application : tu l'ouvres ensuite d'un seul toucher, sans retaper le lien.</p></details>
+  <details><summary>Ça marche sur iPhone ?</summary><p>Oui, dans Safari. L'épinglage d'écran se règle dans les réglages de l'iPhone (Accès guidé).</p></details>
+  <details><summary>Mon enfant peut-il quitter le livre ?</summary><p>Avec le code parent, il ne peut ni changer les réglages ni sortir des menus du livre. Avec l'épinglage d'écran du téléphone (étapes dans le livre), il ne peut plus quitter l'application.</p></details>
+  <details><summary>J'ai oublié mon code.</summary><p>Tu réponds à tes 3 questions de sécurité (ou à une question de calcul) et tu choisis un nouveau code.</p></details>
+  <details><summary>C'est un dessin animé ?</summary><p>Non : ce sont des illustrations avec une voix qui raconte, et des jeux que l'enfant touche. Le rythme est calme.</p></details>
+  <details><summary>Qui est derrière PRISM Éducation ?</summary><p>Moi, Elysée, étudiant à Pigier Bénin. Tu peux m'écrire sur WhatsApp : je réponds moi-même.</p></details>
+</div></section>
+
+<div id="stick" role="region" aria-label="Acheter"><div class="pr"><s id="stOld">9 000 F</s><b id="stNew">2 500 F</b></div><a class="btn g" id="stBuy" href="#offre" data-ev="stick_acheter">Je le veux</a></div>
+<footer><div class="w">
+  <p><b>PRISM Éducation</b> · Les histoires d'Ama · WhatsApp <a id="wa2" href="#" data-ev="wa">+229 01 93 38 86 31</a></p>
+  <details style="background:transparent;color:#e9dcff;padding:0"><summary>Sources des chiffres</summary>
+    <p>Kantar Africascope Kids 2019, 2022, 2025. Canal+ Bénin (presse locale, septembre 2026). Bénin : forfaits internet, août 2026.</p></details>
+</div></footer>
+
+<script>
+/* =========== RÉGLAGES =========== */
+var CFG={
+  prix:2500, prixApres:9000,
+  promoFin:'',                       /* ex : '2026-10-27T22:59:00Z' (vide = « Prix de lancement » sans compte à rebours) */
+  checkout:'',                       /* lien Chariow du produit (vide = WhatsApp en attendant) */
+  whatsapp:'2290193388631', whatsappAff:'+229 01 93 38 86 31'
+};
+window.SUIVI_CFG={
+  track:'https://script.google.com/macros/s/AKfycbzCCnm4FV2TYd1c00YKqoVrpRUEBRc-UteVQOtHefZNEyKeH8StrKlVSCdimESLNFaO2A/exec',
+  prefix:'am_', clarity:'yp1g4zxpb6', pixel:'1716387339476694'
+};
+</script>
+<script src="suivi.js"></script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i);};
+  var P=new URLSearchParams(location.search);
+  var F=function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' F';};
+  /* navigateur intégré de Facebook / Instagram */
+  if(/FBAN|FBAV|Instagram|Messenger/i.test(navigator.userAgent)) $('inapp').style.display='block';
+  /* prix + compte à rebours réel */
+  $('new').textContent=F(CFG.prix); $('old').textContent=F(CFG.prixApres);
+  var fin=CFG.promoFin?new Date(CFG.promoFin).getTime():0;
+  function tick(){ if(!fin){ $('cd').textContent='Prix de lancement'; return; }
+    var d=fin-Date.now();
+    if(d<=0){ $('new').textContent=F(CFG.prixApres); $('old').style.display='none'; $('cd').textContent='La promotion est terminée'; return; }
+    var j=Math.floor(d/864e5), h=Math.floor(d%864e5/36e5), m=Math.floor(d%36e5/6e4);
+    $('cd').textContent='Fin de la promotion dans '+(j?j+' j ':'')+h+' h '+m+' min'; }
+  tick(); setInterval(tick,30000);
+  /* bouton fixe en bas : visible apres le hero, cache sur l'offre */
+  $('stOld').textContent=F(CFG.prixApres); $('stNew').textContent=F(CFG.prix);
+  var st=$('stick'), of=document.getElementById('offre'), hero=document.querySelector('.hero');
+  function stk(){ var y=scrollY, h=hero?hero.offsetHeight:400; var r=of.getBoundingClientRect(); var onOffer=r.top<innerHeight*0.8&&r.bottom>0; st.classList.toggle('on',y>h*0.7&&!onOffer); }
+  addEventListener('scroll',stk,{passive:true}); stk();
+  /* boutons d'achat et WhatsApp */
+  var q=location.search?location.search+(location.search.indexOf('?')>=0?'&':'?')+'from=landing':'?from=landing';
+  function wa(txt){ return 'https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent(txt); }
+  var _b=CFG.checkout?(CFG.checkout+(CFG.checkout.indexOf('?')>=0?'&':'?')+'src='+(P.get('src')||'landing')+'&c='+(P.get('c')||'')):wa("Bonjour Elysée, je veux Les histoires d'Ama.");
+  $('buy').href=_b; $('stBuy').href=CFG.checkout?_b:'#offre'; if(!CFG.checkout) $('buy').target='_blank';
+  $('wa1').href=wa("Bonjour Elysée, une question sur Les histoires d'Ama : "); $('wa2').href=wa("Bonjour Elysée, une question sur Les histoires d'Ama : ");
+  /* clips : lecture muette quand visible, « en savoir plus », defilement auto vers le suivant */
+  var steps=[].slice.call(document.querySelectorAll('[data-step]'));
+  var lastUser=0; ['touchmove','wheel','keydown'].forEach(function(e){ addEventListener(e,function(){ lastUser=Date.now(); },{passive:true}); });
+  var cur=-1;
+  function stopAll(except){ steps.forEach(function(s,k){ var v=s.querySelector('video'); if(v&&k!==except&&!v.paused) v.pause(); }); }
+  steps.forEach(function(s,i){
+    var b=s.querySelector('.more'), d=s.querySelector('.mdesc'), vs=s.querySelector('.vslot'), v=s.querySelector('video'), p=s.querySelector('.play'), sn=s.querySelector('.snd');
+    b.onclick=function(){ d.classList.toggle('open'); b.textContent=d.classList.contains('open')?'Réduire':'En savoir plus'; if(window.suiviEv) window.suiviEv('plus_'+i); };
+    if(!v) return;
+    vs.classList.add('hasv');
+    function go(){ stopAll(i); cur=i; var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); p.style.display='none'; sn.hidden=false; }
+    p.onclick=function(){ v.muted=false; sn.textContent='🔊'; go(); if(window.suiviEv) window.suiviEv('clip_play_'+i); };
+    sn.onclick=function(){ v.muted=!v.muted; sn.textContent=v.muted?'🔇':'🔊'; };
+    v.addEventListener('pause',function(){ if(!v.ended) p.style.display='block'; });
+    v.addEventListener('ended',function(){
+      p.style.display='block';
+      var n=steps[i+1]; if(!n) return;
+      if(Date.now()-lastUser<2500) return;          /* le visiteur defile lui-meme : on ne lui prend pas la main */
+      n.scrollIntoView({behavior:'smooth',block:'center'});
+      var nv=n.querySelector('video'); if(nv) setTimeout(function(){ if(Date.now()-lastUser>2500){ nv.muted=v.muted; nv.play(); } },900);
+    });
+    s._v=v; s._go=go;
+  });
+  var tmr=null;
+  function pick(){
+    var chosen=-1;
+    for(var k=0;k<steps.length;k++){ var vs2=steps[k].querySelector('.vslot'); if(!vs2) continue; var r=vs2.getBoundingClientRect(), h=r.height||1;
+      var vis=(Math.min(r.bottom,innerHeight)-Math.max(r.top,0))/h; var v2=steps[k].querySelector('video');
+      if(vis>=0.9){ if(chosen<0&&v2&&!v2.ended) chosen=k; } else if(v2&&!v2.paused){ v2.pause(); } }
+    if(chosen>=0&&chosen!==cur){ steps[chosen]._go(); }
+    else if(chosen>=0){ var cv=steps[chosen].querySelector('video'); if(cv.paused&&!cv.ended) steps[chosen]._go(); }
+  }
+  addEventListener('scroll',function(){ clearTimeout(tmr); tmr=setTimeout(pick,220); },{passive:true});
+  setTimeout(pick,800);
+  /* faits repliés */
+  if($('factsBtn')) $('factsBtn').onclick=function(){ $('factsBox').classList.toggle('hide'); this.textContent=$('factsBox').classList.contains('hide')?'Voir les faits et leurs sources':'Masquer les faits'; if(window.suiviEv) window.suiviEv('faits'); };
+  /* envoi d'un petit message à la feuille (même point d'entrée que la démo du cahier) */
+  function ping(lieu,choix,det,autre){ var T=window.SUIVI_CFG.track; if(!T) return;
+    try{ new Image().src=T+'?action=raison&v='+encodeURIComponent((sessionStorage.getItem('cc_visit')||''))+'&lieu='+encodeURIComponent(lieu)+'&choix='+encodeURIComponent(choix)+'&autre='+encodeURIComponent(autre||'')+'&det='+encodeURIComponent(det||'')+'&src='+encodeURIComponent((P.get('src')||'landing')+'|'+(P.get('c')||'')); }catch(e){} }
+  /* 2 histoires gratuites : numéro */
+  $('telBtn').onclick=function(){ var t=$('tel').value.replace(/[^0-9+]/g,''); if(t.replace(/\D/g,'').length<8){ $('tel').style.borderColor='#b3261e'; $('tel').focus(); return; }
+    ping('lead_ama','numero',t); if(window.suiviEv) window.suiviEv('lead_numero');
+    $('waGo').href=wa("Bonjour Elysée, je veux recevoir les 2 histoires gratuites d'Ama. (Ama)"); $('telOk').style.display='block'; this.disabled=true; };
+  /* avis (non affichés tant qu'Elysée ne les a pas validés) */
+  var note=0; [].forEach.call($('stars').children,function(b){ b.onclick=function(){ note=+b.getAttribute('data-n'); [].forEach.call($('stars').children,function(x,i){ x.classList.toggle('on',i<note); }); }; });
+  $('avisBtn').onclick=function(){ var t=$('avisTxt').value.trim(); if(!note||t.length<3){ $('avisTxt').style.borderColor='#b3261e'; return; }
+    ping('avis_ama',String(note),t.slice(0,400),$('avisNom').value.trim().slice(0,30)); if(window.suiviEv) window.suiviEv('avis_envoye');
+    $('avisOk').style.display='block'; this.disabled=true; };
+})();
+</script>
+</body>
+</html>
