@@ -289,23 +289,26 @@ window.SUIVI_CFG={
   /* clips : lecture muette quand visible, « en savoir plus », defilement auto vers le suivant */
   var steps=[].slice.call(document.querySelectorAll('[data-step]'));
   var lastUser=0; ['touchmove','wheel','keydown'].forEach(function(e){ addEventListener(e,function(){ lastUser=Date.now(); },{passive:true}); });
-  var cur=-1;
+  var cur=-1, soundOn=true;
+  /* le navigateur refuse parfois le son sans geste : au premier toucher on le remet */
+  function unmuteNow(){ if(!soundOn) return; var cv=cur>=0&&steps[cur]&&steps[cur].querySelector('video'); if(cv&&cv.muted){ cv.muted=false; var s2=steps[cur].querySelector('.snd'); if(s2) s2.textContent='🔊'; } }
+  ['touchend','click'].forEach(function(e){ addEventListener(e,unmuteNow,{passive:true}); });
   function stopAll(except){ steps.forEach(function(s,k){ var v=s.querySelector('video'); if(v&&k!==except&&!v.paused) v.pause(); }); }
   steps.forEach(function(s,i){
     var b=s.querySelector('.more'), d=s.querySelector('.mdesc'), vs=s.querySelector('.vslot'), v=s.querySelector('video'), p=s.querySelector('.play'), sn=s.querySelector('.snd');
     b.onclick=function(){ d.classList.toggle('open'); b.textContent=d.classList.contains('open')?'Réduire ▴':'En savoir plus ▾'; if(window.suiviEv) window.suiviEv('plus_'+i); };
     if(!v) return;
     vs.classList.add('hasv');
-    function go(){ stopAll(i); cur=i; var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); p.style.display='none'; sn.hidden=false; }
-    p.onclick=function(){ v.muted=false; sn.textContent='🔊'; go(); if(window.suiviEv) window.suiviEv('clip_play_'+i); };
-    sn.onclick=function(){ v.muted=!v.muted; sn.textContent=v.muted?'🔇':'🔊'; };
+    function go(){ stopAll(i); cur=i; v.muted=!soundOn; var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ v.muted=true; var p2=v.play(); if(p2&&p2.catch) p2.catch(function(){}); }); p.style.display='none'; sn.hidden=false; sn.textContent=soundOn?'🔊':'🔇'; }
+    p.onclick=function(){ soundOn=true; go(); if(window.suiviEv) window.suiviEv('clip_play_'+i); };
+    sn.onclick=function(){ soundOn=!soundOn; v.muted=!soundOn; sn.textContent=soundOn?'🔊':'🔇'; };
     v.addEventListener('pause',function(){ if(!v.ended) p.style.display='block'; });
     v.addEventListener('ended',function(){
       p.style.display='block';
       var n=steps[i+1]; if(!n) return;
       if(Date.now()-lastUser<2500) return;          /* le visiteur defile lui-meme : on ne lui prend pas la main */
       n.scrollIntoView({behavior:'smooth',block:'center'});
-      var nv=n.querySelector('video'); if(nv) setTimeout(function(){ if(Date.now()-lastUser>2500){ nv.muted=v.muted; nv.play(); } },900);
+      var nv=n.querySelector('video'); if(nv) setTimeout(function(){ if(Date.now()-lastUser>2500){ nv.muted=!soundOn; var pq=nv.play(); if(pq&&pq.catch) pq.catch(function(){ nv.muted=true; nv.play(); }); } },900);
     });
     s._v=v; s._go=go;
   });

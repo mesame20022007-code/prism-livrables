@@ -319,6 +319,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #amaInst .amaKey{display:inline-block;min-width:28px;padding:0 8px;border-radius:8px;background:#EFE6FA;border:1px solid #cdb9ea;font-weight:800;text-align:center}
 #amaInst .amaWarn{background:#FFF1D6;border:2px solid #E8B84B;border-radius:14px;padding:10px 14px;max-width:400px;text-align:left;margin:6px 0;font-size:15px}
 #amaInst .amaOk{background:#E4F5E1;border:2px solid #5E8C3F;border-radius:14px;padding:10px 14px;max-width:400px;margin:6px 0;font-size:16px}
+#amaInst .amaShot{display:block;max-width:300px;width:80%;border-radius:12px;border:2px solid #cdb9ea;margin:6px auto 2px}
+#amaInst .amaCap{font-size:13px;color:#5a4a78;margin:0 0 6px;text-align:center}
 #amaInstBar{position:fixed;left:50%;transform:translateX(-50%);top:10px;z-index:850;background:#4C2A75;color:#fff;border-radius:999px;
   padding:8px 8px 8px 16px;display:none;align-items:center;gap:10px;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:92vw}
 #amaInstBar.show{display:flex}
@@ -1581,6 +1583,9 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
   }
   window.addEventListener("popstate",()=>{
     if(window.__amaExit) return;
+    /* un ecran par-dessus (guide, aide, temps) : « retour » le ferme, on reste dans le livre ; puis l'espace parent -> menu */
+    const top=[...document.querySelectorAll(".amaOv.show")].filter(o=>o!==ovs.panel&&o!==ovs.pin&&o!==ovs.form&&o!==ovs.wel).pop();
+    if(top){ try{ history.pushState({ama:1},""); }catch(e){} top.classList.remove("show"); return; }
     if(ovs.panel.classList.contains("show")){ try{ history.pushState({ama:1},""); }catch(e){} show("panel",false); return; }
     if(anyAsk()){ try{ history.pushState({ama:1},""); }catch(e){} return; }
     if(depth>0){ depth--; fromPop=true; try{ backOne(); }catch(e){} fromPop=false; return; }
@@ -1649,9 +1654,13 @@ stage.addEventListener("touchend",e=>{ if(x0==null) return;
        +step(3,'Touche <b>« Ajouter »</b> en haut à droite. L\'icône apparaît sur ton écran.');
     } else if(android){
       h=(deferred?'<button class="amaBtn pri" id="amaInstNow" style="max-width:400px">📲 Installer le livre maintenant</button><p style="font-size:14px;margin-top:2px">Ou suis les étapes :</p>':'')
-       +step(1,'Touche les <b>trois points</b> '+key('⋮')+' en haut à droite de Chrome.')
-       +step(2,'Touche <b>« Ajouter à l\'écran d\'accueil »</b> (ou <b>« Installer l\'application »</b>).')
-       +step(3,'Touche <b>« Installer »</b> ou <b>« Ajouter »</b>. L\'icône apparaît avec tes applications.');
+       +step(1,'Touche les <b>trois points</b> '+key('⋮')+' de ton navigateur (Chrome, Firefox...), en haut ou en bas à droite.')
+       +'<img class="amaShot" alt="Le menu du navigateur" src="__IMG1__"><p class="amaCap">Le menu s\'ouvre. Exemple sur Firefox, Chrome est pareil.</p>'
+       +step(2,'Tu ne vois pas « Ajouter à l\'écran d\'accueil » ? Touche <b>« Plus »</b> : le menu se déroule.')
+       +step(3,'Touche <b>« Ajouter l\'application à l\'écran d\'accueil »</b> (ou <b>« Installer l\'application »</b>, ou <b>« Ajouter à l\'écran d\'accueil »</b>).')
+       +'<img class="amaShot" alt="Le menu Plus ouvert" src="__IMG2__">'
+       +step(4,'Touche <b>« Installer »</b> ou <b>« Ajouter »</b> pour confirmer.')
+       +'<img class="amaShot" style="width:50%;max-width:200px" alt="L\'icône sur l\'écran d\'accueil" src="__IMG3__"><p class="amaCap">L\'icône « Histoires d\'Ama » est sur ton écran d\'accueil.</p>';
     } else {
       h='<div class="amaWarn">Ouvre ce lien <b>sur ton téléphone</b> (Chrome sur Android, Safari sur iPhone) pour l\'ajouter à l\'écran d\'accueil.</div>';
     }
