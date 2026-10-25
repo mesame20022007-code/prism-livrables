@@ -79,6 +79,8 @@ footer a{color:#fff}
 .vslot{aspect-ratio:16/9;background:#2b1d44}
 .vslot video{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;display:block}
 .vslot .play{inset:auto!important;left:10px;bottom:10px;margin:0!important;width:auto!important;height:auto!important;border-radius:999px!important;padding:8px 16px;font-size:16px!important;font-weight:700;background:rgba(253,246,227,.95)!important}
+.vslot .tap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:0;border-radius:999px;padding:12px 20px;background:rgba(76,42,117,.92);color:#fff;font-size:17px;font-weight:700;display:none;z-index:3;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.vslot.muted .tap{display:block}
 .vslot .snd{position:absolute;right:8px;bottom:8px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(253,246,227,.92);font-size:20px;cursor:pointer}
 #tour .step{margin:10px 0 18px}
 #tour h3{margin-top:8px}
@@ -107,7 +109,7 @@ body{padding-bottom:70px}
 <section id="tour" style="background:var(--cr2);padding-bottom:20px" data-s="tour"><div class="w">
   <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/v1.jpg" aria-label="Ce que j'ai vu chez une tante"><source src="video/v1.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Vous ne pouvez pas tout surveiller</h3><p class="small" style="margin:0 0 2px">Télé, pubs, dessins animés qui ne parlent pas de chez nous.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><div class="say"><b>Chez une tante.</b> Un petit a été puni parce qu'il avait dit des choses bizarres. Elle criait qu'il avait appris ça à l'école. Mais juste à côté, à la télé, ses frères regardaient un programme prévu pour les enfants… dans lequel des enfants disaient eux aussi des choses bizarres.</div>
@@ -117,7 +119,7 @@ body{padding-bottom:70px}
   <p class="small">Les enfants de 4 à 6 ans regardent la télévision près de 3 heures par jour en moyenne (Kantar, Africascope Kids 2019 et 2022).</p></div></div>
   <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/v2.jpg" aria-label="Qui je suis, ce qu'est le livre"><source src="video/v2.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Qui je suis, ce qu'est le livre</h3><p class="small" style="margin:0 0 2px">Elysée ABLET, étudiant à Pigier Bénin. 30 histoires de chez nous, pour les 2 à 6 ans.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><div class="me"><img src="img/elysee.webp" alt="Elysée ABLET" width="96" height="96"><div><b>Elysée ABLET</b><br><span class="small">Étudiant à Pigier Bénin · créateur du livre</span></div></div>
@@ -128,25 +130,25 @@ body{padding-bottom:70px}
   </div></div></div>
 <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/clip3.jpg" aria-label="30 histoires, au choix de l'enfant"><source src="video/clip3.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>30 histoires, au choix de l'enfant</h3><p class="small" style="margin:0 0 2px">Marché, cour de grand-mère, pluie, fête : des histoires de chez nous.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Chaque histoire a 10 pages illustrées, lues à voix haute. Elles parlent de partager, d'accueillir, d'écouter les grands, de dire la vérité, de s'entraider, d'économiser l'eau, de perdre sans pleurer. Dans chacune se cache une notion : compter, les jours de la semaine, les saisons, plein et vide, lent et rapide, les lettres de son prénom.</p><p>Plus de 9 000 mots lus, environ 1 heure d'écoute, sans publicité et sans autre vidéo qui s'enchaîne.</p></div></div>
 <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/clip4.jpg" aria-label="Une voix douce, le texte s'éclaire"><source src="video/clip4.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Une voix douce, le texte s'éclaire</h3><p class="small" style="margin:0 0 2px">L'enfant suit les mots pendant que l'histoire est racontée.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Le texte affiché est exactement celui que l'enfant entend, et chaque mot s'éclaire au moment où il est dit. Il peut écouter seul pendant que vous cuisinez, ou avec vous. La lecture automatique enchaîne les pages ; un bouton « écouter » relit une page à la demande.</p><p>Les nombres de 1 à 10, les couleurs et l'alphabet ont aussi leur voix : un bouton « écouter » sur chaque chiffre, chaque couleur, chaque lettre.</p></div></div>
 <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/clip5.jpg" aria-label="Des autocollants à gagner"><source src="video/clip5.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Des autocollants à gagner</h3><p class="small" style="margin:0 0 2px">91 à collectionner : histoires, nombres, couleurs, lettres, quiz.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Chaque histoire écoutée, chaque jeu réussi donne un autocollant pour l'album, et des étoiles. Rien ne se gagne en tapant au hasard : il faut écouter, répondre ou jouer.</p><p>Il y a aussi 3 grands cherche-et-trouve avec un crayon pour entourer, un quiz de 50 questions où la voix explique la bonne réponse quand l'enfant se trompe, et un cahier à dessin.</p></div></div>
   <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/v6.jpg" aria-label="Le contrôle parent"><source src="video/v6.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>C'est vous qui gardez le contrôle</h3><p class="small" style="margin:0 0 2px">Code parent, temps de jeu, sans pub, sans internet.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Le code bloque les menus du livre, pas les boutons du téléphone : pour qu'il ne quitte pas le livre, activez l'épinglage d'écran (Android) ou l'accès guidé (iPhone), les étapes sont dans le livre. Quand le temps est écoulé, l'écran dit « C'est fini pour aujourd'hui, à demain ».</p><table class="cmp">
@@ -162,13 +164,13 @@ body{padding-bottom:70px}
 </div></div>
   <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/v7.jpg" aria-label="Le prix"><source src="video/v7.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>9 000 F → 2 500 F, une seule fois</h3><p class="small" style="margin:0 0 2px">Mobile Money ou carte. Pas d'abonnement.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Paiement sécurisé par Chariow. Vous recevez tout de suite un fichier avec votre lien d'accès.</p></div></div>
   <div class="step" data-step>
     <div class="vslot"><video muted playsinline preload="none" poster="video/v8.jpg" aria-label="Pas encore d'avis, essayez d'abord"><source src="video/v8.mp4" type="video/mp4"></video>
-      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button></div>
+      <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Pas encore d'avis : essayez d'abord</h3><p class="small" style="margin:0 0 2px">2 histoires gratuites sur WhatsApp. Remboursé sous 5 jours si un vrai problème n'est pas réglé en 48 h.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Un vrai problème, c'est : le livre ne s'ouvre pas, un audio manque, une erreur dans une histoire. <a href="#gratuit">Recevoir les 2 histoires gratuites</a>.</p></div></div>
@@ -287,17 +289,18 @@ window.SUIVI_CFG={
   var lastUser=0; ['touchmove','wheel','keydown'].forEach(function(e){ addEventListener(e,function(){ lastUser=Date.now(); },{passive:true}); });
   var cur=-1, soundOn=true;
   /* le navigateur refuse parfois le son sans geste : au premier toucher on le remet */
-  function unmuteNow(){ if(!soundOn) return; var cv=cur>=0&&steps[cur]&&steps[cur].querySelector('video'); if(cv&&cv.muted){ cv.muted=false; var s2=steps[cur].querySelector('.snd'); if(s2) s2.textContent='🔊'; } }
-  ['touchend','click'].forEach(function(e){ addEventListener(e,unmuteNow,{passive:true}); });
+  function unmuteNow(){ if(!soundOn) return; var cv=cur>=0&&steps[cur]&&steps[cur].querySelector('video'); if(cv&&cv.muted){ cv.muted=false; var s2=steps[cur].querySelector('.snd'); if(s2) s2.textContent='🔊'; steps[cur].querySelector('.vslot').classList.remove('muted'); } }
+  ['touchend','click','pointerup','keydown'].forEach(function(e){ addEventListener(e,unmuteNow,{passive:true}); });
   function stopAll(except){ steps.forEach(function(s,k){ var v=s.querySelector('video'); if(v&&k!==except&&!v.paused) v.pause(); }); }
   steps.forEach(function(s,i){
     var b=s.querySelector('.more'), d=s.querySelector('.mdesc'), vs=s.querySelector('.vslot'), v=s.querySelector('video'), p=s.querySelector('.play'), sn=s.querySelector('.snd');
     b.onclick=function(){ d.classList.toggle('open'); b.textContent=d.classList.contains('open')?'Réduire ▴':'En savoir plus ▾'; if(window.suiviEv) window.suiviEv('plus_'+i); };
     if(!v) return;
     vs.classList.add('hasv');
-    function go(){ stopAll(i); cur=i; v.muted=!soundOn; var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ v.muted=true; var p2=v.play(); if(p2&&p2.catch) p2.catch(function(){}); }); p.style.display='none'; sn.hidden=false; sn.textContent=soundOn?'🔊':'🔇'; }
+    function go(){ stopAll(i); cur=i; v.muted=!soundOn; vs.classList.remove('muted'); var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ v.muted=true; if(soundOn) vs.classList.add('muted'); sn.textContent='🔇'; var p2=v.play(); if(p2&&p2.catch) p2.catch(function(){}); }); p.style.display='none'; sn.hidden=false; sn.textContent=soundOn?'🔊':'🔇'; }
+    var tp=s.querySelector('.tap'); if(tp) tp.onclick=function(ev){ ev.stopPropagation(); soundOn=true; v.muted=false; vs.classList.remove('muted'); sn.textContent='🔊'; if(v.paused) go(); if(window.suiviEv) window.suiviEv('son_'+i); };
     p.onclick=function(){ soundOn=true; go(); if(window.suiviEv) window.suiviEv('clip_play_'+i); };
-    sn.onclick=function(){ soundOn=!soundOn; v.muted=!soundOn; sn.textContent=soundOn?'🔊':'🔇'; };
+    sn.onclick=function(){ soundOn=!soundOn; v.muted=!soundOn; vs.classList.remove('muted'); sn.textContent=soundOn?'🔊':'🔇'; };
     v.addEventListener('pause',function(){ if(!v.ended) p.style.display='block'; });
     v.addEventListener('ended',function(){
       p.style.display='block';
