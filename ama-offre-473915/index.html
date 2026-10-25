@@ -81,6 +81,8 @@ footer a{color:#fff}
 .vslot .play{inset:auto!important;left:10px;bottom:10px;margin:0!important;width:auto!important;height:auto!important;border-radius:999px!important;padding:8px 16px;font-size:16px!important;font-weight:700;background:rgba(253,246,227,.95)!important}
 .vslot .tap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:0;border-radius:999px;padding:12px 20px;background:rgba(76,42,117,.92);color:#fff;font-size:17px;font-weight:700;display:none;z-index:3;box-shadow:0 4px 16px rgba(0,0,0,.35)}
 .vslot.muted .tap{display:block}
+.vslot .fs{position:absolute;right:56px;bottom:8px;height:42px;border:0;border-radius:999px;padding:0 12px;background:rgba(253,246,227,.92);font-size:14px;font-weight:700;color:#4C2A75;cursor:pointer;z-index:2}
+.vslot.muted .fs{display:none}
 .vslot .snd{position:absolute;right:8px;bottom:8px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(253,246,227,.92);font-size:20px;cursor:pointer}
 #tour .step{margin:10px 0 18px}
 #tour h3{margin-top:8px}
@@ -102,13 +104,13 @@ body{padding-bottom:70px}
   <div class="kick">PRISM Éducation · Pour les 2 à 6 ans</div>
   <h1>Vous choisissez ce que votre enfant regarde et écoute.</h1>
   <p>30 histoires illustrées et racontées, des jeux et des autocollants. <b>Sans publicité, sans inconnus</b>, avec un temps de jeu que <b>vous</b> fixez.</p>
-    <a class="btn o" href="#gratuit" data-ev="cta_gratuit">Recevoir 2 histoires gratuites sur WhatsApp</a>
+    <a class="btn o" id="waFree1" href="#" target="_blank" rel="noopener" data-ev="cta_gratuit">Recevoir 2 histoires gratuites sur WhatsApp</a>
 </div></section>
 
 <!-- LES VIDEOS : une video = un role -->
 <section id="tour" style="background:var(--cr2);padding-bottom:20px" data-s="tour"><div class="w">
   <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/v1.jpg" aria-label="Ce que j'ai vu chez une tante"><source src="video/v1.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/hd/v1.mp4" poster="video/v1.jpg" aria-label="Ce que j'ai vu chez une tante"><source src="video/v1.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Vous ne pouvez pas tout surveiller</h3><p class="small" style="margin:0 0 2px">Télé, pubs, dessins animés qui ne parlent pas de chez nous.</p>
     <button class="more" type="button">En savoir plus ▾</button>
@@ -118,7 +120,7 @@ body{padding-bottom:70px}
   <p><b>Vous n'êtes plus obligé de laisser vos jeunes enfants devant des programmes que vous ne contrôlez pas.</b> Vous avez de quoi leur donner à la place.</p>
   <p class="small">Les enfants de 4 à 6 ans regardent la télévision près de 3 heures par jour en moyenne (Kantar, Africascope Kids 2019 et 2022).</p></div></div>
   <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/v2.jpg" aria-label="Qui je suis, ce qu'est le livre"><source src="video/v2.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/hd/v2.mp4" poster="video/v2.jpg" aria-label="Qui je suis, ce qu'est le livre"><source src="video/v2.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Qui je suis, ce qu'est le livre</h3><p class="small" style="margin:0 0 2px">Elysée ABLET, étudiant à Pigier Bénin. 30 histoires de chez nous, pour les 2 à 6 ans.</p>
     <button class="more" type="button">En savoir plus ▾</button>
@@ -129,25 +131,25 @@ body{padding-bottom:70px}
     <p><a href="https://www.linkedin.com/in/elys%C3%A9e-ablet-3974283a0" target="_blank" rel="noopener">Mon profil LinkedIn (Elysée ABLET)</a></p>
   </div></div></div>
 <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/clip3.jpg" aria-label="30 histoires, au choix de l'enfant"><source src="video/clip3.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/clip3.mp4" poster="video/clip3.jpg" aria-label="30 histoires, au choix de l'enfant"><source src="video/clip3.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>30 histoires, au choix de l'enfant</h3><p class="small" style="margin:0 0 2px">Marché, cour de grand-mère, pluie, fête : des histoires de chez nous.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Chaque histoire a 10 pages illustrées, lues à voix haute. Elles parlent de partager, d'accueillir, d'écouter les grands, de dire la vérité, de s'entraider, d'économiser l'eau, de perdre sans pleurer. Dans chacune se cache une notion : compter, les jours de la semaine, les saisons, plein et vide, lent et rapide, les lettres de son prénom.</p><p>Plus de 9 000 mots lus, environ 1 heure d'écoute, sans publicité et sans autre vidéo qui s'enchaîne.</p></div></div>
 <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/clip4.jpg" aria-label="Une voix douce, le texte s'éclaire"><source src="video/clip4.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/clip4.mp4" poster="video/clip4.jpg" aria-label="Une voix douce, le texte s'éclaire"><source src="video/clip4.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Une voix douce, le texte s'éclaire</h3><p class="small" style="margin:0 0 2px">L'enfant suit les mots pendant que l'histoire est racontée.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Le texte affiché est exactement celui que l'enfant entend, et chaque mot s'éclaire au moment où il est dit. Il peut écouter seul pendant que vous cuisinez, ou avec vous. La lecture automatique enchaîne les pages ; un bouton « écouter » relit une page à la demande.</p><p>Les nombres de 1 à 10, les couleurs et l'alphabet ont aussi leur voix : un bouton « écouter » sur chaque chiffre, chaque couleur, chaque lettre.</p></div></div>
 <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/clip5.jpg" aria-label="Des autocollants à gagner"><source src="video/clip5.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/clip5.mp4" poster="video/clip5.jpg" aria-label="Des autocollants à gagner"><source src="video/clip5.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Des autocollants à gagner</h3><p class="small" style="margin:0 0 2px">91 à collectionner : histoires, nombres, couleurs, lettres, quiz.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Chaque histoire écoutée, chaque jeu réussi donne un autocollant pour l'album, et des étoiles. Rien ne se gagne en tapant au hasard : il faut écouter, répondre ou jouer.</p><p>Il y a aussi 3 grands cherche-et-trouve avec un crayon pour entourer, un quiz de 50 questions où la voix explique la bonne réponse quand l'enfant se trompe, et un cahier à dessin.</p></div></div>
   <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/v6.jpg" aria-label="Le contrôle parent"><source src="video/v6.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/hd/v6.mp4" poster="video/v6.jpg" aria-label="Le contrôle parent"><source src="video/v6.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>C'est vous qui gardez le contrôle</h3><p class="small" style="margin:0 0 2px">Code parent, temps de jeu, sans pub, sans internet.</p>
     <button class="more" type="button">En savoir plus ▾</button>
@@ -163,13 +165,13 @@ body{padding-bottom:70px}
   <p class="small" style="margin-top:8px">À titre de repère : un décodeur Canal+ HD coûte 5 000 F à l'entrée au Bénin (rentrée 2026), et les forfaits internet « illimités » partent de 15 100 F pour 30 jours.</p>
 </div></div>
   <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/v7.jpg" aria-label="Le prix"><source src="video/v7.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/hd/v7.mp4" poster="video/v7.jpg" aria-label="Le prix"><source src="video/v7.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>9 000 F → 2 500 F, une seule fois</h3><p class="small" style="margin:0 0 2px">Mobile Money ou carte. Pas d'abonnement.</p>
     <button class="more" type="button">En savoir plus ▾</button>
     <div class="mdesc"><p>Paiement sécurisé par Chariow. Vous recevez tout de suite un fichier avec votre lien d'accès.</p></div></div>
   <div class="step" data-step>
-    <div class="vslot"><video muted playsinline preload="none" poster="video/v8.jpg" aria-label="Pas encore d'avis, essayez d'abord"><source src="video/v8.mp4" type="video/mp4"></video>
+    <div class="vslot"><video muted playsinline preload="none" data-hd="video/hd/v8.mp4" poster="video/v8.jpg" aria-label="Pas encore d'avis, essayez d'abord"><source src="video/v8.mp4" type="video/mp4"></video>
       <button class="play" aria-label="Lire la vidéo">▶ Voir</button><button class="snd" aria-label="Activer le son" hidden>🔇</button><button class="tap" type="button">🔊 Touchez pour le son</button></div>
     <h3>Pas encore d'avis : essayez d'abord</h3><p class="small" style="margin:0 0 2px">2 histoires gratuites sur WhatsApp. Remboursé sous 5 jours si un vrai problème n'est pas réglé en 48 h.</p>
     <button class="more" type="button">En savoir plus ▾</button>
@@ -217,10 +219,8 @@ body{padding-bottom:70px}
 <!-- 10. GRATUIT -->
 <section id="gratuit" data-s="gratuit"><div class="w lead">
   <h2>Essayez avant d'acheter : 2 histoires gratuites</h2>
-  <p>Laissez votre numéro WhatsApp : je vous envoie 2 histoires d'Ama avec leur voix, pour que votre enfant les écoute. Pas de spam : je vous écris moi-même, une seule fois pour vous les envoyer.</p>
-  <input id="tel" type="tel" inputmode="tel" placeholder="Votre numéro WhatsApp (ex : 01 97 00 00 00)">
-  <button class="btn" id="telBtn" style="margin-top:10px">Recevoir les 2 histoires</button>
-  <div class="small" id="telOk" style="display:none;margin-top:10px">C'est noté ! <a id="waGo" href="#" target="_blank" rel="noopener">Touchez ici pour me dire « Ama » sur WhatsApp</a> : je vous envoie les histoires dès que je vois votre message.</div>
+  <p>Touchez le bouton : WhatsApp s'ouvre avec le message déjà écrit. Envoyez-le, et je vous réponds moi-même avec 2 histoires d'Ama et leur voix, pour que votre enfant les écoute. Pas de spam.</p>
+  <a class="btn" id="waFree2" href="#" target="_blank" rel="noopener" data-ev="wa_gratuit" style="margin-top:10px">Recevoir les 2 histoires sur WhatsApp</a>
 </div></section>
 
 <!-- 11. FAQ -->
@@ -284,43 +284,47 @@ window.SUIVI_CFG={
   var _b=CFG.checkout?(CFG.checkout+(CFG.checkout.indexOf('?')>=0?'&':'?')+'src='+(P.get('src')||'landing')+'&c='+(P.get('c')||'')):wa("Bonjour Elysée, je veux Les histoires d'Ama.");
   $('buy').href=_b; $('stBuy').href=CFG.checkout?_b:'#offre'; if(!CFG.checkout) $('buy').target='_blank';
   $('wa1').href=wa("Bonjour Elysée, une question sur Les histoires d'Ama : "); $('wa2').href=wa("Bonjour Elysée, une question sur Les histoires d'Ama : ");
-  /* clips : lecture muette quand visible, « en savoir plus », defilement auto vers le suivant */
+  /* clips : le 1er toucher lance la video AVEC le son depuis le debut ; ensuite chaque video demarre seule, avec le son, depuis le debut, quand elle est a l'ecran.
+     Pas d'enchainement automatique : a la fin, bouton « Revoir ». Bouton plein ecran = version HD. */
   var steps=[].slice.call(document.querySelectorAll('[data-step]'));
-  var lastUser=0; ['touchmove','wheel','keydown'].forEach(function(e){ addEventListener(e,function(){ lastUser=Date.now(); },{passive:true}); });
-  var cur=-1, soundOn=true;
-  /* le navigateur refuse parfois le son sans geste : au premier toucher on le remet */
-  function unmuteNow(){ if(!soundOn) return; var cv=cur>=0&&steps[cur]&&steps[cur].querySelector('video'); if(cv&&cv.muted){ cv.muted=false; var s2=steps[cur].querySelector('.snd'); if(s2) s2.textContent='🔊'; steps[cur].querySelector('.vslot').classList.remove('muted'); } }
-  ['touchend','click','pointerup','keydown'].forEach(function(e){ addEventListener(e,unmuteNow,{passive:true}); });
+  var unlocked=!!(navigator.userActivation&&navigator.userActivation.hasBeenActive), cur=-1, soundOn=true;
   function stopAll(except){ steps.forEach(function(s,k){ var v=s.querySelector('video'); if(v&&k!==except&&!v.paused) v.pause(); }); }
   steps.forEach(function(s,i){
-    var b=s.querySelector('.more'), d=s.querySelector('.mdesc'), vs=s.querySelector('.vslot'), v=s.querySelector('video'), p=s.querySelector('.play'), sn=s.querySelector('.snd');
+    var b=s.querySelector('.more'), d=s.querySelector('.mdesc'), vs=s.querySelector('.vslot'), v=s.querySelector('video'), p=s.querySelector('.play'), sn=s.querySelector('.snd'), tp=s.querySelector('.tap');
     b.onclick=function(){ d.classList.toggle('open'); b.textContent=d.classList.contains('open')?'Réduire ▴':'En savoir plus ▾'; if(window.suiviEv) window.suiviEv('plus_'+i); };
     if(!v) return;
-    vs.classList.add('hasv');
-    function go(){ stopAll(i); cur=i; v.muted=!soundOn; vs.classList.remove('muted'); var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ v.muted=true; if(soundOn) vs.classList.add('muted'); sn.textContent='🔇'; var p2=v.play(); if(p2&&p2.catch) p2.catch(function(){}); }); p.style.display='none'; sn.hidden=false; sn.textContent=soundOn?'🔊':'🔇'; }
-    var tp=s.querySelector('.tap'); if(tp) tp.onclick=function(ev){ ev.stopPropagation(); soundOn=true; v.muted=false; vs.classList.remove('muted'); sn.textContent='🔊'; if(v.paused) go(); if(window.suiviEv) window.suiviEv('son_'+i); };
-    p.onclick=function(){ soundOn=true; go(); if(window.suiviEv) window.suiviEv('clip_play_'+i); };
-    sn.onclick=function(){ soundOn=!soundOn; v.muted=!soundOn; vs.classList.remove('muted'); sn.textContent=soundOn?'🔊':'🔇'; };
+    vs.classList.add('hasv'); v.preload=i<2?'metadata':'none';
+    var sd=v.querySelector('source').getAttribute('src'), hd=v.getAttribute('data-hd');
+    var fs=document.createElement('button'); fs.className='fs'; fs.type='button'; fs.textContent='⛶ Plein écran HD'; vs.appendChild(fs);
+    function start(fromZero){ stopAll(i); cur=i; if(fromZero||v.ended) v.currentTime=0; v.muted=!soundOn; vs.classList.remove('muted','done');
+      var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ unlocked=false; vs.classList.add('muted'); });
+      p.style.display='none'; sn.hidden=false; sn.textContent=soundOn?'🔊':'🔇'; }
+    vs.classList.add('muted');   /* tant que le visiteur n'a rien touche : grand bouton « Regarder avec le son » */
+    tp.textContent='▶ Regarder avec le son';
+    tp.onclick=function(ev){ ev.stopPropagation(); unlocked=true; soundOn=true; start(true); if(window.suiviEv) window.suiviEv('son_'+i); };
+    p.onclick=function(){ unlocked=true; start(v.ended); if(window.suiviEv) window.suiviEv('clip_play_'+i); };
+    sn.onclick=function(){ soundOn=!soundOn; v.muted=!soundOn; sn.textContent=soundOn?'🔊':'🔇'; };
     v.addEventListener('pause',function(){ if(!v.ended) p.style.display='block'; });
-    v.addEventListener('ended',function(){
-      p.style.display='block';
-      var n=steps[i+1]; if(!n) return;
-      if(Date.now()-lastUser<2500) return;          /* le visiteur defile lui-meme : on ne lui prend pas la main */
-      n.scrollIntoView({behavior:'smooth',block:'center'});
-      var nv=n.querySelector('video'); if(nv) setTimeout(function(){ if(Date.now()-lastUser>2500){ nv.muted=!soundOn; var pq=nv.play(); if(pq&&pq.catch) pq.catch(function(){ nv.muted=true; nv.play(); }); } },900);
-    });
-    s._v=v; s._go=go;
+    v.addEventListener('ended',function(){ vs.classList.add('done'); p.textContent='↻ Revoir'; p.style.display='block'; if(window.suiviEv) window.suiviEv('fin_'+i); });
+    fs.onclick=function(ev){ ev.stopPropagation(); unlocked=true; var t=v.currentTime, wasEnded=v.ended;
+      if(hd&&v.currentSrc.indexOf(hd)<0){ v.src=hd; v.load(); v.addEventListener('loadedmetadata',function once(){ v.removeEventListener('loadedmetadata',once); v.currentTime=wasEnded?0:t; start(false); }); } else start(false);
+      var rq=v.requestFullscreen||v.webkitRequestFullscreen||v.webkitEnterFullscreen; if(rq) try{ rq.call(v); }catch(e){} if(window.suiviEv) window.suiviEv('hd_'+i); };
+    document.addEventListener('fullscreenchange',function(){ if(!document.fullscreenElement&&hd&&v.currentSrc.indexOf(hd)>=0){ var t=v.currentTime, pl=!v.paused; v.src=sd; v.load(); v.addEventListener('loadedmetadata',function once(){ v.removeEventListener('loadedmetadata',once); v.currentTime=t; if(pl) start(false); }); } });
+    s._v=v; s._go=start;
   });
+  /* des que le visiteur touche la page (n'importe ou), les videos peuvent avoir le son */
+  ['pointerdown','touchend','keydown'].forEach(function(e){ addEventListener(e,function(){ if(!unlocked){ unlocked=true; setTimeout(pick,50); } },{passive:true}); });
   var tmr=null;
   function pick(){
     var chosen=-1;
-    for(var k=0;k<steps.length;k++){ var vs2=steps[k].querySelector('.vslot'); if(!vs2) continue; var r=vs2.getBoundingClientRect(), h=r.height||1;
-      var vis=(Math.min(r.bottom,innerHeight)-Math.max(r.top,0))/h; var v2=steps[k].querySelector('video');
-      if(vis>=0.9){ if(chosen<0&&v2&&!v2.ended) chosen=k; } else if(v2&&!v2.paused){ v2.pause(); } }
-    if(chosen>=0&&chosen!==cur){ steps[chosen]._go(); }
-    else if(chosen>=0){ var cv=steps[chosen].querySelector('video'); if(cv.paused&&!cv.ended) steps[chosen]._go(); }
+    for(var k=0;k<steps.length;k++){ var vs2=steps[k].querySelector('.vslot'); if(!vs2||!steps[k]._v) continue; var r=vs2.getBoundingClientRect(), h=r.height||1;
+      var vis=(Math.min(r.bottom,innerHeight)-Math.max(r.top,0))/h; var v2=steps[k]._v;
+      if(vis>=0.85){ if(chosen<0) chosen=k; } else if(!v2.paused){ v2.pause(); } }
+    if(chosen<0||!unlocked) return;
+    var cv=steps[chosen]._v;
+    if(chosen!==cur){ if(!cv.ended&&cv.currentTime<0.5) steps[chosen]._go(true); }   /* nouvelle video : depuis le debut, avec le son */
   }
-  addEventListener('scroll',function(){ clearTimeout(tmr); tmr=setTimeout(pick,220); },{passive:true});
+  addEventListener('scroll',function(){ clearTimeout(tmr); tmr=setTimeout(pick,250); },{passive:true});
   setTimeout(pick,800);
   /* faits repliés */
   if($('factsBtn')) $('factsBtn').onclick=function(){ $('factsBox').classList.toggle('hide'); this.textContent=$('factsBox').classList.contains('hide')?'Voir les faits et leurs sources':'Masquer les faits'; if(window.suiviEv) window.suiviEv('faits'); };
@@ -328,9 +332,8 @@ window.SUIVI_CFG={
   function ping(lieu,choix,det,autre){ var T=window.SUIVI_CFG.track; if(!T) return;
     try{ new Image().src=T+'?action=raison&v='+encodeURIComponent((sessionStorage.getItem('cc_visit')||''))+'&lieu='+encodeURIComponent(lieu)+'&choix='+encodeURIComponent(choix)+'&autre='+encodeURIComponent(autre||'')+'&det='+encodeURIComponent(det||'')+'&src='+encodeURIComponent((P.get('src')||'landing')+'|'+(P.get('c')||'')); }catch(e){} }
   /* 2 histoires gratuites : numéro */
-  $('telBtn').onclick=function(){ var t=$('tel').value.replace(/[^0-9+]/g,''); if(t.replace(/\D/g,'').length<8){ $('tel').style.borderColor='#b3261e'; $('tel').focus(); return; }
-    ping('lead_ama','numero',t); if(window.suiviEv) window.suiviEv('lead_numero');
-    $('waGo').href=wa("Bonjour Elysée, je veux recevoir les 2 histoires gratuites d'Ama. (Ama)"); $('telOk').style.display='block'; this.disabled=true; };
+  var waFree=wa("Bonjour Elysée, je veux recevoir les 2 histoires gratuites d'Ama.");
+  ['waFree1','waFree2'].forEach(function(id){ var e=$(id); if(e){ e.href=waFree; e.addEventListener('click',function(){ ping('lead_ama','whatsapp',''); if(window.suiviEv) window.suiviEv('lead_whatsapp'); }); } });
   /* avis (non affichés tant qu'Elysée ne les a pas validés) */
   var note=0; [].forEach.call($('stars').children,function(b){ b.onclick=function(){ note=+b.getAttribute('data-n'); [].forEach.call($('stars').children,function(x,i){ x.classList.toggle('on',i<note); }); }; });
   $('avisBtn').onclick=function(){ var t=$('avisTxt').value.trim(); if(!note||t.length<3){ $('avisTxt').style.borderColor='#b3261e'; return; }
