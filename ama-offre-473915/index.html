@@ -24,6 +24,9 @@ p{margin:0 0 12px}
 .btn.g{background:var(--g);color:#2b1d44}
 .btn.o{background:#fff;color:var(--v);border:2px solid var(--v)}
 .btn+.btn{margin-top:10px}
+.btn.wa{background:#1fa855;color:#fff;font-size:19px;padding:18px;box-shadow:0 4px 0 #157a3d}
+.hpr{margin:12px 0;font-size:17px}.hpr s{opacity:.6}.hpr b{font-size:26px;color:var(--v);margin:0 6px}.hpr span{font-size:14px}
+.hpage{margin:14px 0 0}.hpage img{display:block;width:100%;max-width:340px;height:auto;margin:0 auto;border-radius:14px}.hpage figcaption{text-align:center;margin-top:6px}
 .small{font-size:14px;color:#5a4a78}
 .card{background:#fff;border-radius:18px;padding:16px 18px;box-shadow:0 2px 0 #e6d7b3}
 .bar{position:sticky;top:0;z-index:50;background:var(--v);color:#fff}
@@ -104,7 +107,9 @@ body{padding-bottom:70px}
   <div class="kick">PRISM Éducation · Pour les 2 à 6 ans</div>
   <h1>Vous choisissez ce que votre enfant regarde et écoute.</h1>
   <p>30 histoires illustrées et racontées, des jeux et des autocollants. <b>Sans publicité, sans inconnus</b>, avec un temps de jeu que <b>vous</b> fixez.</p>
-    <a class="btn o" id="waFree1" href="#" target="_blank" rel="noopener" data-ev="cta_gratuit">Recevoir 2 histoires gratuites sur WhatsApp</a>
+  <div class="hpr"><s id="hOld">9 000 F</s> <b id="hNew">2 500 F</b> <span id="hCd">prix de lancement</span></div>
+  <a class="btn wa" id="waFree1" href="#" target="_blank" rel="noopener" data-ev="cta_gratuit">🎁 Essayez d'abord : 2 histoires gratuites sur WhatsApp</a>
+  <figure class="hpage"><img src="img/ama1.webp" alt="Une page du livre : Ama et son ballon rouge" width="640" height="853"><figcaption class="small">Une page du livre : « Le ballon rouge d'Ama », racontée avec une voix.</figcaption></figure>
 </div></section>
 
 <!-- LES VIDEOS : une video = un role -->
@@ -263,8 +268,11 @@ window.SUIVI_CFG={
   var fin=CFG.promoFin?new Date(CFG.promoFin).getTime():0;
   function tick(){ if(!fin){ $('cd').textContent='Prix de lancement'; return; }
     var d=fin-Date.now();
-    if(d<=0){ $('new').textContent=F(CFG.prixApres); $('old').style.display='none'; $('cd').textContent='La promotion est terminée'; return; }
+    if(d<=0){ $('new').textContent=F(CFG.prixApres); $('old').style.display='none'; $('cd').textContent='La promotion est terminée';
+      $('hNew').textContent=F(CFG.prixApres); $('hOld').style.display='none'; $('hCd').textContent=''; return; }
     var j=Math.floor(d/864e5), h=Math.floor(d%864e5/36e5), m=Math.floor(d%36e5/6e4);
+    $('hNew').textContent=F(CFG.prix); $('hOld').textContent=F(CFG.prixApres);
+    $('hCd').textContent='· fin de la promo dans '+(j?j+' j ':'')+h+' h '+m+' min';
     $('cd').textContent='Fin de la promotion dans '+(j?j+' j ':'')+h+' h '+m+' min'; }
   tick(); setInterval(tick,30000);
   /* bouton fixe en bas : visible apres le hero, cache sur l'offre */
