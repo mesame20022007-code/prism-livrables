@@ -108,7 +108,7 @@ body{padding-bottom:70px}
   <h1>Vous choisissez ce que votre enfant regarde et écoute.</h1>
   <p>30 histoires illustrées et racontées, des jeux et des autocollants. <b>Sans publicité, sans inconnus</b>, avec un temps de jeu que <b>vous</b> fixez.</p>
   <div class="hpr"><s id="hOld">9 000 F</s> <b id="hNew">2 500 F</b> <span id="hCd">prix de lancement</span></div>
-  <a class="btn wa" id="waFree1" href="#" target="_blank" rel="noopener" data-ev="cta_gratuit">🎁 Essayez d'abord : 2 histoires gratuites sur WhatsApp</a>
+  <a class="btn wa" id="waFree1" href="#" data-ev="cta_gratuit">🎁 Essayez d'abord : 2 histoires gratuites sur WhatsApp</a>
   <figure class="hpage"><img src="img/ama1.webp" alt="Une page du livre : Ama et son ballon rouge" width="640" height="853"><figcaption class="small">Une page du livre : « Le ballon rouge d'Ama », racontée avec une voix.</figcaption></figure>
 </div></section>
 
@@ -219,7 +219,7 @@ body{padding-bottom:70px}
 <section id="gratuit" data-s="gratuit"><div class="w lead">
   <h2>Essayez avant d'acheter : 2 histoires gratuites</h2>
   <p>Touchez le bouton : WhatsApp s'ouvre avec le message déjà écrit. Envoyez-le, et je vous réponds moi-même avec 2 histoires d'Ama et leur voix, pour que votre enfant les écoute. Pas de spam.</p>
-  <a class="btn" id="waFree2" href="#" target="_blank" rel="noopener" data-ev="wa_gratuit" style="margin-top:10px">Recevoir les 2 histoires sur WhatsApp</a>
+  <a class="btn" id="waFree2" href="#" data-ev="wa_gratuit" style="margin-top:10px">Recevoir les 2 histoires sur WhatsApp</a>
 </div></section>
 
 <!-- 11. FAQ -->
@@ -282,7 +282,7 @@ window.SUIVI_CFG={
   addEventListener('scroll',stk,{passive:true}); stk();
   /* boutons d'achat et WhatsApp */
   var q=location.search?location.search+(location.search.indexOf('?')>=0?'&':'?')+'from=landing':'?from=landing';
-  function wa(txt){ return 'https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent(txt); }
+  function wa(txt){ return 'https://api.whatsapp.com/send?phone='+CFG.whatsapp+'&text='+encodeURIComponent(txt); }
   var _b=CFG.checkout?(CFG.checkout+(CFG.checkout.indexOf('?')>=0?'&':'?')+'src='+(P.get('src')||'landing')+'&c='+(P.get('c')||'')):wa("Bonjour Elysée, je veux Les histoires d'Ama.");
   $('buy').href=_b; $('stBuy').href=CFG.checkout?_b:'#offre'; if(!CFG.checkout) $('buy').target='_blank';
   $('wa1').href=wa("Bonjour Elysée, une question sur Les histoires d'Ama : "); $('wa2').href=wa("Bonjour Elysée, une question sur Les histoires d'Ama : ");
